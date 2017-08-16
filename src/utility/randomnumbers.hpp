@@ -7,11 +7,11 @@
 #include <string>
 
 
-extern unsigned int seed;
-extern std::mt19937_64 rand_engine;
+extern unsigned int     seed;
+extern std::mt19937_64  rand_engine;
 
-double randomDouble(double, double);
-int randomInt(int, int);
+double  random_double(double, double);
+int     random_int(int, int);
 
 
 // Type aliasing

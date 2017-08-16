@@ -4,7 +4,6 @@
 #include "utility/randomnumbers.hpp"
 #include "input/parameters.hpp"
 #include "system/spinsys.hpp"
-#include "utility/pngmaker.hpp"
 
 /*
  * class mc
@@ -13,18 +12,17 @@
 
 class mc {
 
-  spinsys             spinsystem;
-  std::vector<SIGNED> HwithoutJ_trj;
-  SIZE                print_frequency;
+    spinsys             spinsystem;
+    std::vector<REAL>   trajectory;
 
 public:
-  mc();
+    mc();
 
-  void  do_metropolis(const SIZE&, const SIZE& = prms::mc_printfreq);
+    void  do_metropolis();
 
-  void  save_trj(const boost::filesystem::path&);
+    void  save_trj(const PATH&);
 
-  auto& get_HwithoutJ_trj() const { return HwithoutJ_trj; }
-  auto& get_HwithoutJ_trj()       { return HwithoutJ_trj; }
+    const auto& get_trajectory() const { return trajectory; }
+    auto&       get_trajectory()       { return trajectory; }
 
 };

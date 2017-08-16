@@ -24,11 +24,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
-#include <boost/tokenizer.hpp>
 #include <boost/exception/diagnostic_information.hpp>
-
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Eigenvalues>
 
 #include <stdexcept>
 #include <cassert>
@@ -54,6 +50,3 @@ typedef DP REAL;
 typedef boost::filesystem::path     PATH;
 typedef boost::filesystem::ofstream OFSTREAM;
 typedef boost::filesystem::ifstream IFSTREAM;
-
-typedef boost::char_separator<char>   SEPARATOR;
-typedef boost::tokenizer<SEPARATOR>   TOKENIZER;
