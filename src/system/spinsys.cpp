@@ -44,30 +44,34 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
     // set neighbours:
     for(auto& s: spins){
         std::vector<std::reference_wrapper<spin> > Nrefs;
-        SIGNED Nid;
-        const SIGNED id = s.get_ID();
+        SIZE Nid;
+        const SIZE id = s.get_ID();
 
         {
             // up
-            Nid = id - static_cast<int>(size) < 0 ? id - size + totalnumber : id - size;
+            Nid = id - static_cast<SIZE>(size) < 0 ? id - size + totalnumber : id - size; 
+            assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         {
             // right
             Nid = (id + 1) % size == 0  ? id + 1 - size : id + 1;
+            assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         {
             // below
             Nid = id + size >= totalnumber ? id + size - totalnumber : id + size;
+            assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         {
             // left
             Nid = id % size == 0  ? id - 1 + size : id - 1;
+            assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
