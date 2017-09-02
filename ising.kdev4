@@ -1,3 +1,4 @@
 [Project]
 Name=ising
 Manager=KDevCMakeManager
+VersionControl=

@@ -1,3 +1,4 @@
+
 # cmake_minimum_required(VERSION 2.8.11)
 cmake_minimum_required(VERSION 3.0)
 project(ising)
@@ -52,3 +53,4 @@ target_link_libraries(ising Qt5::Widgets)
 
 # Install the executable
 install(TARGETS ising DESTINATION bin)
+

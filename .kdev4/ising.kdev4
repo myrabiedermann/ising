@@ -6,7 +6,7 @@ Build Directory Count=1
 Current Build Directory Index=0
 
 [CMake][CMake Build Directory 0]
-Build Directory Path=/home/simon/github/ising/build
+Build Directory Path=~/ising/build
 Build Type=Debug
 CMake Binary=/usr/bin/cmake
 Environment Profile=
@@ -14,4 +14,4 @@ Extra Arguments=
 Install Directory=
 
 [Project]
-VersionControlSupport=
+VersionControlSupport=kdevgit
