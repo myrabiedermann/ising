@@ -17,7 +17,7 @@ class spin
 
     const SIZE          ID;
     SPINTYPE            type;
-    neighbours_vec      neighbours;
+    neighbours_vec      neighbours {};
 
 public:
     spin(const SIZE, SPINTYPE);

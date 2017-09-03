@@ -13,7 +13,7 @@
 class mc {
 
     spinsys             spinsystem;
-    std::vector<REAL>   trajectory;
+    std::vector<REAL>   trajectory {};
 
 public:
     mc();

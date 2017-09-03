@@ -6,6 +6,7 @@
 
 #include "../global.hpp"
 #include "program_options.hpp"
+#include <QWidget>
 
 
 class prms
@@ -19,6 +20,7 @@ private:
 
 public:
     prms(int argc, char* argv[]);
+    
     // general Options:
     static std::string  output_key;
     static bool         SAVETRJ;

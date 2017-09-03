@@ -49,7 +49,7 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
 
         {
             // up
-            Nid = id - static_cast<SIZE>(size) < 0 ? id - size + totalnumber : id - size; 
+            Nid = ((LONGSIGNED)id - static_cast<LONGSIGNED>(size)) < 0 ? id - size + totalnumber : id - size; 
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }

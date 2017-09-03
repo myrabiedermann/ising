@@ -7,11 +7,6 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    ising w;
-    w.show();
-
-    
     #ifndef NDEBUG
     feenableexcept(FE_DIVBYZERO);
     feenableexcept(FE_INVALID);
@@ -19,24 +14,29 @@ int main(int argc, char *argv[])
     feenableexcept(FE_UNDERFLOW);
     #endif
     
-    // save program options in "prms":
-    prms params(argc, argv);
+    QApplication app(argc, argv);
+    ising w;
+    w.show();
+
     
-    
-    // seed = std::time(nullptr);
-    seed = 123456789;
-    rand_engine.seed(seed);
-    std::cout << "seed for random number generator: \n   " << seed << "\n";
-    
-    // run simulation:
-    mc MC;
-    MC.do_metropolis();
-    if( prms::SAVETRJ )
-    {
-        PATH outpath(prms::initialPath);
-        outpath /= prms::output_key+".trj";
-        MC.save_trj(outpath);
-    }
+//     // save program options in "prms":
+//     prms params(argc, argv);
+//     
+//     
+//     // seed = std::time(nullptr);
+//     seed = 123456789;
+//     rand_engine.seed(seed);
+//     std::cout << "seed for random number generator: \n   " << seed << "\n";
+//     
+//     // run simulation:
+//     mc MC;
+//     MC.do_metropolis();
+//     if( prms::SAVETRJ )
+//     {
+//         PATH outpath(prms::initialPath);
+//         outpath /= prms::output_key+".trj";
+//         MC.save_trj(outpath);
+//     }
     
     return app.exec();
 }

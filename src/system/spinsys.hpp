@@ -12,9 +12,9 @@ class spinsys {
     const bool     CONSTRAINED;
     const SIZE     totalnumber;
 
-    std::vector<spin>  spins;
-    REAL               Hamiltonian;
-    std::vector<std::reference_wrapper<spin>> lastFlipped;
+    std::vector<spin>  spins {};
+    REAL               Hamiltonian = 0;
+    std::vector<std::reference_wrapper<spin>> lastFlipped {};
 
     // functions:
     REAL   local_energy(const spin&) const;
