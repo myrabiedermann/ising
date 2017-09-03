@@ -4,7 +4,7 @@ Rectangular::Rectangular(QGraphicsItem* parent __attribute__((unused)) )
 //   : QGraphicsItem(parent)
 {
     // draw
-    setRect(0,0,1,1);
+    setRect(0,0,10,10);
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::cyan);

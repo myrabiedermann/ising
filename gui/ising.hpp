@@ -24,12 +24,17 @@ public:
     ising(const ising&) = delete;
     void operator=(const ising&) = delete;
     ~ising();
+    
+    void runAction();
 
-private:
+protected:
     QGroupBox* createBottomActionGroup();
+    
+private:
     static void dummy() { std::cout << "Dummy button" << std::endl; }
     
-    Ui::ising *ui;
+    GridWidget* gridWidget = new GridWidget(this);
+    Ui::ising* ui;
 };
 
 #endif // ISING_H

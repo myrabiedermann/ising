@@ -7,6 +7,7 @@ ParametersWidget::ParametersWidget(QWidget *parent)
 {
     // layout of this widget
     QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout->setAlignment(Qt::AlignVCenter);
     
     // add Box with Line Edits
     mainLayout->addWidget(createSystemBox());
@@ -14,9 +15,9 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     mainLayout->addWidget(createMCBox());
     
     // add applyBtn 
+    applyBtn->setFocusPolicy(Qt::NoFocus);
     connect(applyBtn, &QPushButton::clicked, this, &ParametersWidget::applyValues);
     mainLayout->addWidget(applyBtn);
-    mainLayout->setAlignment(Qt::AlignVCenter);
     
     setMinimumWidth(300);
     adjustSize();
