@@ -3,7 +3,7 @@
 #include "global.hpp"
 #include "utility/randomnumbers.hpp"
 #include "input/parameters.hpp"
-#include "system/spinsys.hpp"
+#include "system/spinsystem.hpp"
 
 /*
  * class mc
@@ -12,7 +12,7 @@
 
 class mc {
 
-    spinsys             spinsystem;
+    Spinsystem             spinsystem;
     std::vector<REAL>   trajectory {};
 
 public:

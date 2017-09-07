@@ -1,9 +1,9 @@
-#include "ising.hpp"
-#include "ui_ising.h"
+#include "mainwindow.hpp"
+#include "ui_mainwindow.h"
 
-ising::ising(QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::ising)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     
@@ -39,7 +39,7 @@ ising::ising(QWidget *parent) :
 
 
 
-QGroupBox* ising::createBottomActionGroup()
+QGroupBox* MainWindow::createBottomActionGroup()
 {
     // new group
     QGroupBox *groupBox = new QGroupBox();
@@ -52,7 +52,7 @@ QGroupBox* ising::createBottomActionGroup()
     runBtn->setChecked(false);
     runBtn->setMaximumWidth(100);
     //connect button to function
-    connect(runBtn, &QPushButton::clicked, this, &ising::runAction);
+    connect(runBtn, &QPushButton::clicked, this, &MainWindow::runAction);
     
     // the quit button
     QPushButton *quitBtn = new QPushButton("Quit",this);
@@ -76,14 +76,16 @@ QGroupBox* ising::createBottomActionGroup()
 
 
 
-ising::~ising()
+MainWindow::~MainWindow()
 {
     delete ui;
+    delete gridWidget;
 }
 
 
 
-void ising::runAction()
+void MainWindow::runAction()
 {
-    gridWidget->setWidthHeight(50,50);
+    gridWidget->setRowsColumns(20, 20);
+    gridWidget->draw_test();
 }

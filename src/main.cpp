@@ -1,4 +1,4 @@
-#include "gui/ising.hpp"
+#include "gui/mainwindow.hpp"
 #include "global.hpp"
 #include "utility/randomnumbers.hpp"
 #include "input/parameters.hpp"
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     #endif
     
     QApplication app(argc, argv);
-    ising w;
+    MainWindow w;
     w.show();
 
     

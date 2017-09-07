@@ -1,11 +1,11 @@
-#include "spinsys.hpp"
+#include "spinsystem.hpp"
 
 /*
  * functions in class "spinsys"
  */
 
 
-spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
+Spinsystem::Spinsystem(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
   : size (_size)
   , J (_J)
   , CONSTRAINED (_CONSTRAINED)
@@ -43,7 +43,7 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
 
     // set neighbours:
     for(auto& s: spins){
-        std::vector<std::reference_wrapper<spin> > Nrefs;
+        std::vector<std::reference_wrapper<Spin> > Nrefs;
         SIZE Nid;
         const SIZE id = s.get_ID();
 
@@ -88,7 +88,7 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
 #endif
 
     // calculate initial Hamiltonian:
-    Hamiltonian = std::accumulate(std::cbegin(spins),std::cend(spins), static_cast<REAL>(0), [&](REAL i, const spin& S)
+    Hamiltonian = std::accumulate(std::cbegin(spins),std::cend(spins), static_cast<REAL>(0), [&](REAL i, const Spin& S)
                         {
                             return i + local_energy(S);
                         }) / 2;
@@ -96,7 +96,7 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
 
 /***************************************************************************/
 
-REAL spinsys::local_energy(const spin & _spin) const
+REAL Spinsystem::local_energy(const Spin & _spin) const
 {
     // go through neighbours and calculate local energy for given spin
     // Jij returns value of J/J for given spin pairs (1 or 0)
@@ -108,7 +108,7 @@ REAL spinsys::local_energy(const spin & _spin) const
 
 /***************************************************************************/
 
-SIGNED spinsys::JijwithoutJ(const SPINTYPE _spin1, const SPINTYPE _spin2) const
+SIGNED Spinsystem::JijwithoutJ(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
     if( ! CONSTRAINED ) return 1;
@@ -117,7 +117,7 @@ SIGNED spinsys::JijwithoutJ(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 
 /***************************************************************************/
 
-void spinsys::flip()
+void Spinsystem::flip()
 {
     lastFlipped.clear();
     REAL localEnergy_before = 0;
@@ -168,7 +168,7 @@ void spinsys::flip()
 
 /***************************************************************************/
 
-void spinsys::flip_back()
+void Spinsystem::flip_back()
 {
     if( lastFlipped.size() == 0 )
         throw std::logic_error("Cannot flip back, since nothing has flipped yet");
@@ -195,7 +195,7 @@ void spinsys::flip_back()
 
 /***************************************************************************/
 
-void spinsys::print(std::ostream & stream) const
+void Spinsystem::print(std::ostream & stream) const
 {
     // print spinarray to stream
     for(const auto& s: spins)

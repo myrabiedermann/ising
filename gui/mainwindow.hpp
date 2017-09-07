@@ -12,18 +12,18 @@
 
 
 namespace Ui {
-    class ising;
+    class MainWindow;
 }
 
-class ising : public QMainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit ising(QWidget *parent = nullptr);
-    ising(const ising&) = delete;
-    void operator=(const ising&) = delete;
-    ~ising();
+    explicit MainWindow(QWidget *parent = nullptr);
+    MainWindow(const MainWindow&) = delete;
+    void operator=(const MainWindow&) = delete;
+    ~MainWindow();
     
     void runAction();
 
@@ -34,7 +34,7 @@ private:
     static void dummy() { std::cout << "Dummy button" << std::endl; }
     
     GridWidget* gridWidget = new GridWidget(this);
-    Ui::ising* ui;
+    Ui::MainWindow* ui;
 };
 
 #endif // ISING_H

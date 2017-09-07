@@ -1,12 +1,18 @@
 #pragma once
 
 #include "global.hpp"
-#include "rectangular.hpp"
+#include "system/spinsystem.hpp"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QWidget>
 #include <QGridLayout>
 #include <QRect>
+// #include <QRectF>
+#include <QShowEvent>
+#include <cmath>
+#include <type_traits>
+#include <cstdint>
+#include <iostream>
 
 
 class GridWidget : public QGraphicsView
@@ -20,13 +26,29 @@ public:
     
     ~GridWidget();
     
-    void setWidthHeight(SIZE,SIZE);
+    void showEvent(QShowEvent *);
+    
+    void setRowsColumns(std::uint16_t,std::uint16_t);
+    void setRows(std::uint16_t);
+    void setColumns(std::uint16_t);
+    
+    void draw(const Spinsystem&);
+    void draw_test();
     
 protected:
+    QBrush get_color_of_spin(const Spin& spin);
+    void draw_rectangle(std::uint16_t, std::uint16_t, std::uint16_t, std::uint16_t, QPen, QBrush);
+    void make_new_scene();
     
 private:
-    SIZE height = 0;
-    SIZE width = 0;
+    std::uint16_t rows = 0;
+    std::uint16_t columns = 0;
     
-    QGraphicsScene* scene = new QGraphicsScene(0,0,500,500);
+    std::uint16_t width_of_rectangular  = 0;
+    std::uint16_t height_of_rectangular = 0;
+    
+    const std::uint16_t scene_width = 500;
+    const std::uint16_t scene_height = 500;
+    
+    QGraphicsScene* scene;
 };

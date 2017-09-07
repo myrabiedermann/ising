@@ -2,8 +2,8 @@
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\n\x00i\x00s\x00i\x00n\x00g)
 
 [CMake]
-Build Directory Count=2
-Current Build Directory Index=1
+Build Directory Count=3
+Current Build Directory Index=2
 
 [CMake][CMake Build Directory 0]
 Build Directory Path=~/ising/build
@@ -20,6 +20,35 @@ CMake Binary=/usr/bin/cmake
 Environment Profile=
 Extra Arguments=
 Install Directory=/usr/local
+
+[CMake][CMake Build Directory 2]
+Build Directory Path=/home/s/s_rasc04/ising/build
+Build Type=Debug
+CMake Binary=/usr/bin/cmake
+Environment Profile=
+Extra Arguments=
+Install Directory=
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=Neuer Starter für Kompilierte Programmdatei
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/s/s_rasc04/ising/build/ising
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=
+Use External Terminal=false
+Working Directory=
+isExecutable=true
 
 [Project]
 VersionControlSupport=kdevgit

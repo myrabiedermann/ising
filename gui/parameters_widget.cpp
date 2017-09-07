@@ -32,6 +32,12 @@ ParametersWidget::~ParametersWidget()
     delete magneticEdit;
     delete heightEdit;
     delete widthEdit;
+    delete printFreqEdit;
+    delete stepsEdit;
+    
+    delete applyBtn;
+    delete constrainedBox;
+    delete printBox;
 }
 
 
