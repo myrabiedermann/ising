@@ -8,7 +8,13 @@
 #include <QtWidgets>
 #include <QPushButton>
 #include <QGroupBox>
+// #include <QThread>
+// #include <QCoreApplication>
+// #include <QtCore>
+// #include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 #include <iostream>
+#include <cstdint>
 
 
 namespace Ui {
@@ -20,7 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = Q_NULLPTR);
     MainWindow(const MainWindow&) = delete;
     void operator=(const MainWindow&) = delete;
     ~MainWindow();
@@ -31,9 +37,13 @@ protected:
     QGroupBox* createBottomActionGroup();
     
 private:
-    static void dummy() { std::cout << "Dummy button" << std::endl; }
     
     GridWidget* gridWidget = new GridWidget(this);
+    ParametersWidget* prmsWidget = new ParametersWidget(this);
+    
+    QPushButton* runBtn = new QPushButton("Run",this);
+    QPushButton* quitBtn = new QPushButton("Quit",this);
+    
     Ui::MainWindow* ui;
 };
 

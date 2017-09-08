@@ -161,7 +161,7 @@ void Spinsystem::flip()
 
 #ifndef NDEBUG
     std::cout << "flipping spin: ";
-    for(auto& s: lastFlipped) std::cout << s.get().get_ID() << " ";
+    for(const auto& s: lastFlipped) std::cout << s.get().get_ID() << " ";
     std::cout << "\n";
 #endif
 }
@@ -176,18 +176,18 @@ void Spinsystem::flip_back()
     {
         SIGNED localEnergy_before = 0;
         SIGNED localEnergy_after = 0;
-
+        
         for( const auto& s: lastFlipped ) localEnergy_before += local_energy( s.get() );
         for( const auto& s: lastFlipped ) s.get().flip();
         for( const auto& s: lastFlipped ) localEnergy_after += local_energy( s.get() );
-
+        
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
 
 #ifndef NDEBUG
     std::cout << "flipping back: ";
-    for(auto& s: lastFlipped) std::cout << s.get().get_ID() << " ";
+    for(const auto& s: lastFlipped) std::cout << s.get().get_ID() << " ";
     std::cout << "\n";
 #endif
 

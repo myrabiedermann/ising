@@ -4,6 +4,7 @@ BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x
 [CMake]
 Build Directory Count=3
 Current Build Directory Index=2
+Temporary Build Directory Index=2
 
 [CMake][CMake Build Directory 0]
 Build Directory Path=~/ising/build
@@ -28,6 +29,15 @@ CMake Binary=/usr/bin/cmake
 Environment Profile=
 Extra Arguments=
 Install Directory=
+
+[CustomDefinesAndIncludes][ProjectPath0]
+Path=.
+parseAmbiguousAsCPP=true
+parserArguments=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=c++14
+parserArgumentsC=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=gnu11
+
+[CustomDefinesAndIncludes][ProjectPath0][Compiler]
+Name=GCC
 
 [Launch]
 Launch Configurations=Launch Configuration 0

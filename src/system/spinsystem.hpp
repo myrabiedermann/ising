@@ -29,9 +29,9 @@ public:
     
 
     inline const decltype(spins)& get_spins() const { return spins; };
-    inline auto  get_edge()  const {return size;}
-    inline auto  get_totalnumber()  const {return totalnumber;}
-    inline auto  get_Hamiltonian()  const {return Hamiltonian;}
+    inline auto  get_edge() const {return size;}
+    inline auto  get_totalnumber() const {return totalnumber;}
+    inline auto  get_Hamiltonian() const {return Hamiltonian;}
 
     void print(std::ostream & ) const;
 };

@@ -11,9 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QVBoxLayout* mainLayout = new QVBoxLayout;
     QHBoxLayout* columnLayout = new QHBoxLayout;
     
-    // ParameterWidget
-    ParametersWidget* prmsWidget = new ParametersWidget(this);
-    
     // GridWidget
     gridWidget->setFixedSize(500, 500);
     gridWidget->setSceneRect(0, 0, 500, 500);
@@ -45,21 +42,12 @@ QGroupBox* MainWindow::createBottomActionGroup()
     QGroupBox *groupBox = new QGroupBox();
     
     //TODO change to pause when klicked once
-    // the run button 
-    QPushButton *runBtn = new QPushButton("Run",this);
-    // checked when clicked
     runBtn->setCheckable(true);
-    runBtn->setChecked(false);
     runBtn->setMaximumWidth(100);
-    //connect button to function
-    connect(runBtn, &QPushButton::clicked, this, &MainWindow::runAction);
+    connect(runBtn, &QPushButton::toggled, this, &MainWindow::runAction);
     
     // the quit button
-    QPushButton *quitBtn = new QPushButton("Quit",this);
-    runBtn->setCheckable(false);
-    runBtn->setChecked(false);
     quitBtn->setMaximumWidth(100);
-    //connect button to function
     connect(quitBtn, &QPushButton::clicked, QCoreApplication::instance(), &QApplication::quit);
     
     // pack buttons into layout
@@ -80,12 +68,36 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete gridWidget;
+    delete prmsWidget;
+    delete runBtn;
+    delete quitBtn;
 }
 
 
 
 void MainWindow::runAction()
 {
-    gridWidget->setRowsColumns(20, 20);
-    gridWidget->draw_test();
+    std::cout << __func__ <<  std::endl;
+    
+//     runBtn->setChecked(true);
+
+    int i = 0;
+    prmsWidget->setReadOnly(true);
+    gridWidget->setRowsColumns(prmsWidget->getHeight(), prmsWidget->getWidth());
+    
+    while ( i++ < prmsWidget->getSteps() && runBtn->isChecked() )
+    {
+        auto future = QtConcurrent::run([&]
+        {
+            usleep(1);
+        });
+        future.waitForFinished();
+        
+        if (i % prmsWidget->getPrintFreq() == 0)
+        {
+            gridWidget->draw_test(); 
+            gridWidget->refresh();
+        }
+    }
+    prmsWidget->setReadOnly(false);
 }

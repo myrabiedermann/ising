@@ -45,7 +45,7 @@ set(CMAKE_AUTOUIC ON) # use this if you have CMake 3.x instead of the following
 add_executable(ising ${ising_SRC} ${sources})
 
 
-set(CMAKE_EXE_LINKER_FLAGS "${STDCXX_LDFLAGS} -lboost_program_options -lboost_system -lboost_filesystem ")
+set(CMAKE_EXE_LINKER_FLAGS "${STDCXX_LDFLAGS} -lboost_program_options -lboost_system -lboost_filesystem")
 
 
 # Use the Widgets module from Qt 5.

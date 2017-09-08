@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 //     prms params(argc, argv);
 //     
 //     
-//     // seed = std::time(nullptr);
+//     // seed = std::time(Q_NULLPTR);
 //     seed = 123456789;
 //     rand_engine.seed(seed);
 //     std::cout << "seed for random number generator: \n   " << seed << "\n";

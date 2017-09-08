@@ -41,22 +41,34 @@ void GridWidget::setRowsColumns(std::uint16_t r, std::uint16_t c)
 {
     rows = r;
     columns = c;
-    width_of_rectangular = std::trunc( scene_width / columns );
     height_of_rectangular = std::trunc( scene_height / rows );
+    width_of_rectangular = std::trunc( scene_width / columns );
 }
 
 
 
 void GridWidget::draw_test()
 {
-    make_new_scene();
+//     make_new_scene();
+    scene->clear();
     
     for(std::uint16_t column = 0; column < columns; ++column)
     for(std::uint16_t row = 0; row < rows; ++row)
     {
-        draw_rectangle(column*width_of_rectangular, row*height_of_rectangular, width_of_rectangular, height_of_rectangular, QPen(Qt::black), get_color_of_spin( Spin(0, SPINTYPE(rand()%2*2)) ));
+        draw_rectangle(column*width_of_rectangular, row*height_of_rectangular, width_of_rectangular, height_of_rectangular, QPen(Qt::transparent), get_color_of_spin( Spin(0, SPINTYPE(rand()%2*2)) ));
     }
+    
+    std::cout << "new scene generated" <<  std::endl;
 }
+
+
+
+void GridWidget::refresh()
+{
+    repaint();
+    viewport()->update();
+}
+
 
 
 

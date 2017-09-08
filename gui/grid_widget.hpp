@@ -20,7 +20,7 @@ class GridWidget : public QGraphicsView
     Q_OBJECT
     
 public:
-    explicit GridWidget(QWidget *parent = nullptr);
+    explicit GridWidget(QWidget *parent = Q_NULLPTR);
     GridWidget(const GridWidget&) = delete;
     void operator=(const GridWidget&) = delete;
     
@@ -34,6 +34,8 @@ public:
     
     void draw(const Spinsystem&);
     void draw_test();
+    
+    void refresh();
     
 protected:
     QBrush get_color_of_spin(const Spin& spin);
