@@ -20,6 +20,16 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     connect(applyBtn, &QPushButton::clicked, this, &ParametersWidget::applyValues);
     mainLayout->addWidget(applyBtn);
     
+    // https://stackoverflow.com/a/16795664
+    connect( interactionSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( magneticSpinBox   , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( stepsSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( constrainedBox    , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
+    connect( printBox          , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
+    
     adjustSize();
     setLayout(mainLayout);
 }
@@ -39,6 +49,7 @@ ParametersWidget::~ParametersWidget()
     delete constrainedBox;
     delete printBox;
 }
+
 
 
 
@@ -183,28 +194,28 @@ float ParametersWidget::getMagnetic() const
 
 
 
-int ParametersWidget::getHeight() const
+unsigned int ParametersWidget::getHeight() const
 {
     return heightSpinBox->value();
 }
 
 
 
-int ParametersWidget::getWidth() const
+unsigned int ParametersWidget::getWidth() const
 {
     return widthSpinBox->value();
 }
 
 
 
-int ParametersWidget::getSteps() const
+unsigned long ParametersWidget::getSteps() const
 {
     return stepsSpinBox->value();
 }
 
 
 
-int ParametersWidget::getPrintFreq() const
+unsigned int ParametersWidget::getPrintFreq() const
 {
     return printFreqSpinBox->value();
 }

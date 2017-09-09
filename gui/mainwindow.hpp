@@ -1,17 +1,14 @@
-#ifndef ISING_H
-#define ISING_H
+#pragma once
 
 
 #include "parameters_widget.hpp"
 #include "grid_widget.hpp"
+#include "mc_widget.hpp"
 #include <QMainWindow>
 #include <QtWidgets>
 #include <QPushButton>
 #include <QGroupBox>
-// #include <QThread>
-// #include <QCoreApplication>
-// #include <QtCore>
-// #include <QFuture>
+#include <QTimer>
 #include <QtConcurrent/QtConcurrent>
 #include <iostream>
 #include <cstdint>
@@ -31,20 +28,19 @@ public:
     void operator=(const MainWindow&) = delete;
     ~MainWindow();
     
-    void runAction();
+//     void runAction();
 
 protected:
     QGroupBox* createBottomActionGroup();
     
 private:
     
-    GridWidget* gridWidget = new GridWidget(this);
-    ParametersWidget* prmsWidget = new ParametersWidget(this);
+    GridWidget* gridWidget;
+    ParametersWidget* prmsWidget;
     
-    QPushButton* runBtn = new QPushButton("Run",this);
+    MCWidget* MCwidget = new MCWidget(this);
     QPushButton* quitBtn = new QPushButton("Quit",this);
     
     Ui::MainWindow* ui;
 };
 
-#endif // ISING_H

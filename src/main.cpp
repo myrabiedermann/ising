@@ -2,7 +2,7 @@
 #include "global.hpp"
 #include "utility/randomnumbers.hpp"
 #include "input/parameters.hpp"
-#include "MC.hpp"
+#include "system/MC.hpp"
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 //     prms params(argc, argv);
 //     
 //     
-//     // seed = std::time(Q_NULLPTR);
+//     // seed = std::time(nullptr);
 //     seed = 123456789;
 //     rand_engine.seed(seed);
 //     std::cout << "seed for random number generator: \n   " << seed << "\n";

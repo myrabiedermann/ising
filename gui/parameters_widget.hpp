@@ -29,18 +29,21 @@ public:
     
     ~ParametersWidget();
     
-    void setReadOnly(bool);
-    
     float getInteraction() const;
     float getMagnetic() const;
-    int getHeight() const;
-    int getWidth() const;
-    int getPrintFreq() const;
-    int getSteps() const;
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
+    unsigned int getPrintFreq() const;
+    unsigned long getSteps() const;
     
     bool getConstrained() const;
     bool getPrint() const;
     
+public slots:
+    void setReadOnly(bool);
+    
+signals:
+    void valueChanged();
     
 protected:
     void applyValues();
@@ -62,14 +65,14 @@ private:
     QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
     QCheckBox* printBox = new QCheckBox("Save trajectory", this);
     
-    // Actual parameters
-    std::string output_key = "PLACEHOLDER";
-    bool SAVETRJ = false;
-    SIZE systemheigth = 0;
-    SIZE systemwidth = 0;
-    REAL J = 0;
-    REAL H = 0;
-    bool CONSTRAINED = false;
-    SIZE mc_steps = 0;
-    SIZE mc_printfreq = 0;
+//     // Actual parameters
+//     std::string output_key = "PLACEHOLDER";
+//     bool SAVETRJ = false;
+//     SIZE systemheigth = 0;
+//     SIZE systemwidth = 0;
+//     REAL J = 0;
+//     REAL H = 0;
+//     bool CONSTRAINED = false;
+//     SIZE mc_steps = 0;
+//     SIZE mc_printfreq = 0;
 };

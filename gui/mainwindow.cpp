@@ -3,6 +3,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    gridWidget(new GridWidget(this)),
+    prmsWidget(new ParametersWidget(this)),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -28,10 +30,20 @@ MainWindow::MainWindow(QWidget *parent) :
     mainLayout->addLayout(columnLayout);
     mainLayout->addWidget(bottomBtns);
     
+    connect( MCwidget, &MCWidget::runningSignal, prmsWidget, &ParametersWidget::setReadOnly);
+    connect( MCwidget, &MCWidget::drawRequest, [&](const auto& a){ std::cout << __PRETTY_FUNCTION__<< std::endl; gridWidget->draw_test(); });
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), gridWidget, SLOT(refresh()));
+    timer->start(1000);
+//     connect( MCwidget, &MCWidget::drawRequest, gridWidget, &GridWidget::refresh);
+    
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(mainLayout);
     adjustSize();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QApplication::desktop()->availableGeometry()));
+    
+    assert(prmsWidget);
+    MCwidget->setParameters(prmsWidget);
 }
 
 
@@ -41,18 +53,14 @@ QGroupBox* MainWindow::createBottomActionGroup()
     // new group
     QGroupBox *groupBox = new QGroupBox();
     
-    //TODO change to pause when klicked once
-    runBtn->setCheckable(true);
-    runBtn->setMaximumWidth(100);
-    connect(runBtn, &QPushButton::toggled, this, &MainWindow::runAction);
-    
     // the quit button
     quitBtn->setMaximumWidth(100);
     connect(quitBtn, &QPushButton::clicked, QCoreApplication::instance(), &QApplication::quit);
     
     // pack buttons into layout
     QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->addWidget(runBtn);
+//     hbox->addWidget(runBtn);
+    hbox->addWidget(MCwidget);
 //     hbox->addStretch(-1);
     hbox->addWidget(quitBtn);
     
@@ -69,35 +77,7 @@ MainWindow::~MainWindow()
     delete ui;
     delete gridWidget;
     delete prmsWidget;
-    delete runBtn;
+//     delete runBtn;
+    delete MCwidget;
     delete quitBtn;
-}
-
-
-
-void MainWindow::runAction()
-{
-    std::cout << __func__ <<  std::endl;
-    
-//     runBtn->setChecked(true);
-
-    int i = 0;
-    prmsWidget->setReadOnly(true);
-    gridWidget->setRowsColumns(prmsWidget->getHeight(), prmsWidget->getWidth());
-    
-    while ( i++ < prmsWidget->getSteps() && runBtn->isChecked() )
-    {
-        auto future = QtConcurrent::run([&]
-        {
-            usleep(1);
-        });
-        future.waitForFinished();
-        
-        if (i % prmsWidget->getPrintFreq() == 0)
-        {
-            gridWidget->draw_test(); 
-            gridWidget->refresh();
-        }
-    }
-    prmsWidget->setReadOnly(false);
 }

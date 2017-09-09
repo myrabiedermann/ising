@@ -5,19 +5,48 @@
  */
 
 
-Spinsystem::Spinsystem(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
-  : size (_size)
-  , J (_J)
-  , CONSTRAINED (_CONSTRAINED)
-  , totalnumber (_size * _size)
+Spinsystem::Spinsystem()
 {
+    
+}
 
+
+
+Spinsystem::~Spinsystem()
+{
+    delete parameters;
+}
+
+
+
+void Spinsystem::setParameters(ParametersWidget* prms)
+{
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    parameters = prms;
+}
+
+
+
+  
+void Spinsystem::setup()
+{
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    assert(parameters);
+    assert(parameters->getHeight() == parameters->getWidth());
+//     size = parameters->getHeight();
+//     J = _J;
+//     CONSTRAINED = _CONSTRAINED;
+//     totalnumber = _size*_size;
+    
     // safety check:
-    if( size%2 != 0 && CONSTRAINED ) throw std::logic_error("system size must be an even number if system is constrained");
-
+    if( parameters->getWidth()%2 != 0 && parameters->getConstrained() ) throw std::logic_error("system size must be an even number if system is constrained");
+    
+    auto size = parameters->getWidth();
+    auto totalnumber = size*size;
+    
     // set spinarray:
     SIGNED random;
-    if( ! CONSTRAINED ) // initialise spins randomly
+    if( ! parameters->getConstrained() ) // initialise spins randomly
     {
         for(SIZE i=0; i<totalnumber; ++i)
         {
@@ -102,7 +131,7 @@ REAL Spinsystem::local_energy(const Spin & _spin) const
     // Jij returns value of J/J for given spin pairs (1 or 0)
     // num_signed<T> returns the number of neighbours of type T for given spin:
     // ... sum( sigma_own * sigma_T ) --> therefore signed !
-    return J * static_cast<REAL>( -JijwithoutJ(SPINTYPE::UP,   _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
+    return parameters->getInteraction() * static_cast<REAL>( -JijwithoutJ(SPINTYPE::UP,   _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
                                     -JijwithoutJ(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>() );
 }
 
@@ -111,7 +140,7 @@ REAL Spinsystem::local_energy(const Spin & _spin) const
 SIGNED Spinsystem::JijwithoutJ(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
-    if( ! CONSTRAINED ) return 1;
+    if( ! parameters->getConstrained() ) return 1;
     else                return _spin1 != _spin2 ? 1 : 0;
 }
 
@@ -123,7 +152,7 @@ void Spinsystem::flip()
     REAL localEnergy_before = 0;
     REAL localEnergy_after = 0;
 
-    if( ! CONSTRAINED )
+    if( ! parameters->getConstrained() )
     {
         // find random spin
         auto randomspin = random_iterator(spins);
@@ -197,11 +226,12 @@ void Spinsystem::flip_back()
 
 void Spinsystem::print(std::ostream & stream) const
 {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
     // print spinarray to stream
     for(const auto& s: spins)
     {
         stream << ( s.get_type() == DOWN ? "-" : "+" )
-               << ( (s.get_ID()+1)%size == 0 ? "\n" : " ");
+        << ( (s.get_ID()+1)%parameters->getWidth() == 0 ? "\n" : " ");
     }
 }
 

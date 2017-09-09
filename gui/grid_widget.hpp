@@ -1,7 +1,7 @@
 #pragma once
 
 #include "global.hpp"
-#include "system/spinsystem.hpp"
+#include "system/MC.hpp"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QWidget>
@@ -32,7 +32,8 @@ public:
     void setRows(std::uint16_t);
     void setColumns(std::uint16_t);
     
-    void draw(const Spinsystem&);
+public slots:
+    void draw(const mc&);
     void draw_test();
     
     void refresh();

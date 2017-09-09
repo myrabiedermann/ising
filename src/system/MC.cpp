@@ -5,29 +5,57 @@
  */
 
 
- mc::mc()
-  : spinsystem(prms::systemsize, prms::J, prms::CONSTRAINED)
+mc::mc()
 {
+    
+}
 
+
+
+mc::~mc()
+{
+    delete parameters;
+}
+
+
+  
+void mc::setup()
+{
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    assert(parameters);
+    spinsystem.setParameters(parameters);
+    spinsystem.setup();
+    
     trajectory.push_back(spinsystem.get_Hamiltonian());
 
 #ifndef NDEBUG
     std::cout << "initial: H = " << spinsystem.get_Hamiltonian() << "\n";
     std::cout << spinsystem;
 #endif
-
 }
+
+
+void mc::setParameters(ParametersWidget* prms)
+{
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    parameters = prms;
+}
+
+
 
 /***************************************************************************/
 
-void mc::do_metropolis()
+void mc::do_metropolis(const unsigned long& steps)
 {
-
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    
+    assert(parameters);
+    
     REAL energy_before;
     REAL energy_after;
 
 
-    for(SIZE t=1; t<=prms::mc_steps; ++t)
+    for(SIZE t=0; t<=steps; ++t)
     {
         // flip spin:
         energy_before = spinsystem.get_Hamiltonian();
@@ -51,23 +79,24 @@ void mc::do_metropolis()
 #endif
         }
         
+        
         // save to trajectory
-        if( t % prms::mc_printfreq == 0 ) {
+        if( t % parameters->getPrintFreq() == 0 ) {
             trajectory.push_back(spinsystem.get_Hamiltonian());
         }
     }
-
 }
 
 /***************************************************************************/
 
 void mc::save_trj(const PATH& _filepath)
 {
-
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    
     OFSTREAM OUT(_filepath);
     OUT << std::setw(10) << "# time" << std::setw(6) << "Hamiltonian\n";
     for(SIZE t=0; t<trajectory.size(); ++t){
-        OUT << std::setw(10) << t*prms::mc_printfreq
+        OUT << std::setw(10) << t*parameters->getPrintFreq()
             << std::setw(6)  << trajectory[t] << "\n";
     }
     OUT.close();
