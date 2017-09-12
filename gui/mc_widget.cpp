@@ -3,7 +3,9 @@
 
 
 MCWidget::MCWidget(QWidget *parent) 
-: QWidget(parent)
+  : QWidget(parent)
+  , drawRequestTimer(new QTimer(this))
+  , progressTimer(new QTimer(this))
 {
     QHBoxLayout *hbox = new QHBoxLayout;
     
@@ -28,15 +30,15 @@ MCWidget::MCWidget(QWidget *parent)
     hbox->addWidget(abortBtn);
     
     setLayout(hbox);  
+    
+    connect(progressTimer, &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load());std::cout << "progress" << std::endl; });
+    connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC); /*std::cout << MC.getSpinsystem() << std::endl;*/ });
 }
 
 
 
 MCWidget::~MCWidget()
 {
-    delete runBtn;
-    delete pauseBtn;
-    delete abortBtn;
 }
 
 
@@ -69,18 +71,35 @@ void MCWidget::setParameters(ParametersWidget* widget_ptr)
 
 
 
+void MCWidget::makeSystemNew()
+{
+    MC.setup();
+}
+
+
+
+
 
 void MCWidget::runAction()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     
+    assert(runBtn);
+    assert(pauseBtn);
+    assert(abortBtn);
+    assert(drawRequestTimer);
+    assert(progressTimer);
+    
     simulation_running.store(true);
     runBtn->setEnabled(false);
     pauseBtn->setEnabled(true);
     abortBtn->setEnabled(false);
+    drawRequestTimer->start(34);
+    progressTimer->start(100);
+    
     emit runningSignal(true);
     
-    auto future = QtConcurrent::run([&]
+    QFuture<void> future = QtConcurrent::run([&]
     {
         server();
     });
@@ -90,10 +109,23 @@ void MCWidget::pauseAction()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     
+    assert(runBtn);
+    assert(pauseBtn);
+    assert(abortBtn);
+    assert(drawRequestTimer);
+    assert(progressTimer);
+    
     simulation_running.store(false);
     runBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
     abortBtn->setEnabled(true);
+    
+    emit drawRequest(MC);
+    emit finishedSteps(steps_done.load());
+    
+    drawRequestTimer->stop();
+    progressTimer->stop();
+    
     emit runningSignal(false);
 }
 
@@ -102,23 +134,41 @@ void MCWidget::abortAction()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     
+    assert(runBtn);
+    assert(pauseBtn);
+    assert(abortBtn);
+    assert(drawRequestTimer);
+    assert(progressTimer);
+    
     runBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
     abortBtn->setEnabled(false);
+    
+    drawRequestTimer->stop();
+    progressTimer->stop();
+    
     emit runningSignal(false);
 }
 
 
 
+// DO NOT emit from server
 void MCWidget::server()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     
     assert(prmsWidget);
-    while(simulation_running.load())
+    
+    if (steps_done.load() >= prmsWidget->getSteps())
+        emit pauseBtn->clicked();
+    
+    while(simulation_running.load() && steps_done.load() < prmsWidget->getSteps())
     {
-        MC.do_metropolis(1);
-        emit drawRequest(MC);
+        MC.do_metropolis(prmsWidget->getPrintFreq());
+        steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
+        
+        if (steps_done.load() >= prmsWidget->getSteps())
+            emit pauseBtn->clicked();
     }
 }
 

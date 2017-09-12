@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QTimer>
-#include <QtConcurrent/QtConcurrent>
+#include <QProgressBar>
 #include <iostream>
 #include <cstdint>
 
@@ -37,8 +37,9 @@ private:
     
     GridWidget* gridWidget;
     ParametersWidget* prmsWidget;
+    MCWidget* MCwidget;
     
-    MCWidget* MCwidget = new MCWidget(this);
+    QProgressBar* progressBar;
     QPushButton* quitBtn = new QPushButton("Quit",this);
     
     Ui::MainWindow* ui;

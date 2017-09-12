@@ -5,6 +5,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     gridWidget(new GridWidget(this)),
     prmsWidget(new ParametersWidget(this)),
+    MCwidget(new MCWidget(this)),
+    progressBar(new QProgressBar(this)),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -28,14 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     columnLayout->addWidget(gridWidget);
     
     mainLayout->addLayout(columnLayout);
+    mainLayout->addWidget(progressBar);
     mainLayout->addWidget(bottomBtns);
-    
-    connect( MCwidget, &MCWidget::runningSignal, prmsWidget, &ParametersWidget::setReadOnly);
-    connect( MCwidget, &MCWidget::drawRequest, [&](const auto& a){ std::cout << __PRETTY_FUNCTION__<< std::endl; gridWidget->draw_test(); });
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), gridWidget, SLOT(refresh()));
-    timer->start(1000);
-//     connect( MCwidget, &MCWidget::drawRequest, gridWidget, &GridWidget::refresh);
     
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(mainLayout);
@@ -43,7 +39,30 @@ MainWindow::MainWindow(QWidget *parent) :
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QApplication::desktop()->availableGeometry()));
     
     assert(prmsWidget);
+    connect( prmsWidget, &ParametersWidget::criticalValueChanged, MCwidget, &MCWidget::makeSystemNew );
+    
+    assert(MCWidget);
     MCwidget->setParameters(prmsWidget);
+    connect( MCwidget, &MCWidget::runningSignal, prmsWidget, &ParametersWidget::setReadOnly );
+    connect( MCwidget, &MCWidget::drawRequest, [&](const auto& system)
+    {
+        assert(gridWidget);
+        gridWidget->draw(system); 
+        gridWidget->refresh(); 
+    });
+    
+    
+    assert(progressBar);
+    progressBar->reset();
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(0);
+    progressBar->setValue(0);
+    connect( MCwidget, &MCWidget::finishedSteps, [&](unsigned long steps_done)
+    {
+        assert(prmsWidget);
+        progressBar->setMaximum(prmsWidget->getSteps()/1000000);
+        progressBar->setValue(steps_done/1000000);
+    });
 }
 
 
@@ -74,10 +93,10 @@ QGroupBox* MainWindow::createBottomActionGroup()
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    delete gridWidget;
-    delete prmsWidget;
-//     delete runBtn;
-    delete MCwidget;
-    delete quitBtn;
+    // delete ui;
+    // delete gridWidget;
+    // delete prmsWidget;
+//     // delete progressBar;
+    // delete MCwidget;
+    // delete quitBtn;
 }

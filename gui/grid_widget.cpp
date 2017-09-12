@@ -13,7 +13,7 @@ GridWidget::GridWidget(QWidget *parent)
 
 GridWidget::~GridWidget()
 {
-    delete scene;
+    // delete scene;
 }
 
 
@@ -36,7 +36,6 @@ void GridWidget::make_new_scene()
 
 
 
-
 void GridWidget::setRowsColumns(std::uint16_t r, std::uint16_t c)
 {
     rows = r;
@@ -47,25 +46,9 @@ void GridWidget::setRowsColumns(std::uint16_t r, std::uint16_t c)
 
 
 
-void GridWidget::draw_test()
-{
-    std::cout << __PRETTY_FUNCTION__ << columns <<"   "<< rows<< std::endl;
-    scene->clear();
-    
-    for(std::uint16_t column = 0; column < columns; ++column)
-    for(std::uint16_t row = 0; row < rows; ++row)
-    {
-        draw_rectangle(column*width_of_rectangular, row*height_of_rectangular, width_of_rectangular, height_of_rectangular, QPen(Qt::transparent), get_color_of_spin( Spin(0, SPINTYPE(rand()%2*2)) ));
-    }
-    
-//     std::cout << "new scene generated" <<  std::endl;
-}
-
-
 
 void GridWidget::refresh()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     repaint();
     viewport()->update();
 }
@@ -107,18 +90,47 @@ QBrush GridWidget::get_color_of_spin(const Spin& spin)
 
 
 
+void GridWidget::draw_test()
+{
+    std::cout << __PRETTY_FUNCTION__ << columns <<"   "<< rows<< std::endl;
+    scene->clear();
+    
+    for(std::uint16_t column = 0; column < columns; ++column)
+    for(std::uint16_t row = 0; row < rows; ++row)
+    {
+        draw_rectangle
+        (
+            column*width_of_rectangular, 
+            row*height_of_rectangular, 
+            width_of_rectangular, 
+            height_of_rectangular, 
+            QPen(Qt::transparent), 
+            get_color_of_spin( Spin(0, SPINTYPE(rand()%2*2)) 
+        ));
+    }
+}
+
+
 
 void GridWidget::draw( const mc& MC )
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     scene->clear();
     
-    for(std::uint16_t column = 0; column < MC.getSpinsystem().getWidth(); ++column)
-    for(std::uint16_t row = 0; row < MC.getSpinsystem().getHeight(); ++row)
+    setColumns(MC.getSpinsystem().getWidth());
+    setRows(MC.getSpinsystem().getHeight());
+    
+    for(std::uint16_t row = 0; row < rows; ++row)
+    for(std::uint16_t column = 0; column < columns; ++column)
     {
-//         std::cout << "col" << column << std::endl;
-//         std::cout << "row" << row << std::endl;
-        draw_rectangle(column*width_of_rectangular, row*height_of_rectangular, width_of_rectangular, height_of_rectangular, QPen(Qt::transparent), get_color_of_spin( MC.getSpinsystem().get_spins().at(column*row + column) ));
+        draw_rectangle
+        ( 
+            column*width_of_rectangular, 
+            row*height_of_rectangular, 
+            width_of_rectangular, 
+            height_of_rectangular, 
+            QPen(Qt::transparent), 
+            get_color_of_spin( MC.getSpinsystem().get_spins().at(columns*row + column) 
+        ));
     }
-//     refresh();
 }

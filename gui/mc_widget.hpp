@@ -8,6 +8,7 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QEvent>
+#include <QTimer>
 #include <iostream>
 #include <atomic>
 
@@ -32,11 +33,12 @@ public:
     
 public slots:
     void setRunning(bool);
+    void makeSystemNew();
     
 signals:
     void runningSignal(bool);
     void drawRequest(const mc&);
-    void finishedAllSteps();
+    void finishedSteps(const unsigned long);
     
 protected:
     
@@ -48,9 +50,16 @@ private:
     QPushButton* pauseBtn = new QPushButton("Pause",this);
     QPushButton* abortBtn = new QPushButton("Abort",this);
     
+    QTimer* drawRequestTimer;
+    QTimer* progressTimer;
+    
+//     QFuture<void>* server_ptr = Q_NULLPTR;
+    
     std::atomic<bool> simulation_running {false};
     std::atomic<bool> parameters_linked {false};
     
     mc MC {};
+    
+    std::atomic<unsigned long> steps_done{0};
 };
 

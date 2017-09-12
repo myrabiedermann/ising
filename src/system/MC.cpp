@@ -23,6 +23,7 @@ void mc::setup()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     assert(parameters);
+    trajectory.clear();
     spinsystem.setParameters(parameters);
     spinsystem.setup();
     
@@ -47,7 +48,7 @@ void mc::setParameters(ParametersWidget* prms)
 
 void mc::do_metropolis(const unsigned long& steps)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+//     std::cout << __PRETTY_FUNCTION__ << std::endl;
     
     assert(parameters);
     

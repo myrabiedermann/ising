@@ -3,7 +3,7 @@ BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x
 
 [CMake]
 Build Directory Count=3
-Current Build Directory Index=1
+Current Build Directory Index=2
 
 [CMake][CMake Build Directory 0]
 Build Directory Path=~/ising/build
@@ -15,7 +15,7 @@ Install Directory=
 
 [CMake][CMake Build Directory 1]
 Build Directory Path=/home/simon/github/ising/build
-Build Type=Debug
+Build Type=RelWithDebInfo
 CMake Binary=/usr/bin/cmake
 Environment Profile=
 Extra Arguments=
@@ -23,7 +23,7 @@ Install Directory=/usr/local
 
 [CMake][CMake Build Directory 2]
 Build Directory Path=/home/s/s_rasc04/ising/build
-Build Type=Debug
+Build Type=Release
 CMake Binary=/usr/bin/cmake
 Environment Profile=
 Extra Arguments=
@@ -52,9 +52,9 @@ Arguments=
 Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
-Executable=file:///home/simon/github/ising/build/ising
+Executable=file:///home/s/s_rasc04/ising/build/ising
 External Terminal=konsole --noclose --workdir %workdir -e %exe
-Project Target=
+Project Target=ising,ising
 Use External Terminal=false
 Working Directory=
 isExecutable=true

@@ -2,7 +2,7 @@
 
 
 #include "global.hpp"
-// #include "input/parameters.hpp"
+#include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -44,6 +44,7 @@ public slots:
     
 signals:
     void valueChanged();
+    void criticalValueChanged();
     
 protected:
     void applyValues();
@@ -58,7 +59,7 @@ private:
     QSpinBox* heightSpinBox = new QSpinBox(this);
     QSpinBox* widthSpinBox = new QSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
-    QSpinBox* stepsSpinBox = new QSpinBox(this);
+    QtLongLongSpinBox* stepsSpinBox = new QtLongLongSpinBox(this);
     
     // Buttons
     QPushButton* applyBtn = new QPushButton("Apply",this);

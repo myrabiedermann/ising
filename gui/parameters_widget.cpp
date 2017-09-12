@@ -26,9 +26,12 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
-    connect( stepsSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( stepsSpinBox      , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( constrainedBox    , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
     connect( printBox          , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
+    
+    connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
+    connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
     
     adjustSize();
     setLayout(mainLayout);
@@ -38,16 +41,16 @@ ParametersWidget::ParametersWidget(QWidget *parent)
 
 ParametersWidget::~ParametersWidget()
 {
-    delete interactionSpinBox;
-    delete magneticSpinBox;
-    delete heightSpinBox;
-    delete widthSpinBox;
-    delete printFreqSpinBox;
-    delete stepsSpinBox;
+    // delete interactionSpinBox;
+    // delete magneticSpinBox;
+    // delete heightSpinBox;
+    // delete widthSpinBox;
+    // delete printFreqSpinBox;
+    // delete stepsSpinBox;
     
-    delete applyBtn;
-    delete constrainedBox;
-    delete printBox;
+    // delete applyBtn;
+    // delete constrainedBox;
+    // delete printBox;
 }
 
 
@@ -136,9 +139,9 @@ QGroupBox * ParametersWidget::createMCBox()
     
     // default texts for LineEdits
     stepsSpinBox->setMinimum(0);
-    stepsSpinBox->setMaximum(90000000);
-    stepsSpinBox->setSingleStep(10000);
-    stepsSpinBox->setValue(100000);
+    stepsSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
+    stepsSpinBox->setSingleStep(1000000);
+    stepsSpinBox->setValue(100000000);
     stepsSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     

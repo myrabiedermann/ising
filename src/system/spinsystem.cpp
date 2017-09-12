@@ -33,10 +33,10 @@ void Spinsystem::setup()
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     assert(parameters);
     assert(parameters->getHeight() == parameters->getWidth());
-//     size = parameters->getHeight();
-//     J = _J;
-//     CONSTRAINED = _CONSTRAINED;
-//     totalnumber = _size*_size;
+    
+    spins.clear();
+    lastFlipped.clear();
+    Hamiltonian = 0;
     
     // safety check:
     if( parameters->getWidth()%2 != 0 && parameters->getConstrained() ) throw std::logic_error("system size must be an even number if system is constrained");
