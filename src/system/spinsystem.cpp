@@ -32,7 +32,7 @@ void Spinsystem::setup()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     assert(parameters);
-    assert(parameters->getHeight() == parameters->getWidth());
+//     assert(parameters->getHeight() == parameters->getWidth());
     
     spins.clear();
     lastFlipped.clear();

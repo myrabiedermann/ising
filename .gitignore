@@ -1,5 +1,7 @@
 build/
+.kdev4/
 *.swp
 *-swp
 testing/
 .directory
+.kdev4/ising.kdev4

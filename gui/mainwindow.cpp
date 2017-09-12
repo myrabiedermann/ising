@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     assert(prmsWidget);
     connect( prmsWidget, &ParametersWidget::criticalValueChanged, MCwidget, &MCWidget::makeSystemNew );
     
-    assert(MCWidget);
+    assert(MCwidget);
     MCwidget->setParameters(prmsWidget);
     connect( MCwidget, &MCWidget::runningSignal, prmsWidget, &ParametersWidget::setReadOnly );
     connect( MCwidget, &MCWidget::drawRequest, [&](const auto& system)
