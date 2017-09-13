@@ -14,6 +14,10 @@ int main(int argc, char *argv[])
     feenableexcept(FE_UNDERFLOW);
     #endif
     
+    seed = 123456789;
+    rand_engine.seed(seed);
+    std::cout << "seed for random number generator: \n   " << seed << "\n";
+    
     QApplication app(argc, argv);
     MainWindow w;
     w.show();
@@ -24,9 +28,6 @@ int main(int argc, char *argv[])
 //     
 //     
     // seed = std::time(nullptr);
-    seed = 123456789;
-    rand_engine.seed(seed);
-    std::cout << "seed for random number generator: \n   " << seed << "\n";
 //     
 //     // run simulation:
 //     mc MC;

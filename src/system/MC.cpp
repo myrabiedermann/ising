@@ -14,15 +14,13 @@ mc::mc()
 
 mc::~mc()
 {
-    delete parameters;
 }
 
 
   
 void mc::setup()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    assert(parameters);
+    Q_CHECK_PTR(parameters);
     trajectory.clear();
     spinsystem.setParameters(parameters);
     spinsystem.setup();
@@ -38,8 +36,11 @@ void mc::setup()
 
 void mc::setParameters(ParametersWidget* prms)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Q_CHECK_PTR(prms);
+    std::cout << __PRETTY_FUNCTION__ << '\n';
     parameters = prms;
+    Q_CHECK_PTR(parameters);
+    
 }
 
 
@@ -48,9 +49,7 @@ void mc::setParameters(ParametersWidget* prms)
 
 void mc::do_metropolis(const unsigned long& steps)
 {
-//     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    
-    assert(parameters);
+    Q_CHECK_PTR(parameters);
     
     REAL energy_before;
     REAL energy_after;
@@ -65,7 +64,8 @@ void mc::do_metropolis(const unsigned long& steps)
       
         // check metropolis criterion:
         auto rd = random_double(0.0, 1.0);
-        if( rd >= std::exp(-(energy_after-energy_before)) ){
+        if( rd >= std::exp(-(energy_after-energy_before)/parameters->getTemperature()) )
+        {
             spinsystem.flip_back(); // flip back if move not accepted
 #ifndef NDEBUG
             std::cout << "random = " << rd
@@ -76,7 +76,7 @@ void mc::do_metropolis(const unsigned long& steps)
         else
         {
             std::cout << rd << " < " << std::exp(-(energy_after-energy_before)) << "\n";
-            std::cout << "new H: " << energy_after << "\n" << spinsystem;
+            std::cout << "new H: " << energy_after << '\n';
 #endif
         }
         
@@ -92,7 +92,7 @@ void mc::do_metropolis(const unsigned long& steps)
 
 void mc::save_trj(const PATH& _filepath)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Q_CHECK_PTR(parameters);
     
     OFSTREAM OUT(_filepath);
     OUT << std::setw(10) << "# time" << std::setw(6) << "Hamiltonian\n";

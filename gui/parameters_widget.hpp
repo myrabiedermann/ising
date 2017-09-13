@@ -1,6 +1,12 @@
 #pragma once
 
 
+#ifdef QT_NO_DEBUG
+    #ifndef QT_NO_DEBUG_OUTPUT
+        #define QT_NO_DEBUG_OUTPUT
+    #endif
+#endif
+
 #include "global.hpp"
 #include "long_qspinbox.hpp"
 #include <QWidget>
@@ -9,6 +15,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 #include <QFormLayout>
+#include <QtDebug>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QDoubleValidator>
@@ -31,6 +38,7 @@ public:
     
     float getInteraction() const;
     float getMagnetic() const;
+    float getTemperature() const;
     unsigned int getHeight() const;
     unsigned int getWidth() const;
     unsigned int getPrintFreq() const;
@@ -56,6 +64,7 @@ private:
     // Line edits
     QDoubleSpinBox* interactionSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* magneticSpinBox = new QDoubleSpinBox(this);
+    QDoubleSpinBox* temperatureSpinBox = new QDoubleSpinBox(this);
     QSpinBox* heightSpinBox = new QSpinBox(this);
     QSpinBox* widthSpinBox = new QSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
@@ -65,15 +74,4 @@ private:
     QPushButton* applyBtn = new QPushButton("Apply",this);
     QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
     QCheckBox* printBox = new QCheckBox("Save trajectory", this);
-    
-//     // Actual parameters
-//     std::string output_key = "PLACEHOLDER";
-//     bool SAVETRJ = false;
-//     SIZE systemheigth = 0;
-//     SIZE systemwidth = 0;
-//     REAL J = 0;
-//     REAL H = 0;
-//     bool CONSTRAINED = false;
-//     SIZE mc_steps = 0;
-//     SIZE mc_printfreq = 0;
 };

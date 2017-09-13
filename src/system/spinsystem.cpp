@@ -14,15 +14,15 @@ Spinsystem::Spinsystem()
 
 Spinsystem::~Spinsystem()
 {
-    delete parameters;
 }
 
 
 
 void Spinsystem::setParameters(ParametersWidget* prms)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Q_CHECK_PTR(prms);
     parameters = prms;
+    Q_CHECK_PTR(parameters);
 }
 
 
@@ -30,8 +30,7 @@ void Spinsystem::setParameters(ParametersWidget* prms)
   
 void Spinsystem::setup()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    assert(parameters);
+    Q_CHECK_PTR(parameters);
 //     assert(parameters->getHeight() == parameters->getWidth());
     
     spins.clear();
@@ -71,48 +70,50 @@ void Spinsystem::setup()
     }
 
     // set neighbours:
-    for(auto& s: spins){
+    for(auto& s: spins)
+    {
         std::vector<std::reference_wrapper<Spin> > Nrefs;
         SIZE Nid;
         const SIZE id = s.get_ID();
-
+        
         {
             // up
             Nid = ((LONGSIGNED)id - static_cast<LONGSIGNED>(size)) < 0 ? id - size + totalnumber : id - size; 
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         {
             // right
             Nid = (id + 1) % size == 0  ? id + 1 - size : id + 1;
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         {
             // below
             Nid = id + size >= totalnumber ? id + size - totalnumber : id + size;
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         {
             // left
             Nid = id % size == 0  ? id - 1 + size : id - 1;
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         s.set_neighbours(Nrefs);
     }
 
 // debugging:
 #ifndef NDEBUG
-    for(auto& s: spins){
-      std::cout << "spin " << s.get_ID() << " has neighbours : ";
-      std::for_each( s.begin(), s.end(), [](const auto& N){std::cout << N.get().get_ID() << " ";} );
-      std::cout << "\n";
+    for(auto& s: spins)
+    {
+        std::cout << "spin " << s.get_ID() << " has neighbours : ";
+        std::for_each( s.begin(), s.end(), [](const auto& N){std::cout << N.get().get_ID() << " ";} );
+        std::cout << "\n";
     }
 #endif
 
@@ -226,7 +227,7 @@ void Spinsystem::flip_back()
 
 void Spinsystem::print(std::ostream & stream) const
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << '\n';
     // print spinarray to stream
     for(const auto& s: spins)
     {

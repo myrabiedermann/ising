@@ -1,5 +1,12 @@
 #pragma once
 
+#ifdef QT_NO_DEBUG
+    #ifndef QT_NO_DEBUG_OUTPUT
+        #define QT_NO_DEBUG_OUTPUT
+    #endif
+#endif
+
+
 #include "parameters_widget.hpp"
 #include "system/MC.hpp"
 #include <QWidget>
@@ -7,6 +14,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QtDebug>
 #include <QEvent>
 #include <QTimer>
 #include <iostream>
@@ -37,7 +45,7 @@ public slots:
     
 signals:
     void runningSignal(bool);
-    void drawRequest(const mc&);
+    void drawRequest(const mc&, const unsigned long);
     void finishedSteps(const unsigned long);
     
 protected:

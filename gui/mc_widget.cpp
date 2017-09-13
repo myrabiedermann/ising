@@ -7,6 +7,7 @@ MCWidget::MCWidget(QWidget *parent)
   , drawRequestTimer(new QTimer(this))
   , progressTimer(new QTimer(this))
 {
+    qDebug() << __PRETTY_FUNCTION__;
     QHBoxLayout *hbox = new QHBoxLayout;
     
     runBtn->setCheckable(false);
@@ -31,20 +32,22 @@ MCWidget::MCWidget(QWidget *parent)
     
     setLayout(hbox);  
     
-    connect(progressTimer, &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load());std::cout << "progress" << std::endl; });
-    connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC); /*std::cout << MC.getSpinsystem() << std::endl;*/ });
+    connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
+    connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
 }
 
 
 
 MCWidget::~MCWidget()
 {
+    qDebug() << __PRETTY_FUNCTION__;
 }
 
 
 
 bool MCWidget::getRunning()
 {
+    qDebug() << __PRETTY_FUNCTION__;
     return simulation_running.load();
 }
 
@@ -52,6 +55,7 @@ bool MCWidget::getRunning()
 
 void MCWidget::setRunning(bool b)
 {
+    qDebug() << __PRETTY_FUNCTION__;
     simulation_running.store(b);
 }
 
@@ -59,8 +63,9 @@ void MCWidget::setRunning(bool b)
 
 void MCWidget::setParameters(ParametersWidget* widget_ptr)
 {
+    qDebug() << __PRETTY_FUNCTION__;
     prmsWidget = widget_ptr;
-    assert(prmsWidget);
+    Q_CHECK_PTR(prmsWidget);
     
     if(!parameters_linked.load())
     {
@@ -74,21 +79,21 @@ void MCWidget::setParameters(ParametersWidget* widget_ptr)
 void MCWidget::makeSystemNew()
 {
     MC.setup();
+    steps_done.store(0);
+    emit drawRequest(MC, steps_done.load());
 }
-
-
 
 
 
 void MCWidget::runAction()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    qDebug() << __PRETTY_FUNCTION__;
     
-    assert(runBtn);
-    assert(pauseBtn);
-    assert(abortBtn);
-    assert(drawRequestTimer);
-    assert(progressTimer);
+    Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(pauseBtn);
+    Q_CHECK_PTR(abortBtn);
+    Q_CHECK_PTR(drawRequestTimer);
+    Q_CHECK_PTR(progressTimer);
     
     simulation_running.store(true);
     runBtn->setEnabled(false);
@@ -107,20 +112,20 @@ void MCWidget::runAction()
 
 void MCWidget::pauseAction()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    qDebug() << __PRETTY_FUNCTION__;
     
-    assert(runBtn);
-    assert(pauseBtn);
-    assert(abortBtn);
-    assert(drawRequestTimer);
-    assert(progressTimer);
+    Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(pauseBtn);
+    Q_CHECK_PTR(abortBtn);
+    Q_CHECK_PTR(drawRequestTimer);
+    Q_CHECK_PTR(progressTimer);
     
     simulation_running.store(false);
     runBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
     abortBtn->setEnabled(true);
     
-    emit drawRequest(MC);
+    emit drawRequest(MC, steps_done.load());
     emit finishedSteps(steps_done.load());
     
     drawRequestTimer->stop();
@@ -132,13 +137,13 @@ void MCWidget::pauseAction()
 
 void MCWidget::abortAction()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    qDebug() << __PRETTY_FUNCTION__;
     
-    assert(runBtn);
-    assert(pauseBtn);
-    assert(abortBtn);
-    assert(drawRequestTimer);
-    assert(progressTimer);
+    Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(pauseBtn);
+    Q_CHECK_PTR(abortBtn);
+    Q_CHECK_PTR(drawRequestTimer);
+    Q_CHECK_PTR(progressTimer);
     
     runBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
@@ -155,9 +160,9 @@ void MCWidget::abortAction()
 // DO NOT emit from server
 void MCWidget::server()
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    qDebug() << __PRETTY_FUNCTION__;
     
-    assert(prmsWidget);
+    Q_CHECK_PTR(prmsWidget);
     
     if (steps_done.load() >= prmsWidget->getSteps())
         emit pauseBtn->clicked();

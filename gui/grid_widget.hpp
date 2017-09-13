@@ -1,13 +1,20 @@
 #pragma once
 
+#ifdef QT_NO_DEBUG
+    #ifndef QT_NO_DEBUG_OUTPUT
+        #define QT_NO_DEBUG_OUTPUT
+    #endif
+#endif
+
 #include "global.hpp"
 #include "system/MC.hpp"
+#include "system/spinsystem.hpp"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QWidget>
 #include <QGridLayout>
 #include <QRect>
-// #include <QRectF>
+#include <QtDebug>
 #include <QShowEvent>
 #include <cmath>
 #include <type_traits>
@@ -34,6 +41,7 @@ public:
     
 public slots:
     void draw(const mc&);
+    void draw(const Spinsystem&);
     void draw_test();
     
     void refresh();

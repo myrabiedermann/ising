@@ -1,10 +1,24 @@
 #include "parameters_widget.hpp"
 
+#define PARAMETERS_WIDGET_ASSERT_ALL \
+    Q_CHECK_PTR(interactionSpinBox); \
+    Q_CHECK_PTR(magneticSpinBox);    \
+    Q_CHECK_PTR(temperatureSpinBox); \
+    Q_CHECK_PTR(heightSpinBox);      \
+    Q_CHECK_PTR(widthSpinBox);       \
+    Q_CHECK_PTR(printFreqSpinBox);   \
+    Q_CHECK_PTR(stepsSpinBox);       \
+    Q_CHECK_PTR(applyBtn);           \
+    Q_CHECK_PTR(constrainedBox);     \
+    Q_CHECK_PTR(printBox);           \
 
 
 ParametersWidget::ParametersWidget(QWidget *parent) 
 : QWidget(parent)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    
     setMinimumWidth(300);
     // layout of this widget
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -23,13 +37,16 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     // https://stackoverflow.com/a/16795664
     connect( interactionSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( magneticSpinBox   , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
-    connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
-    connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( temperatureSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( stepsSpinBox      , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( constrainedBox    , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
     connect( printBox          , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
     
+    connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), widthSpinBox, &QSpinBox::setValue );
+    connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), heightSpinBox, &QSpinBox::setValue );
+    connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
     
@@ -41,16 +58,7 @@ ParametersWidget::ParametersWidget(QWidget *parent)
 
 ParametersWidget::~ParametersWidget()
 {
-    // delete interactionSpinBox;
-    // delete magneticSpinBox;
-    // delete heightSpinBox;
-    // delete widthSpinBox;
-    // delete printFreqSpinBox;
-    // delete stepsSpinBox;
-    
-    // delete applyBtn;
-    // delete constrainedBox;
-    // delete printBox;
+    qDebug() << __PRETTY_FUNCTION__;
 }
 
 
@@ -58,6 +66,9 @@ ParametersWidget::~ParametersWidget()
 
 QGroupBox * ParametersWidget::createSystemBox()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    
     // the group
     QGroupBox* labelBox = new QGroupBox("System Parameters");
     
@@ -75,6 +86,13 @@ QGroupBox * ParametersWidget::createSystemBox()
     magneticSpinBox->setSingleStep(0.1);
     magneticSpinBox->setValue(0.0);
     magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    
+    temperatureSpinBox->setMinimum(0.1);
+    temperatureSpinBox->setMaximum(10);
+    temperatureSpinBox->setDecimals(1);
+    temperatureSpinBox->setSingleStep(0.1);
+    temperatureSpinBox->setValue(1.0);
+    temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     heightSpinBox->setMinimum(3);
     heightSpinBox->setMaximum(500);
@@ -94,6 +112,7 @@ QGroupBox * ParametersWidget::createSystemBox()
     // add Line Edits
     formLayout->addRow("J",interactionSpinBox);
     formLayout->addRow("H",magneticSpinBox);
+    formLayout->addRow("Temperature",temperatureSpinBox);
     formLayout->addRow("System Height",heightSpinBox);
     formLayout->addRow("System Width",widthSpinBox);
     formLayout->addWidget(constrainedBox);
@@ -108,6 +127,9 @@ QGroupBox * ParametersWidget::createSystemBox()
 
 QGroupBox * ParametersWidget::createOutputBox()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    
     // the group
     QGroupBox* labelBox = new QGroupBox("Output Parameters");
     
@@ -134,6 +156,9 @@ QGroupBox * ParametersWidget::createOutputBox()
 
 QGroupBox * ParametersWidget::createMCBox()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    
     // the group
     QGroupBox* labelBox = new QGroupBox("Monte Carlo Parameters");
     
@@ -162,7 +187,9 @@ QGroupBox * ParametersWidget::createMCBox()
 
 void ParametersWidget::applyValues()
 {
-    std::cout << "I hope this button makes you feel better :)" << std::endl;
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    qInfo() << "I hope this button makes you feel better :)";
 }
 
 
@@ -170,8 +197,12 @@ void ParametersWidget::applyValues()
 
 void ParametersWidget::setReadOnly(bool flag)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    
     interactionSpinBox->setReadOnly(flag);
     magneticSpinBox->setReadOnly(flag);
+    temperatureSpinBox->setReadOnly(flag);
     heightSpinBox->setReadOnly(flag);
     widthSpinBox->setReadOnly(flag);
     printFreqSpinBox->setReadOnly(flag);
@@ -185,6 +216,7 @@ void ParametersWidget::setReadOnly(bool flag)
 
 float ParametersWidget::getInteraction() const
 {
+    Q_CHECK_PTR(interactionSpinBox);
     return interactionSpinBox->value();
 }
 
@@ -192,13 +224,23 @@ float ParametersWidget::getInteraction() const
 
 float ParametersWidget::getMagnetic() const
 {
+    Q_CHECK_PTR(magneticSpinBox);
     return magneticSpinBox->value();
+}
+
+
+
+float ParametersWidget::getTemperature() const
+{
+    Q_CHECK_PTR(temperatureSpinBox);
+    return temperatureSpinBox->value();
 }
 
 
 
 unsigned int ParametersWidget::getHeight() const
 {
+    Q_CHECK_PTR(heightSpinBox);
     return heightSpinBox->value();
 }
 
@@ -206,6 +248,7 @@ unsigned int ParametersWidget::getHeight() const
 
 unsigned int ParametersWidget::getWidth() const
 {
+    Q_CHECK_PTR(widthSpinBox);
     return widthSpinBox->value();
 }
 
@@ -213,6 +256,7 @@ unsigned int ParametersWidget::getWidth() const
 
 unsigned long ParametersWidget::getSteps() const
 {
+    Q_CHECK_PTR(stepsSpinBox);
     return stepsSpinBox->value();
 }
 
@@ -220,6 +264,7 @@ unsigned long ParametersWidget::getSteps() const
 
 unsigned int ParametersWidget::getPrintFreq() const
 {
+    Q_CHECK_PTR(printFreqSpinBox);
     return printFreqSpinBox->value();
 }
 
@@ -227,6 +272,7 @@ unsigned int ParametersWidget::getPrintFreq() const
 
 bool ParametersWidget::getConstrained() const
 {
+    Q_CHECK_PTR(constrainedBox);
     return constrainedBox->isChecked();
 }
 
@@ -234,6 +280,7 @@ bool ParametersWidget::getConstrained() const
 
 bool ParametersWidget::getPrint() const
 {
+    Q_CHECK_PTR(printBox);
     return printBox->isChecked();
 }
 
