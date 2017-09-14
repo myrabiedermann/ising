@@ -4,8 +4,9 @@
  * class Spin
  */
 
-#include "../global.hpp"
+// #include "../global.hpp"
 #include <numeric>
+#include <vector>
 
 
 enum SPINTYPE{UP=2,DOWN=0};   // define possible Spin types
@@ -16,12 +17,12 @@ class Spin
     typedef Spin selftype;
     typedef std::vector<std::reference_wrapper<selftype> > neighbours_vec;
 
-    const SIZE          ID;
+    const unsigned int          ID;
     SPINTYPE            type;
     neighbours_vec      neighbours {};
 
 public:
-    Spin(const SIZE, SPINTYPE);
+    Spin(const unsigned int, SPINTYPE);
     inline auto get_ID()   const { return ID; }
     inline auto get_type() const { return type; }
 
@@ -43,7 +44,7 @@ public:
 };
 
 // constructor:
-inline Spin::Spin(const SIZE _id, SPINTYPE _type)
+inline Spin::Spin(const unsigned int _id, SPINTYPE _type)
  : ID (_id)
  , type (_type)
 {}
@@ -51,10 +52,10 @@ inline Spin::Spin(const SIZE _id, SPINTYPE _type)
 
 
 template<SPINTYPE T>
-constexpr inline SIGNED Spin::num() const
+constexpr inline int Spin::num() const
 {
     // return sum over neighbours of type T
-    return std::accumulate(std::begin(neighbours), std::end(neighbours), 0, [](SIGNED i, const selftype& N)
+    return std::accumulate(std::begin(neighbours), std::end(neighbours), 0, [](int i, const selftype& N)
                 {
                     return N.get_type() == T ? i+1 : i;
                 });
@@ -63,11 +64,11 @@ constexpr inline SIGNED Spin::num() const
 
 
 template<SPINTYPE T>
-constexpr inline SIGNED Spin::num_signed() const
+constexpr inline int Spin::num_signed() const
 {
     // return signed sum over neighbours of type T
     // sign = + if T == type, sign = - if T != type
-    const int num = std::accumulate(std::begin(neighbours), std::end(neighbours), 0,[](SIGNED i, const selftype& N)
+    const int num = std::accumulate(std::begin(neighbours), std::end(neighbours), 0,[](int i, const selftype& N)
                     {
                         return N.get_type() == T ? i+1 : i;
                     });

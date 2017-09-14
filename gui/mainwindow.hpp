@@ -38,7 +38,6 @@ public:
     void operator=(const MainWindow&) = delete;
     ~MainWindow();
     
-//     void runAction();
 
 protected:
     QGroupBox* createBottomActionGroup();
@@ -49,6 +48,7 @@ private:
     ParametersWidget* prmsWidget;
     MCWidget* MCwidget;
     ChartWidget* hamiltonianChart;
+    ChartWidget* averageSpinChart;
     
     QProgressBar* progressBar;
     QPushButton* quitBtn = new QPushButton("Quit",this);

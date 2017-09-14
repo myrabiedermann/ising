@@ -29,7 +29,7 @@ void GridWidget::showEvent(QShowEvent *)
 
 
 
-void GridWidget::make_new_scene()
+void GridWidget::makeNewScene()
 {
     qDebug() << __PRETTY_FUNCTION__;
     Q_CHECK_PTR(scene);
@@ -45,7 +45,7 @@ void GridWidget::make_new_scene()
 
 
 
-void GridWidget::setRowsColumns(std::uint16_t r, std::uint16_t c)
+void GridWidget::setRowsColumns(unsigned short r, unsigned short c)
 {
     qDebug() << __PRETTY_FUNCTION__;
     rows = r;
@@ -67,7 +67,7 @@ void GridWidget::refresh()
 
 
 
-void GridWidget::setColumns(std::uint16_t c)
+void GridWidget::setColumns(unsigned short c)
 {
     qDebug() << __PRETTY_FUNCTION__;
     columns = c;
@@ -75,7 +75,7 @@ void GridWidget::setColumns(std::uint16_t c)
 }
 
 
-void GridWidget::setRows(std::uint16_t r)
+void GridWidget::setRows(unsigned short r)
 {
     qDebug() << __PRETTY_FUNCTION__;
     rows = r;
@@ -84,7 +84,7 @@ void GridWidget::setRows(std::uint16_t r)
 
 
 
-void GridWidget::draw_rectangle(std::uint16_t x, std::uint16_t y, std::uint16_t dx , std::uint16_t dy, QPen border, QBrush fill)
+void GridWidget::drawRectangle(unsigned short x, unsigned short y, unsigned short dx , unsigned short dy, QPen border, QBrush fill)
 {
     Q_CHECK_PTR(scene);
     scene->addRect(x, y, dx, dy, border, fill);
@@ -92,7 +92,7 @@ void GridWidget::draw_rectangle(std::uint16_t x, std::uint16_t y, std::uint16_t 
 
 
 
-QBrush GridWidget::get_color_of_spin(const Spin& spin)
+QBrush GridWidget::getSpinColor(const Spin& spin)
 {
     switch (spin.get_type())
     {
@@ -111,24 +111,24 @@ void GridWidget::draw_test()
     
     scene->clear();
     
-    for(std::uint16_t column = 0; column < columns; ++column)
-    for(std::uint16_t row = 0; row < rows; ++row)
+    for(unsigned short column = 0; column < columns; ++column)
+    for(unsigned short row = 0; row < rows; ++row)
     {
-        draw_rectangle
+            drawRectangle
         (
             column*width_of_rectangular, 
             row*height_of_rectangular, 
             width_of_rectangular, 
             height_of_rectangular, 
             QPen(Qt::transparent), 
-            get_color_of_spin( Spin(0, SPINTYPE(rand()%2*2)) 
+                getSpinColor( Spin(0, SPINTYPE(rand()%2*2)) 
         ));
     }
 }
 
 
 
-void GridWidget::draw( const mc& system )
+void GridWidget::draw( const MonteCarloHost& system )
 {
     qDebug() << __PRETTY_FUNCTION__;
     
@@ -147,17 +147,17 @@ void GridWidget::draw( const Spinsystem& system )
     setColumns(system.getWidth());
     setRows(system.getHeight());
     
-    for(std::uint16_t row = 0; row < rows; ++row)
-    for(std::uint16_t column = 0; column < columns; ++column)
+    for(unsigned short row = 0; row < rows; ++row)
+    for(unsigned short column = 0; column < columns; ++column)
     {
-        draw_rectangle
+            drawRectangle
         ( 
             column*width_of_rectangular, 
             row*height_of_rectangular, 
             width_of_rectangular, 
             height_of_rectangular, 
             QPen(Qt::transparent), 
-            get_color_of_spin( system.get_spins().at(columns*row + column) 
+                getSpinColor( system.getSpins().at(columns*row + column) 
         ));
     }
 }

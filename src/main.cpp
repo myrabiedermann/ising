@@ -1,8 +1,6 @@
 #include "gui/mainwindow.hpp"
-#include "global.hpp"
-#include "utility/randomnumbers.hpp"
-#include "input/parameters.hpp"
-#include "system/MC.hpp"
+#include "lib/enhance.hpp"
+#include "system/montecarlohost.hpp"
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -14,9 +12,10 @@ int main(int argc, char *argv[])
     feenableexcept(FE_UNDERFLOW);
     #endif
     
-    seed = 123456789;
-    rand_engine.seed(seed);
-    std::cout << "seed for random number generator: \n   " << seed << "\n";
+//     enhance::seed = 123456789;
+    enhance::seed = std::time(nullptr);
+    enhance::rand_engine.seed(enhance::seed);
+    qInfo() << "seed for random number generator:    " << enhance::seed;
     
     QApplication app(argc, argv);
     MainWindow w;
@@ -27,7 +26,6 @@ int main(int argc, char *argv[])
 //     prms params(argc, argv);
 //     
 //     
-    // seed = std::time(nullptr);
 //     
 //     // run simulation:
 //     mc MC;

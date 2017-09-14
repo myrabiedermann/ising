@@ -7,7 +7,7 @@
     #endif
 #endif
 
-#include "global.hpp"
+// #include "global.hpp"
 #include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
@@ -36,9 +36,9 @@ public:
     
     ~ParametersWidget();
     
-    float getInteraction() const;
-    float getMagnetic() const;
-    float getTemperature() const;
+    double getInteraction() const;
+    double getMagnetic() const;
+    double getTemperature() const;
     unsigned int getHeight() const;
     unsigned int getWidth() const;
     unsigned int getPrintFreq() const;
@@ -49,6 +49,7 @@ public:
     
 public slots:
     void setReadOnly(bool);
+    void setDefault();
     
 signals:
     void valueChanged();

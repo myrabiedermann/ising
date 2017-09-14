@@ -11,16 +11,16 @@ ChartWidget::ChartWidget(QWidget *parent)
     Q_CHECK_PTR(series);
     Q_CHECK_PTR(chart);
     
-    setChart(chart);
+    chart->setTheme(QtCharts::QChart::ChartThemeQt);
     chart->legend()->hide();
     chart->addSeries(series);
     chart->createDefaultAxes();
     chart->setTitle("DEFAULT TEXT");
-    QPen green(Qt::red);
-    series->setPen(green);
-//     resize(300, 500);
-//     fitInView(QRectF(0, 0, 300, 500));
+    
+    setChart(chart);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setRenderHint(QPainter::Antialiasing);
+    
 }
 
 
@@ -34,9 +34,8 @@ ChartWidget::~ChartWidget()
 
 void ChartWidget::append(qreal x, qreal y)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << __PRETTY_FUNCTION__ <<  x <<  "  " <<  y;
     Q_CHECK_PTR(series);
-    qInfo() <<  x <<  "  " <<  y;
     series->append(x, y);
 }
 
@@ -58,7 +57,6 @@ void ChartWidget::refresh()
     chart->removeSeries(series);
     chart->addSeries( series );
     chart->createDefaultAxes();
-//     chart->setAxisX(series->getA, series);
 }
 
 
@@ -76,4 +74,11 @@ void ChartWidget::reset()
 {
     Q_CHECK_PTR(chart);
     series->clear();
+}
+
+
+
+void ChartWidget::setPen(const QPen& pen)
+{
+    series->setPen(pen);
 }

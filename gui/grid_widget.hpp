@@ -6,8 +6,13 @@
     #endif
 #endif
 
-#include "global.hpp"
-#include "system/MC.hpp"
+#ifndef USE_MATH_DEFINES
+    #define USE_MATH_DEFINES
+#endif
+
+
+// #include "global.hpp"
+#include "system/montecarlohost.hpp"
 #include "system/spinsystem.hpp"
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -35,31 +40,31 @@ public:
     
     void showEvent(QShowEvent *);
     
-    void setRowsColumns(std::uint16_t,std::uint16_t);
-    void setRows(std::uint16_t);
-    void setColumns(std::uint16_t);
+    void setRowsColumns(unsigned short,unsigned short);
+    void setRows(unsigned short);
+    void setColumns(unsigned short);
     
 public slots:
-    void draw(const mc&);
+    void draw(const MonteCarloHost&);
     void draw(const Spinsystem&);
     void draw_test();
     
     void refresh();
     
 protected:
-    QBrush get_color_of_spin(const Spin& spin);
-    void draw_rectangle(std::uint16_t, std::uint16_t, std::uint16_t, std::uint16_t, QPen, QBrush);
-    void make_new_scene();
+    QBrush getSpinColor(const Spin& spin);
+    void drawRectangle(unsigned short, unsigned short, unsigned short, unsigned short, QPen, QBrush);
+    void makeNewScene();
     
 private:
-    std::uint16_t rows = 0;
-    std::uint16_t columns = 0;
+    unsigned short rows = 0;
+    unsigned short columns = 0;
     
-    std::uint16_t width_of_rectangular  = 0;
-    std::uint16_t height_of_rectangular = 0;
+    unsigned short width_of_rectangular  = 0;
+    unsigned short height_of_rectangular = 0;
     
-    const std::uint16_t scene_width = 500;
-    const std::uint16_t scene_height = 500;
+    const unsigned short scene_width = 500;
+    const unsigned short scene_height = 500;
     
     QGraphicsScene* scene;
 };

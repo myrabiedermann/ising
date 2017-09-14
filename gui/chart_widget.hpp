@@ -9,6 +9,7 @@
 
 
 #include <QDebug>
+#include <QPen>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QChartView>
 
@@ -29,6 +30,7 @@ public slots:
     void draw(qreal, qreal);
     void refresh();
     void setTitle(const QString&);
+    void setPen(const QPen&);
     void reset();
     
 signals:

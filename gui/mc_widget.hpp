@@ -8,7 +8,7 @@
 
 
 #include "parameters_widget.hpp"
-#include "system/MC.hpp"
+#include "system/montecarlohost.hpp"
 #include <QWidget>
 #include <QPushButton>
 #include <QtConcurrent/QtConcurrent>
@@ -44,8 +44,9 @@ public slots:
     void makeSystemNew();
     
 signals:
+    void resetSignal();
     void runningSignal(bool);
-    void drawRequest(const mc&, const unsigned long);
+    void drawRequest(const MonteCarloHost&, const unsigned long);
     void finishedSteps(const unsigned long);
     
 protected:
@@ -66,7 +67,7 @@ private:
     std::atomic<bool> simulation_running {false};
     std::atomic<bool> parameters_linked {false};
     
-    mc MC {};
+    MonteCarloHost MC {};
     
     std::atomic<unsigned long> steps_done{0};
 };

@@ -28,6 +28,7 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     mainLayout->addWidget(createSystemBox());
     mainLayout->addWidget(createMCBox());
     mainLayout->addWidget(createOutputBox());
+    setDefault();
     
     // add applyBtn 
     applyBtn->setFocusPolicy(Qt::NoFocus);
@@ -76,32 +77,34 @@ QGroupBox * ParametersWidget::createSystemBox()
     interactionSpinBox->setMinimum(-10);
     interactionSpinBox->setMaximum(10);
     interactionSpinBox->setDecimals(1);
+//     interactionSpinBox->setValue(1.0);
     interactionSpinBox->setSingleStep(0.1);
-    interactionSpinBox->setValue(1.0);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     magneticSpinBox->setMinimum(-10);
     magneticSpinBox->setMaximum(10);
     magneticSpinBox->setDecimals(1);
+//     magneticSpinBox->setValue(0.0);
     magneticSpinBox->setSingleStep(0.1);
-    magneticSpinBox->setValue(0.0);
     magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     temperatureSpinBox->setMinimum(0.1);
     temperatureSpinBox->setMaximum(10);
     temperatureSpinBox->setDecimals(1);
+//     temperatureSpinBox->setValue(1.0);
     temperatureSpinBox->setSingleStep(0.1);
-    temperatureSpinBox->setValue(1.0);
     temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     heightSpinBox->setMinimum(3);
     heightSpinBox->setMaximum(500);
-    heightSpinBox->setValue(50);
+//     heightSpinBox->setValue(50);
+    heightSpinBox->setSingleStep(2);
     heightSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     widthSpinBox->setMinimum(3);
     widthSpinBox->setMaximum(500);
-    widthSpinBox->setValue(50);
+//     widthSpinBox->setValue(50);
+    widthSpinBox->setSingleStep(2);
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     
@@ -137,7 +140,7 @@ QGroupBox * ParametersWidget::createOutputBox()
     printFreqSpinBox->setMinimum(0);
     printFreqSpinBox->setMaximum(100000);
     printFreqSpinBox->setSingleStep(100);
-    printFreqSpinBox->setValue(1000);
+//     printFreqSpinBox->setValue(1000);
     printFreqSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     // the layout
@@ -166,7 +169,7 @@ QGroupBox * ParametersWidget::createMCBox()
     stepsSpinBox->setMinimum(0);
     stepsSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
     stepsSpinBox->setSingleStep(1000000);
-    stepsSpinBox->setValue(100000000);
+//     stepsSpinBox->setValue(100000000);
     stepsSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     
@@ -214,7 +217,26 @@ void ParametersWidget::setReadOnly(bool flag)
 
 
 
-float ParametersWidget::getInteraction() const
+
+void ParametersWidget::setDefault()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+    
+    interactionSpinBox->setValue(1.0);
+    magneticSpinBox->setValue(0.0);
+    temperatureSpinBox->setValue(1.0);
+    heightSpinBox->setValue(50);
+    widthSpinBox->setValue(50);
+    printFreqSpinBox->setValue(10000);
+    stepsSpinBox->setValue(100000000);
+    constrainedBox->setEnabled(false);
+    printBox->setEnabled(false);
+}
+
+
+
+double ParametersWidget::getInteraction() const
 {
     Q_CHECK_PTR(interactionSpinBox);
     return interactionSpinBox->value();
@@ -222,7 +244,7 @@ float ParametersWidget::getInteraction() const
 
 
 
-float ParametersWidget::getMagnetic() const
+double ParametersWidget::getMagnetic() const
 {
     Q_CHECK_PTR(magneticSpinBox);
     return magneticSpinBox->value();
@@ -230,7 +252,7 @@ float ParametersWidget::getMagnetic() const
 
 
 
-float ParametersWidget::getTemperature() const
+double ParametersWidget::getTemperature() const
 {
     Q_CHECK_PTR(temperatureSpinBox);
     return temperatureSpinBox->value();

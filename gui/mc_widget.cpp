@@ -7,8 +7,9 @@ MCWidget::MCWidget(QWidget *parent)
   , drawRequestTimer(new QTimer(this))
   , progressTimer(new QTimer(this))
 {
+    MC.setAcceptance(new Metropolis);
+    
     qDebug() << __PRETTY_FUNCTION__;
-    QHBoxLayout *hbox = new QHBoxLayout;
     
     runBtn->setCheckable(false);
     runBtn->setChecked(false);
@@ -25,15 +26,14 @@ MCWidget::MCWidget(QWidget *parent)
     connect(runBtn,   &QPushButton::clicked, this, &MCWidget::runAction);
     connect(pauseBtn, &QPushButton::clicked, this, &MCWidget::pauseAction);
     connect(abortBtn, &QPushButton::clicked, this, &MCWidget::abortAction);
+    connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
+    connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
     
+    QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addWidget(runBtn);
     hbox->addWidget(pauseBtn);
     hbox->addWidget(abortBtn);
-    
     setLayout(hbox);  
-    
-    connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
-    connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
 }
 
 
@@ -152,7 +152,10 @@ void MCWidget::abortAction()
     drawRequestTimer->stop();
     progressTimer->stop();
     
+    emit resetSignal();
+    makeSystemNew();
     emit runningSignal(false);
+    emit drawRequest(MC, steps_done.load());
 }
 
 
@@ -169,7 +172,7 @@ void MCWidget::server()
     
     while(simulation_running.load() && steps_done.load() < prmsWidget->getSteps())
     {
-        MC.do_metropolis(prmsWidget->getPrintFreq());
+        MC.run(prmsWidget->getPrintFreq());
         steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
         
         if (steps_done.load() >= prmsWidget->getSteps())

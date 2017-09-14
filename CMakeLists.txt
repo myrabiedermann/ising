@@ -1,5 +1,3 @@
-
-# cmake_minimum_required(VERSION 2.8.11)
 cmake_minimum_required(VERSION 3.0)
 project(ising)
 
@@ -15,9 +13,8 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Charts REQUIRED)
 
-find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
+# The enhance functions
+add_library(enhance SHARED lib/enhance.cpp)
 
 include_directories("./gui/")
 include_directories("./src/")
@@ -27,10 +24,6 @@ set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g1 -ggdb -DNDEBUG -DQT_NO_DEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -g0       -DNDEBUG -DQT_NO_DEBUG")
 
-set(ising_SRC
-  src/main.cpp
-  src/ising.cpp
-)
 
 file(GLOB ising_SRC
   src/*.cpp
@@ -45,12 +38,8 @@ set(CMAKE_AUTOUIC ON) # use this if you have CMake 3.x instead of the following
 # Tell CMake to create the helloworld executable
 add_executable(ising ${ising_SRC} ${sources})
 
-
-set(CMAKE_EXE_LINKER_FLAGS "${STDCXX_LDFLAGS} -lboost_program_options -lboost_system -lboost_filesystem")
-
-
 # Use the Widgets module from Qt 5.
-target_link_libraries(ising Qt5::Widgets Qt5::Charts)
+target_link_libraries(ising enhance Qt5::Widgets Qt5::Charts)
 
 # Install the executable
 install(TARGETS ising DESTINATION bin)
