@@ -1,39 +1,70 @@
-#include "spinsys.hpp"
+#include "spinsystem.hpp"
 
 /*
  * functions in class "spinsys"
  */
 
 
-spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
-  : size (_size)
-  , J (_J)
-  , CONSTRAINED (_CONSTRAINED)
-  , totalnumber (_size * _size)
+Spinsystem::Spinsystem()
 {
+    
+}
 
+
+
+Spinsystem::~Spinsystem()
+{
+}
+
+
+
+void Spinsystem::setParameters(ParametersWidget* prms)
+{
+    Q_CHECK_PTR(prms);
+    parameters = prms;
+    Q_CHECK_PTR(parameters);
+}
+
+
+
+  
+void Spinsystem::setup()
+{
+    Q_CHECK_PTR(parameters);
+//     assert(parameters->getHeight() == parameters->getWidth());
+    
+    spins.clear();
+    lastFlipped.clear();
+    Hamiltonian = 0;
+    
     // safety check:
-    if( size%2 != 0 && CONSTRAINED ) throw std::logic_error("system size must be an even number if system is constrained");
-
-    // set spinarray:
-    SIGNED random;
-    if( ! CONSTRAINED ) // initialise spins randomly
+    if( parameters->getWidth()%2 != 0 && parameters->getConstrained() ) 
     {
-        for(SIZE i=0; i<totalnumber; ++i)
+        throw std::logic_error("system size must be an even number if system is constrained");
+    }
+    
+    auto size = parameters->getWidth();
+    auto totalnumber = parameters->getWidth()*parameters->getHeight();
+    
+    // set spinarray:
+    int random;
+    if( ! parameters->getConstrained() ) // initialise spins randomly
+    {
+        for(unsigned int i=0; i<totalnumber; ++i)
         {
-            random = random_int(0,1);
+            random = enhance::random_int(0,1);
             spins.emplace_back(i, random == 1 ? UP : DOWN );
         }
     }                   // constraint: # spin up == # spin down
     else
     {
-        for(SIZE i=0; i<totalnumber; ++i)
+        for(unsigned int i=0; i<totalnumber; ++i)
             spins.emplace_back(i, UP);
-        for(SIZE i=0; i<totalnumber/2; ++i)
+        for(unsigned int i=0; i<totalnumber/2; ++i)
         {
             do
             {
-                random = random_int(0, totalnumber-1);
+                random = enhance::random_int(0, totalnumber-1);
             }
             while( spins[random].get_type() == DOWN );
             spins[random].set_type(DOWN);
@@ -42,53 +73,55 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
     }
 
     // set neighbours:
-    for(auto& s: spins){
-        std::vector<std::reference_wrapper<spin> > Nrefs;
-        SIZE Nid;
-        const SIZE id = s.get_ID();
-
+    for(auto& s: spins)
+    {
+        std::vector<std::reference_wrapper<Spin> > Nrefs;
+        unsigned int Nid;
+        const unsigned int id = s.get_ID();
+        
         {
             // up
-            Nid = id - static_cast<SIZE>(size) < 0 ? id - size + totalnumber : id - size; 
+            Nid = ((long)id - static_cast<long>(size)) < 0 ? id - size + totalnumber : id - size; 
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         {
             // right
             Nid = (id + 1) % size == 0  ? id + 1 - size : id + 1;
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         {
             // below
             Nid = id + size >= totalnumber ? id + size - totalnumber : id + size;
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         {
             // left
             Nid = id % size == 0  ? id - 1 + size : id - 1;
             assert( Nid < spins.size() );
             Nrefs.push_back( std::ref(spins[Nid]) );
         }
-
+        
         s.set_neighbours(Nrefs);
     }
 
 // debugging:
-#ifndef NDEBUG
-    for(auto& s: spins){
-      std::cout << "spin " << s.get_ID() << " has neighbours : ";
-      std::for_each( s.begin(), s.end(), [](const auto& N){std::cout << N.get().get_ID() << " ";} );
-      std::cout << "\n";
+// #ifndef NDEBUG
+    for(auto& s: spins)
+    {
+        qDebug() << "spin " << s.get_ID() << " has neighbours : ";
+        std::for_each( s.begin(), s.end(), [](const auto& N){qDebug() << N.get().get_ID() << " ";} );
+        qDebug() << "\n";
     }
-#endif
+// #endif
 
     // calculate initial Hamiltonian:
-    Hamiltonian = std::accumulate(std::cbegin(spins),std::cend(spins), static_cast<REAL>(0), [&](REAL i, const spin& S)
+    Hamiltonian = std::accumulate(std::cbegin(spins),std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
                         {
                             return i + local_energy(S);
                         }) / 2;
@@ -96,37 +129,37 @@ spinsys::spinsys(const SIZE& _size, const REAL& _J, const bool & _CONSTRAINED)
 
 /***************************************************************************/
 
-REAL spinsys::local_energy(const spin & _spin) const
+double Spinsystem::local_energy(const Spin & _spin) const
 {
     // go through neighbours and calculate local energy for given spin
     // Jij returns value of J/J for given spin pairs (1 or 0)
     // num_signed<T> returns the number of neighbours of type T for given spin:
     // ... sum( sigma_own * sigma_T ) --> therefore signed !
-    return J * static_cast<REAL>( -JijwithoutJ(SPINTYPE::UP,   _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
+    return parameters->getInteraction() * static_cast<double>( -JijwithoutJ(SPINTYPE::UP,   _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
                                     -JijwithoutJ(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>() );
 }
 
 /***************************************************************************/
 
-SIGNED spinsys::JijwithoutJ(const SPINTYPE _spin1, const SPINTYPE _spin2) const
+int Spinsystem::JijwithoutJ(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
-    if( ! CONSTRAINED ) return 1;
+    if( ! parameters->getConstrained() ) return 1;
     else                return _spin1 != _spin2 ? 1 : 0;
 }
 
 /***************************************************************************/
 
-void spinsys::flip()
+void Spinsystem::flip()
 {
     lastFlipped.clear();
-    REAL localEnergy_before = 0;
-    REAL localEnergy_after = 0;
+    double localEnergy_before = 0;
+    double localEnergy_after = 0;
 
-    if( ! CONSTRAINED )
+    if( ! parameters->getConstrained() )
     {
         // find random spin
-        auto randomspin = random_iterator(spins);
+        auto randomspin = enhance::random_iterator(spins);
         lastFlipped.emplace_back( std::ref(*randomspin) );
         // flip spin
         localEnergy_before = local_energy( *randomspin );
@@ -138,12 +171,12 @@ void spinsys::flip()
     else
     {
         // find first random spin
-        auto randomspin = random_iterator(spins);
+        auto randomspin = enhance::random_iterator(spins);
         // search for second spin
         auto randomspin2 = randomspin;
         do
         {
-            randomspin2 = random_iterator(spins);
+            randomspin2 = enhance::random_iterator(spins);
         }
         while( randomspin->get_type() == randomspin2->get_type() or randomspin->get_ID() == randomspin2->get_ID() );
         lastFlipped.emplace_back(*randomspin);
@@ -160,48 +193,49 @@ void spinsys::flip()
     }
 
 #ifndef NDEBUG
-    std::cout << "flipping spin: ";
-    for(auto& s: lastFlipped) std::cout << s.get().get_ID() << " ";
-    std::cout << "\n";
+    qDebug() << "flipping spin: ";
+    for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
+    qDebug() << "\n";
 #endif
 }
 
 /***************************************************************************/
 
-void spinsys::flip_back()
+void Spinsystem::flip_back()
 {
     if( lastFlipped.size() == 0 )
         throw std::logic_error("Cannot flip back, since nothing has flipped yet");
     else
     {
-        SIGNED localEnergy_before = 0;
-        SIGNED localEnergy_after = 0;
-
+        int localEnergy_before = 0;
+        int localEnergy_after = 0;
+        
         for( const auto& s: lastFlipped ) localEnergy_before += local_energy( s.get() );
         for( const auto& s: lastFlipped ) s.get().flip();
         for( const auto& s: lastFlipped ) localEnergy_after += local_energy( s.get() );
-
+        
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
 
-#ifndef NDEBUG
-    std::cout << "flipping back: ";
-    for(auto& s: lastFlipped) std::cout << s.get().get_ID() << " ";
-    std::cout << "\n";
-#endif
+// #ifndef NDEBUG
+    qDebug() << "flipping back: ";
+    for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
+    qDebug() << "\n";
+// #endif
 
 }
 
 /***************************************************************************/
 
-void spinsys::print(std::ostream & stream) const
+void Spinsystem::print(std::ostream & stream) const
 {
+    qDebug() << __PRETTY_FUNCTION__ << '\n';
     // print spinarray to stream
     for(const auto& s: spins)
     {
         stream << ( s.get_type() == DOWN ? "-" : "+" )
-               << ( (s.get_ID()+1)%size == 0 ? "\n" : " ");
+        << ( (s.get_ID()+1)%parameters->getWidth() == 0 ? "\n" : " ");
     }
 }
 

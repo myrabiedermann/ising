@@ -1,42 +1,46 @@
-# SET( CMAKE_BUILD_TYPE Release )
-# SET( CMAKE_BUILD_TYPE Relwithdebinfo )
-SET( CMAKE_BUILD_TYPE Debug )
-
-set(CMAKE_CXX_COMPILER "g++-7")
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project(ising)
 
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
 
-find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
+set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_VERBOSE_MAKEFILE ON)
+
+# Find the QtWidgets library
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Charts REQUIRED)
+
+# The enhance functions
+add_library(enhance SHARED lib/enhance.cpp)
+
+include_directories("./gui/")
+include_directories("./src/")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize")
+set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g1 -ggdb -DNDEBUG -DQT_NO_DEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -g0       -DNDEBUG -DQT_NO_DEBUG")
 
 
-execute_process(COMMAND ${CMAKE_CXX_COMPILER} -v)
-set(CMAKE_CXX_FLAGS  "-std=c++14 ${CMAKE_CXX_FLAGS} -Wall -Wpedantic -fmax-errors=3 -frounding-math -fsignaling-nans " )
-SET(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -DDEBUG -D_DEBUG")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g1 -ggdb -DNDEBUG -DEIGEN_NO_DEBUG")
-SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -g0       -DNDEBUG -DEIGEN_NO_DEBUG")
-set( ${CMAKE_EXE_LINKER_FLAGS} "${STDCXX_LDFLAGS} -lboost_program_options -lboost_system -lboost_filesystem ")
-
-
-file( GLOB sources
+file(GLOB ising_SRC
   src/*.cpp
-  src/input/*.cpp
-  src/system/*.cpp
-  src/utility/*.cpp
+  src/*/*.cpp
+  gui/*.cpp
 )
-add_executable(ising ${sources})
 
+# Create code from a list of Qt designer ui files.
+set(CMAKE_AUTOUIC ON) # use this if you have CMake 3.x instead of the following
+# qt5_wrap_ui(ising_SRC gui/ising.ui)
 
-target_link_libraries(ising  ${STDCXX_LDFLAGS} ${Boost_LIBRARIES})
+# Tell CMake to create the helloworld executable
+add_executable(ising ${ising_SRC} ${sources})
 
+# Use the Widgets module from Qt 5.
+target_link_libraries(ising enhance Qt5::Widgets Qt5::Charts)
 
-install(TARGETS ising RUNTIME DESTINATION bin)
+# Install the executable
+install(TARGETS ising DESTINATION bin)
 
-
-if( CMAKE_BUILD_TYPE MATCHES "Debug" )
-    message( WARNING "BUILD TYPE: ${CMAKE_BUILD_TYPE}")
-else()
-    message( STATUS "BUILD TYPE: ${CMAKE_BUILD_TYPE}")
-endif()
