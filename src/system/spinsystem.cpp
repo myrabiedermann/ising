@@ -240,3 +240,23 @@ void Spinsystem::print(std::ostream & stream) const
 }
 
 /***************************************************************************/
+
+std::string Spinsystem::str() const
+{
+    qDebug() << __PRETTY_FUNCTION__ << '\n';
+    // print spinarray to stream
+    std::stringstream stream;
+    for(const auto& s: spins)
+    {
+        stream << ( s.get_type() == DOWN ? "-" : "+" )
+        << ( (s.get_ID()+1)%parameters->getWidth() == 0 ? "\n" : " ");
+    }
+    return stream.str();
+}
+
+/***************************************************************************/
+
+const char* Spinsystem::c_str() const
+{
+    return str().c_str();
+}

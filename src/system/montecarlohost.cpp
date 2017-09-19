@@ -31,7 +31,6 @@ void MonteCarloHost::setParameters(ParametersWidget* prms)
 }
 
 
-
 void MonteCarloHost::setup()
 {
     Q_CHECK_PTR(parameters);
@@ -43,7 +42,7 @@ void MonteCarloHost::setup()
     trajectory.push_back(spinsystem.getHamiltonian());
     
     qDebug() << "initial: H = " << spinsystem.getHamiltonian();
-    qDebug() << spinsystem;
+    qDebug() << spinsystem.c_str();
 }
 
 
@@ -58,7 +57,7 @@ void MonteCarloHost::run(const unsigned long& steps)
     double energy_new;
     
     
-    for(unsigned int t=0; t<=steps; ++t)
+    for(unsigned int t=0; t<steps; ++t)   
     {
         // flip spin:
         energy_old = spinsystem.getHamiltonian();
@@ -70,12 +69,12 @@ void MonteCarloHost::run(const unsigned long& steps)
         {
             spinsystem.flip_back(); 
             #ifndef QT_NO_DEBUG 
-            qDebug() << "random = " << acceptance->latestRandom() << " >= " << acceptance->latestCondition() << " = exp(-(energy_new-energy_old)/temperature)";
+            qDebug() << "random = " << acceptance->latestRandomNumber() << " >= " << acceptance->latestConditionValue() << " = exp(-(energy_new-energy_old)/temperature)";
             qDebug() << "new H would have been: " << energy_new << "\n";
         }
         else
         {
-            qDebug() << acceptance->latestRandom() << " < " << acceptance->latestCondition();
+            qDebug() << acceptance->latestRandomNumber() << " < " << acceptance->latestConditionValue();
             qDebug() << "new H: " << energy_new;
             #endif
         }

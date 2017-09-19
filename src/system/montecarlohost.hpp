@@ -11,6 +11,7 @@
 #include "gui/parameters_widget.hpp"
 #include "spinsystem.hpp"
 #include "acceptance.hpp"
+#include "lib/enhance.hpp"
 #include <QDebug>
 #include <cassert>
 #include <cmath>

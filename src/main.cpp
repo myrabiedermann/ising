@@ -5,12 +5,12 @@
 
 int main(int argc, char *argv[])
 {
-    #ifndef NDEBUG
-    feenableexcept(FE_DIVBYZERO);
-    feenableexcept(FE_INVALID);
-    feenableexcept(FE_OVERFLOW);
-    feenableexcept(FE_UNDERFLOW);
-    #endif
+//     #ifndef NDEBUG
+//     feenableexcept(FE_DIVBYZERO);
+//     feenableexcept(FE_INVALID);
+//     feenableexcept(FE_OVERFLOW);
+//     feenableexcept(FE_UNDERFLOW);
+//     #endif
     
 //     enhance::seed = 123456789;
     enhance::seed = std::time(nullptr);

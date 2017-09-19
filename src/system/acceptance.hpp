@@ -16,13 +16,12 @@ struct AcceptanceAdaptor
     virtual ~AcceptanceAdaptor(){};
     #ifndef QT_NO_DEBUG 
     virtual inline double latestConditionValue() const { return latestCondition; }
-    virtual inline double latestRandomNumber() const { return latestRandomM; }
+    virtual inline double latestRandomNumber() const { return latestRandom; }
     #endif
     
 protected:
     AcceptanceAdaptor() {};
     
-private:
     #ifndef QT_NO_DEBUG
     double latestCondition = 0;
     double latestRandom = 0;

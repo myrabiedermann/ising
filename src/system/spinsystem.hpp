@@ -6,6 +6,9 @@
 #include <cassert>
 #include <numeric>
 #include <ostream>
+#include <string>
+#include <sstream>
+
 
 
 
@@ -46,6 +49,8 @@ public:
     inline auto  getHamiltonian() const {return Hamiltonian;}
 
     void print(std::ostream & ) const;
+    std::string str() const;
+    const char* c_str() const;
 };
 
 

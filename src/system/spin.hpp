@@ -17,7 +17,7 @@ class Spin
     typedef Spin selftype;
     typedef std::vector<std::reference_wrapper<selftype> > neighbours_vec;
 
-    const unsigned int          ID;
+    const unsigned int  ID;
     SPINTYPE            type;
     neighbours_vec      neighbours {};
 
