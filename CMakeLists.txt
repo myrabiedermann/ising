@@ -1,3 +1,6 @@
+set(CMAKE_CXX_COMPILER "g++-7")
+set(CMAKE_C_COMPILER "gcc-7")
+
 cmake_minimum_required(VERSION 3.0)
 project(ising)
 
@@ -10,8 +13,8 @@ set(CMAKE_CXX_STANDARD 14)
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Find the QtWidgets library
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Charts REQUIRED)
+find_package(Qt5Widgets PATHS /usr/local/opt/qt@5.7/lib/cmake/Qt5Widgets REQUIRED)   # paths necessary on macbook
+find_package(Qt5Charts PATHS /usr/local/opt/qt@5.7/lib/cmake/Qt5Charts REQUIRED)
 
 # The enhance functions
 add_library(enhance SHARED lib/enhance.cpp)
@@ -35,7 +38,7 @@ file(GLOB ising_SRC
 set(CMAKE_AUTOUIC ON) # use this if you have CMake 3.x instead of the following
 # qt5_wrap_ui(ising_SRC gui/ising.ui)
 
-# Tell CMake to create the helloworld executable
+# Tell CMake to create the executable
 add_executable(ising ${ising_SRC} ${sources})
 
 # Use the Widgets module from Qt 5.
@@ -43,4 +46,3 @@ target_link_libraries(ising enhance Qt5::Widgets Qt5::Charts)
 
 # Install the executable
 install(TARGETS ising DESTINATION bin)
-

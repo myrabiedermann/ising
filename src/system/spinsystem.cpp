@@ -4,7 +4,7 @@
 
 Spinsystem::Spinsystem()
 {
-    
+
 }
 
 
@@ -24,25 +24,26 @@ void Spinsystem::setParameters(ParametersWidget* prms)
 
 
 
-  
+
 void Spinsystem::setup()
 {
     Q_CHECK_PTR(parameters);
 //     assert(parameters->getHeight() == parameters->getWidth());
-    
+
     spins.clear();
     lastFlipped.clear();
     Hamiltonian = 0;
-    
+
     // safety check:
-    if( parameters->getWidth()%2 != 0 && parameters->getConstrained() ) 
+    if( parameters->getWidth()%2 != 0 && parameters->getConstrained() )
     {
         throw std::logic_error("system size must be an even number if system is constrained");
     }
-    
-    auto size = parameters->getWidth();
-    auto totalnumber = parameters->getWidth()*parameters->getHeight();
-    
+
+    auto width  = parameters->getWidth();
+    auto height = parameters->getHeight();
+    auto totalnumber = width * height;
+
     // set spinarray:
     int random;
     if( ! parameters->getConstrained() ) // initialise spins randomly
@@ -75,35 +76,39 @@ void Spinsystem::setup()
         std::vector<std::reference_wrapper<Spin> > Nrefs;
         unsigned int Nid;
         const unsigned int id = s.get_ID();
-        
+
         {
             // up
-            Nid = ((long)id - static_cast<long>(size)) < 0 ? id - size + totalnumber : id - size; 
+            Nid = ((long)id - static_cast<long>(width)) < 0 ? id - width + totalnumber : id - width;
             assert( Nid < spins.size() );
-            Nrefs.push_back( std::ref(spins[Nid]) );
+            if( Nid != id )
+              Nrefs.push_back( std::ref(spins[Nid]) );
         }
-        
+
         {
             // right
-            Nid = (id + 1) % size == 0  ? id + 1 - size : id + 1;
+            Nid = (id + 1) % width == 0  ? id + 1 - width : id + 1;
             assert( Nid < spins.size() );
-            Nrefs.push_back( std::ref(spins[Nid]) );
+            if( Nid != id )
+              Nrefs.push_back( std::ref(spins[Nid]) );
         }
-        
+
         {
             // below
-            Nid = id + size >= totalnumber ? id + size - totalnumber : id + size;
+            Nid = id + width >= totalnumber ? id + width - totalnumber : id + width;
             assert( Nid < spins.size() );
-            Nrefs.push_back( std::ref(spins[Nid]) );
+            if( Nid != id )
+              Nrefs.push_back( std::ref(spins[Nid]) );
         }
-        
+
         {
             // left
-            Nid = id % size == 0  ? id - 1 + size : id - 1;
+            Nid = id % width == 0  ? id - 1 + width : id - 1;
             assert( Nid < spins.size() );
-            Nrefs.push_back( std::ref(spins[Nid]) );
+            if( Nid != id )
+              Nrefs.push_back( std::ref(spins[Nid]) );
         }
-        
+
         s.set_neighbours(Nrefs);
     }
 
@@ -206,11 +211,11 @@ void Spinsystem::flip_back()
     {
         int localEnergy_before = 0;
         int localEnergy_after = 0;
-        
+
         for( const auto& s: lastFlipped ) localEnergy_before += local_energy( s.get() );
         for( const auto& s: lastFlipped ) s.get().flip();
         for( const auto& s: lastFlipped ) localEnergy_after += local_energy( s.get() );
-        
+
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
     }

@@ -8,11 +8,12 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#include <functional>
 
 
 
 
-class Spinsystem 
+class Spinsystem
 {
     float Hamiltonian = 0;
     std::vector<Spin>  spins {};
@@ -28,17 +29,17 @@ public:
     Spinsystem(const Spinsystem&) = delete;
     void operator=(const Spinsystem&) = delete;
     ~Spinsystem();
-    
+
     void setParameters(ParametersWidget*);
     void setup();
-    
+
     void flip();
     void flip_back();
-    
+
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
-    
-    
+
+
     template<SPINTYPE T> constexpr int num() const;
 
     inline const decltype(spins)& getSpins() const { return spins; };
@@ -59,7 +60,7 @@ template<SPINTYPE T>
 constexpr inline int Spinsystem::num() const
 {
     // return number of spins of type T
-    return std::accumulate(std::begin(spins), std::end(spins), 0, [](int i, const Spin& S) 
+    return std::accumulate(std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
     {
         return S.get_type() == T ? i+1 : i;
     });
