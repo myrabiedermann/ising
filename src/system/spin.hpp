@@ -4,7 +4,6 @@
  * class Spin
  */
 
-// #include "../global.hpp"
 #include <numeric>
 #include <vector>
 
@@ -43,7 +42,6 @@ public:
 
 };
 
-// constructor:
 inline Spin::Spin(const unsigned int _id, SPINTYPE _type)
  : ID (_id)
  , type (_type)

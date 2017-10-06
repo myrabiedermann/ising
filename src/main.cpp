@@ -21,22 +21,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    
-//     // save program options in "prms":
-//     prms params(argc, argv);
-//     
-//     
-//     
-//     // run simulation:
-//     mc MC;
-//     MC.do_metropolis();
-//     if( prms::SAVETRJ )
-//     {
-//         PATH outpath(prms::initialPath);
-//         outpath /= prms::output_key+".trj";
-//         MC.save_trj(outpath);
-//     }
-    
     return app.exec();
 }
 

@@ -31,7 +31,7 @@ protected:
 
 struct Metropolis : public AcceptanceAdaptor
 {    
-    virtual bool valid(double energy_old, double energy_new, double temperature = 1.0) override
+    virtual bool valid(double energy_old, double energy_new, double temperature = 1.0) override 
     {
         #ifndef QT_NO_DEBUG
         latestRandom = enhance::random_double(0.0, 1.0);

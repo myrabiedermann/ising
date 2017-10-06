@@ -24,7 +24,6 @@ class Spinsystem
     int JijwithoutJ(const SPINTYPE, const SPINTYPE) const;
 
 public:
-    // constructor:
     Spinsystem();
     Spinsystem(const Spinsystem&) = delete;
     void operator=(const Spinsystem&) = delete;
@@ -33,7 +32,6 @@ public:
     void setParameters(ParametersWidget*);
     void setup();
     
-    // functions:
     void flip();
     void flip_back();
     
@@ -60,7 +58,7 @@ public:
 template<SPINTYPE T>
 constexpr inline int Spinsystem::num() const
 {
-    // return sum over neighbours of type T
+    // return number of spins of type T
     return std::accumulate(std::begin(spins), std::end(spins), 0, [](int i, const Spin& S) 
     {
         return S.get_type() == T ? i+1 : i;

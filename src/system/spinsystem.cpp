@@ -1,8 +1,5 @@
 #include "spinsystem.hpp"
 
-/*
- * functions in class "spinsys"
- */
 
 
 Spinsystem::Spinsystem()
@@ -55,7 +52,7 @@ void Spinsystem::setup()
             random = enhance::random_int(0,1);
             spins.emplace_back(i, random == 1 ? UP : DOWN );
         }
-    }                   // constraint: # spin up == # spin down
+    }                   // constrain: # spin up == # spin down
     else
     {
         for(unsigned int i=0; i<totalnumber; ++i)
