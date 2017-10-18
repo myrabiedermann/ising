@@ -10,7 +10,7 @@
 #include <sstream>
 #include <functional>
 
-
+#include <iostream>
 
 
 class Spinsystem
@@ -20,15 +20,15 @@ class Spinsystem
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
     ParametersWidget* parameters = Q_NULLPTR;
 
-    // functions:
-    double local_energy(const Spin&) const;
-    int JijwithoutJ(const SPINTYPE, const SPINTYPE) const;
+    float local_energy(const Spin&) const;
+//     int JijwithoutJ(const SPINTYPE, const SPINTYPE) const;
+    float Jij(const SPINTYPE, const SPINTYPE) const;
 
 public:
-    Spinsystem();
+    Spinsystem()  {};
+    ~Spinsystem() {};
     Spinsystem(const Spinsystem&) = delete;
     void operator=(const Spinsystem&) = delete;
-    ~Spinsystem();
 
     void setParameters(ParametersWidget*);
     void setup();
@@ -39,20 +39,15 @@ public:
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
 
-
-    template<SPINTYPE T> constexpr int num() const;
-
     inline const decltype(spins)& getSpins() const { return spins; };
-//     inline auto  get_edge() const {return size;}
-//     inline auto  get_totalnumber() const {return totalnumber;}
-    inline auto  getHamiltonian() const {return Hamiltonian;}
+    inline auto getHamiltonian() const { return Hamiltonian; }
+    
+    template<SPINTYPE T> constexpr int num() const;
 
     void print(std::ostream & ) const;
     std::string str() const;
     const char* c_str() const;
 };
-
-
 
 
 

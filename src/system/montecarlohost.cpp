@@ -76,6 +76,7 @@ void MonteCarloHost::run(const unsigned long& steps)
         {
             qDebug() << acceptance->latestRandomNumber() << " < " << acceptance->latestConditionValue();
             qDebug() << "new H: " << energy_new;
+            qDebug() << spinsystem.c_str();
             #endif
         }
         
@@ -89,24 +90,44 @@ void MonteCarloHost::run(const unsigned long& steps)
 }
 
 
-void MonteCarloHost::print_trajectory(std::ofstream& STREAM)
+void MonteCarloHost::print_trajectory()
 {
     Q_CHECK_PTR(parameters);
     
+    std::ofstream STREAM("trajectory");
     STREAM << std::setw(10) << "# time" << std::setw(6) << "Hamiltonian\n";
     for(unsigned int t=0; t<trajectory.size(); ++t)
     {
-        STREAM << std::setw(10) << t*parameters->getPrintFreq() << std::setw(6)  << trajectory[t] << "\n";
+        STREAM << std::setw(10) << t*parameters->getPrintFreq() << std::setw(6)  << trajectory[t] << '\n';
     }
     STREAM.close();
 }
 
+
+void MonteCarloHost::print_correlation()
+{
+    Q_CHECK_PTR(parameters);
+    
+    std::ofstream FILE("correlation");
+    FILE << std::setw(10) << "# time" << std::setw(10) << "< s_i s_j >\n";
+    for(unsigned int t=0; t<correlation.size(); ++t)
+    {
+        FILE << std::setw(10) << t*parameters->getPrintFreq() << std::setw(10) << correlation[t] << '\n';
+    }
+    FILE.close();
+}
 
 
 
 auto MonteCarloHost::getTrajectory() const -> const decltype(MonteCarloHost::trajectory)&
 {
     return trajectory;
+}
+
+
+auto MonteCarloHost::getCorrelation() const -> const decltype(MonteCarloHost::correlation)&
+{
+    return correlation;
 }
 
 

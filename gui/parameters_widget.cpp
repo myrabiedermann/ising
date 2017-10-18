@@ -50,6 +50,7 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
+    
 
     // myra: attempt to connect contrainedBox with magneticSpinBox (constrained --> magnetic = 0)
     // connect( constrainedBox    , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), magneticSpinBox, &QSpinBox::setValue(0) );
@@ -229,11 +230,11 @@ void ParametersWidget::setDefault()
     interactionSpinBox->setValue(1.0);
     magneticSpinBox->setValue(0.0);
     temperatureSpinBox->setValue(1.0);
-    heightSpinBox->setValue(50);
-    widthSpinBox->setValue(50);
-    printFreqSpinBox->setValue(10000);
-    stepsSpinBox->setValue(100000000);
-    constrainedBox->setEnabled(false);
+    heightSpinBox->setValue(4);
+    widthSpinBox->setValue(4);
+    printFreqSpinBox->setValue(1);
+    stepsSpinBox->setValue(10);
+    constrainedBox->setEnabled(true);
     printBox->setEnabled(false);
 }
 

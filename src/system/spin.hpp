@@ -6,6 +6,7 @@
 
 #include <numeric>
 #include <vector>
+#include <iterator>
 
 
 enum SPINTYPE{UP=2,DOWN=0};   // define possible Spin types
@@ -27,11 +28,14 @@ public:
 
     inline void set_type(SPINTYPE _t) { type = _t; }
     inline void set_neighbours(const neighbours_vec& _N) { neighbours = _N; }
+    
+    inline auto& get_neighbours() { return neighbours; }
 
     inline void flip() { type = ( type == UP ? DOWN : UP ); }
 
     template<SPINTYPE T> constexpr int num() const;
     template<SPINTYPE T> constexpr int num_signed() const;
+    inline int num_opposite() const;
 
     inline auto begin()   { return std::begin(neighbours); }
     inline auto begin()   const { return std::cbegin(neighbours); }
@@ -68,4 +72,13 @@ constexpr inline int Spin::num_signed() const
     // sign = + if T == type, sign = - if T != type
     const int num = this->num<T>();
     return T == type ? num : num*(-1);
+}
+
+
+
+inline int Spin::num_opposite() const
+{
+    // return number of neighbours of opposite type
+    if( type == UP ) return num<DOWN>();
+    else             return num<UP>();
 }

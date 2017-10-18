@@ -7,7 +7,6 @@
 #endif
 
 
-// #include "global.hpp"
 #include "gui/parameters_widget.hpp"
 #include "spinsystem.hpp"
 #include "acceptance.hpp"
@@ -24,7 +23,8 @@ class MonteCarloHost
 {
     ParametersWidget* parameters = Q_NULLPTR;
     AcceptanceAdaptor* acceptance = nullptr;
-    std::vector<double> trajectory {};
+    std::vector<float> trajectory {};
+    std::vector<float> correlation {};
     Spinsystem spinsystem {};
     
 protected:
@@ -41,8 +41,10 @@ public:
     
     const Spinsystem& getSpinsystem() const;
     const decltype(trajectory)& getTrajectory() const;
+    const decltype(trajectory)& getCorrelation() const;
     
     void run(const unsigned long&);
     
-    void print_trajectory(std::ofstream&);
+    void print_trajectory();
+    void print_correlation();
 };
