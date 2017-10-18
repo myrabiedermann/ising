@@ -1,0 +1,9 @@
+questions for Simon:
+
+- why does spinsystem.hpp/cpp don't have its own parameter variables, why always use parameters->variable ?
+
+
+
+to do's :
+- connect constrained with magnetic Field: if constrained -> magnetic = 0
+- variable sizes in spinsystem chart ?

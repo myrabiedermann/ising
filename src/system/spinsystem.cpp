@@ -3,15 +3,12 @@
 
 
 Spinsystem::Spinsystem()
-{
-
-}
+{}
 
 
 
 Spinsystem::~Spinsystem()
-{
-}
+{}
 
 
 
@@ -35,9 +32,13 @@ void Spinsystem::setup()
     Hamiltonian = 0;
 
     // safety check:
-    if( parameters->getWidth()%2 != 0 && parameters->getConstrained() )
+    if( parameters->getConstrained() && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
     {
         throw std::logic_error("system size must be an even number if system is constrained");
+    }
+    if( parameters->getConstrained() && parameters->getMagnetic() != 0 )
+    {
+        throw std::logic_error("constrained system cannot have a magnetic field");
     }
 
     auto width  = parameters->getWidth();
@@ -82,7 +83,7 @@ void Spinsystem::setup()
             Nid = ((long)id - static_cast<long>(width)) < 0 ? id - width + totalnumber : id - width;
             assert( Nid < spins.size() );
             if( Nid != id )
-              Nrefs.push_back( std::ref(spins[Nid]) );
+                Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         {
@@ -90,7 +91,7 @@ void Spinsystem::setup()
             Nid = (id + 1) % width == 0  ? id + 1 - width : id + 1;
             assert( Nid < spins.size() );
             if( Nid != id )
-              Nrefs.push_back( std::ref(spins[Nid]) );
+                Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         {
@@ -98,7 +99,7 @@ void Spinsystem::setup()
             Nid = id + width >= totalnumber ? id + width - totalnumber : id + width;
             assert( Nid < spins.size() );
             if( Nid != id )
-              Nrefs.push_back( std::ref(spins[Nid]) );
+                 Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         {
@@ -106,7 +107,7 @@ void Spinsystem::setup()
             Nid = id % width == 0  ? id - 1 + width : id - 1;
             assert( Nid < spins.size() );
             if( Nid != id )
-              Nrefs.push_back( std::ref(spins[Nid]) );
+                 Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
         s.set_neighbours(Nrefs);
@@ -127,6 +128,10 @@ void Spinsystem::setup()
                         {
                             return i + local_energy(S);
                         }) / 2;
+    qDebug() << "initial H without magnetic part: " << Hamiltonian << '\n';
+    // add magnetic part
+    Hamiltonian += -1.0 * num<SPINTYPE::UP>() * parameters->getMagnetic() + 1.0 * num<SPINTYPE::DOWN>() * parameters->getMagnetic();
+    qDebug() << "    ... and plus magnetic part: " << Hamiltonian << '\n';
 }
 
 /***************************************************************************/
@@ -137,8 +142,10 @@ double Spinsystem::local_energy(const Spin & _spin) const
     // Jij returns value of J/J for given spin pairs (1 or 0)
     // num_signed<T> returns the number of neighbours of type T for given spin:
     // ... sum( sigma_own * sigma_T ) --> therefore signed !
-    return parameters->getInteraction() * static_cast<double>( -JijwithoutJ(SPINTYPE::UP,   _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
-                                    -JijwithoutJ(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>() );
+    double energy = parameters->getInteraction() 
+                    * static_cast<double>( -JijwithoutJ(SPINTYPE::UP, _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
+                                           -JijwithoutJ(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>() );
+    return energy;
 }
 
 /***************************************************************************/
@@ -164,9 +171,11 @@ void Spinsystem::flip()
         auto randomspin = enhance::random_iterator(spins);
         lastFlipped.emplace_back( std::ref(*randomspin) );
         // flip spin
-        localEnergy_before = local_energy( *randomspin );
+        localEnergy_before = local_energy( *randomspin ) 
+                           - parameters->getMagnetic() * (randomspin->get_type() == SPINTYPE::UP ? 1.0 : -1.0);
         randomspin->flip();
-        localEnergy_after = local_energy( *randomspin );
+        localEnergy_after = local_energy( *randomspin )
+                          - parameters->getMagnetic() * (randomspin->get_type() == SPINTYPE::UP ? 1.0 : -1.0);
         // update Hamiltonian:
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
@@ -237,7 +246,7 @@ void Spinsystem::print(std::ostream & stream) const
     for(const auto& s: spins)
     {
         stream << ( s.get_type() == DOWN ? "-" : "+" )
-        << ( (s.get_ID()+1)%parameters->getWidth() == 0 ? "\n" : " ");
+        << ( (static_cast<unsigned int long>(s.get_ID() + 1)) % parameters->getWidth() == 0 ? "\n" : " ");
     }
 }
 
@@ -248,11 +257,13 @@ std::string Spinsystem::str() const
     qDebug() << __PRETTY_FUNCTION__ << '\n';
     // print spinarray to stream
     std::stringstream stream;
-    for(const auto& s: spins)
-    {
-        stream << ( s.get_type() == DOWN ? "-" : "+" )
-        << ( (s.get_ID()+1)%parameters->getWidth() == 0 ? "\n" : " ");
-    }
+    // for(const auto& s: spins)
+    // {
+    //     stream << ( s.get_type() == DOWN ? "-" : "+" )
+    //     << ( (s.get_ID()+1)%parameters->getWidth() == 0 ? "\n" : " ");
+    // }
+    stream << *this;
+
     return stream.str();
 }
 
@@ -260,5 +271,7 @@ std::string Spinsystem::str() const
 
 const char* Spinsystem::c_str() const
 {
+    qDebug() << __PRETTY_FUNCTION__ << '\n';
+
     return str().c_str();
 }

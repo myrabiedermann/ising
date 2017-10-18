@@ -66,9 +66,6 @@ constexpr inline int Spin::num_signed() const
 {
     // return signed sum over neighbours of type T
     // sign = + if T == type, sign = - if T != type
-    const int num = std::accumulate(std::begin(neighbours), std::end(neighbours), 0,[](int i, const selftype& N)
-                    {
-                        return N.get_type() == T ? i+1 : i;
-                    });
+    const int num = this->num<T>();
     return T == type ? num : num*(-1);
 }

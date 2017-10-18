@@ -51,6 +51,9 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
 
+    // myra: attempt to connect contrainedBox with magneticSpinBox (constrained --> magnetic = 0)
+    // connect( constrainedBox    , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), magneticSpinBox, &QSpinBox::setValue(0) );
+
     adjustSize();
     setLayout(mainLayout);
 }
