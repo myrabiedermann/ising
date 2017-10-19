@@ -100,7 +100,7 @@ void Spinsystem::setup()
 
         s.set_neighbours(Nrefs);
     }
-// debugging:
+    // debugging:
     for(auto& s: spins)
     {
         qDebug() << "spin " << s.get_ID() << " has neighbours : ";
@@ -114,6 +114,15 @@ void Spinsystem::setup()
                             return i + local_energy(S);
                         }) / 2;
     qDebug() << "initial H =  " << Hamiltonian << '\n';
+
+    // testing:
+    for(unsigned int i = 0; i<width*height; ++i)
+    {
+        for(unsigned int j = i+1; j<width*height; ++j)
+        {
+            distance(spins[i], spins[j]);
+        }
+    }
 }
 
 /***************************************************************************/
@@ -260,4 +269,21 @@ const char* Spinsystem::c_str() const
     qDebug() << __PRETTY_FUNCTION__ << '\n';
 
     return this->str().c_str();
+}
+
+/***************************************************************************/
+
+float Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
+{
+    int a, b, c, d, x, y;
+
+    a = _spin1.get_ID() % getWidth();
+    b = _spin1.get_ID() / getWidth();
+    c = _spin2.get_ID() % getWidth();
+    d = _spin2.get_ID() / getWidth();
+
+    x = (c - a <= static_cast<int>(getWidth()/2) ? c - a : c - a - getWidth());
+    y = (d - b <= static_cast<int>(getHeight()/2) ? d - b : d - b - getHeight());
+
+    return  std::sqrt( x*x + y*y );
 }

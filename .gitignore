@@ -1,8 +1,10 @@
 build/
 .kdev4/
+.vscode/
 *.swp
 *-swp
 testing/
 .directory
 .kdev4/ising.kdev4
 ASKSIMON
+toDos

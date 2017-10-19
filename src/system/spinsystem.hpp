@@ -21,7 +21,7 @@ class Spinsystem
     ParametersWidget* parameters = Q_NULLPTR;
 
     float local_energy(const Spin&) const;
-//     int JijwithoutJ(const SPINTYPE, const SPINTYPE) const;
+    float distance(const Spin&, const Spin&) const;
     float Jij(const SPINTYPE, const SPINTYPE) const;
 
 public:
