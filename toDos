@@ -1,9 +1,10 @@
 
 to do's :
+
 - connect constrained with magnetic Field: if constrained -> magnetic = 0
 - variable sizes in spinsystem chart ?
 - if J or B is changed -> recompute Hamiltonian
 - if value of constrained / width / height changes -> new setup spinsystem
 - trajectory printing: wo muss die fkt aufgerufen werden ?
-- print spinsystem NOT WORKING
+- sort bins in histogram in formatted_string() -> not working because Bin not movable ?? 
 - 

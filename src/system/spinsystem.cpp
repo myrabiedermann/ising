@@ -115,14 +115,19 @@ void Spinsystem::setup()
                         }) / 2;
     qDebug() << "initial H =  " << Hamiltonian << '\n';
 
-    // testing:
-    for(unsigned int i = 0; i<width*height; ++i)
+    // set bins in correlations:
+    std::cout << "setting possible distance values" << std::endl;
+    for(unsigned int i=0; i<=parameters->getWidth()/2; ++i)
     {
-        for(unsigned int j = i+1; j<width*height; ++j)
+        for(unsigned int j=i; j<=parameters->getHeight()/2; ++j)
         {
-            distance(spins[i], spins[j]);
+            if( j != 0 )
+                 correlation.add_bin( std::sqrt(i*i+j*j));
         }
     }
+    std::cout << correlation.formatted_string() << std::endl;
+    correlate();
+    std::cout << correlation.formatted_string() << std::endl;
 }
 
 /***************************************************************************/
@@ -258,8 +263,7 @@ std::string Spinsystem::str() const
         << ( (static_cast<unsigned int long>(s.get_ID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
     }
     
-    std::cout << sstream.str() << std::endl;
-    return sstream.str(); // WARUM FUNKTIONIERT DAS NICHT ?
+    return sstream.str(); 
 }
 
 /***************************************************************************/
@@ -286,4 +290,28 @@ float Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
     y = (d - b <= static_cast<int>(getHeight()/2) ? d - b : d - b - getHeight());
 
     return  std::sqrt( x*x + y*y );
+}
+
+/***************************************************************************/
+
+void Spinsystem::correlate()
+{
+    // recompute correlations between spins
+
+    correlation.reset();
+
+    for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
+    {
+        for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
+        {
+            std::cout << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : ";
+            if( s1->get_type() == s2->get_type() )
+            {
+                correlation.add_data( distance(*s1, *s2));
+                std::cout << " 1 ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
 }

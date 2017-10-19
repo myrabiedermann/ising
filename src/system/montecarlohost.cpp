@@ -3,9 +3,7 @@
 
 
 MonteCarloHost::MonteCarloHost()
-{
-    
-}
+{}
 
 
 
@@ -43,6 +41,7 @@ void MonteCarloHost::setup()
     
     qDebug() << "initial: H = " << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();
+
 }
 
 
@@ -85,6 +84,7 @@ void MonteCarloHost::run(const unsigned long& steps)
         if( t % parameters->getPrintFreq() == 0 ) 
         {
             trajectory.push_back(spinsystem.getHamiltonian());
+            correlations.push_back(spinsystem.getCorrelation());
         }
     }
 }

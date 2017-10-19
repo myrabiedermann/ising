@@ -2,6 +2,7 @@
 
 #include "lib/enhance.hpp"
 #include "spin.hpp"
+#include "histogram.hpp"
 #include "gui/parameters_widget.hpp"
 #include <cassert>
 #include <numeric>
@@ -19,10 +20,12 @@ class Spinsystem
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
     ParametersWidget* parameters = Q_NULLPTR;
+    histogram<float>  correlation {};
 
     float local_energy(const Spin&) const;
-    float distance(const Spin&, const Spin&) const;
     float Jij(const SPINTYPE, const SPINTYPE) const;
+    float distance(const Spin&, const Spin&) const;
+    void  correlate();
 
 public:
     Spinsystem()  {};
@@ -35,6 +38,8 @@ public:
 
     void flip();
     void flip_back();
+
+    inline auto& getCorrelation() { correlate(); return correlation; }
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }

@@ -9,6 +9,7 @@
 
 #include "gui/parameters_widget.hpp"
 #include "spinsystem.hpp"
+#include "histogram.hpp"
 #include "acceptance.hpp"
 #include "lib/enhance.hpp"
 #include <QDebug>
@@ -23,9 +24,10 @@ class MonteCarloHost
 {
     ParametersWidget* parameters = Q_NULLPTR;
     AcceptanceAdaptor* acceptance = nullptr;
-    std::vector<float> trajectory {};
-    std::vector<float> correlation {};
-    Spinsystem spinsystem {};
+    std::vector<float>  trajectory {};
+    std::vector<float>  correlation {};
+    Spinsystem          spinsystem {};
+    std::vector<histogram<float>> correlations {};
     
 protected:
     
