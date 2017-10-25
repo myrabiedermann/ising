@@ -17,6 +17,7 @@ void Spinsystem::setup()
 
     spins.clear();
     lastFlipped.clear();
+    correlation.clear();
     Hamiltonian = 0;
 
     // safety check:
@@ -241,7 +242,6 @@ void Spinsystem::flip_back()
 
 void Spinsystem::print(std::ostream & stream) const
 {
-    qDebug() << __PRETTY_FUNCTION__ << '\n';
     // print spinarray to stream
     for(const auto& s: spins)
     {
@@ -254,7 +254,6 @@ void Spinsystem::print(std::ostream & stream) const
 
 std::string Spinsystem::str() const
 {
-    qDebug() << __PRETTY_FUNCTION__ << '\n';
     // print spinarray to stream
     std::stringstream sstream;
     for(const auto& s: spins)
@@ -270,8 +269,6 @@ std::string Spinsystem::str() const
 
 const char* Spinsystem::c_str() const
 {
-    qDebug() << __PRETTY_FUNCTION__ << '\n';
-
     return this->str().c_str();
 }
 
@@ -286,8 +283,9 @@ float Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
     c = _spin2.get_ID() % getWidth();
     d = _spin2.get_ID() / getWidth();
 
-    x = (c - a <= static_cast<int>(getWidth()/2) ? c - a : c - a - getWidth());
-    y = (d - b <= static_cast<int>(getHeight()/2) ? d - b : d - b - getHeight());
+
+    x = (std::abs(c - a) <= static_cast<int>(getWidth()/2) ? std::abs(c - a) : std::abs(c - a) - getWidth());
+    y = (std::abs(d - b) <= static_cast<int>(getHeight()/2) ? std::abs(d - b) : std::abs(d - b) - getHeight());
 
     return  std::sqrt( x*x + y*y );
 }
@@ -296,22 +294,25 @@ float Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
 void Spinsystem::correlate()
 {
-    // recompute correlations between spins
+    // compute correlations between spins
 
     correlation.reset();
+    int counter = 0;
 
     for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
     {
         for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
         {
-            std::cout << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : ";
+            std::cout << "correlating " << std::setw(2) << s1->get_ID() << " with " << std::setw(2) << s2->get_ID() << " : ";
             if( s1->get_type() == s2->get_type() )
             {
                 correlation.add_data( distance(*s1, *s2));
                 std::cout << " 1 ";
             }
-            std::cout << std::endl;
+            else std::cout << "   ";
+            std::cout << " distance " << distance(*s1, *s2) << std::endl;
+            counter ++;
         }
     }
-
+    correlation.normalise( (getWidth() * getHeight()) * ((getWidth() * getHeight()) - 1) / 2);
 }

@@ -25,7 +25,6 @@ class MonteCarloHost
     ParametersWidget* parameters = Q_NULLPTR;
     AcceptanceAdaptor* acceptance = nullptr;
     std::vector<float>  trajectory {};
-    std::vector<float>  correlation {};
     Spinsystem          spinsystem {};
     std::vector<histogram<float>> correlations {};
     
@@ -41,9 +40,9 @@ public:
     void setParameters(ParametersWidget*);
     void setAcceptance(AcceptanceAdaptor*);
     
-    const Spinsystem& getSpinsystem() const;
-    const decltype(trajectory)& getTrajectory() const;
-    const decltype(trajectory)& getCorrelation() const;
+    const Spinsystem&               getSpinsystem() const;
+    const decltype(trajectory)&     getTrajectory() const;
+    const decltype(correlations)&   getCorrelations() const;
     
     void run(const unsigned long&);
     

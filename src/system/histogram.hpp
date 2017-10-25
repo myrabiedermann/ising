@@ -11,13 +11,13 @@ struct Bin
 {
     typedef T type;
 
-    Bin(const T& _value, const int& _counter = 0);
+    Bin(const T& _value, const float& _counter = 0);
 
     T value;
-    int counter;
+    float counter;
 
     // check if _val fits and if it does, increment counter
-    constexpr inline bool operator()(const T& _val, const int& _increment = 1)
+    constexpr inline bool operator()(const T& _val, const float& _increment = 1)
     {
         const bool increase = (_val == value);
         if( increase ) counter += _increment;
@@ -33,7 +33,7 @@ struct Bin
 };
 
 template <typename T>
-inline Bin<T>::Bin(const T& _value, const int& _counter)
+inline Bin<T>::Bin(const T& _value, const float& _counter)
   : value(_value)
   , counter(_counter)
 {}
@@ -46,9 +46,9 @@ struct histogram
 {
     typedef T type;
 
-    void add_bin(const T&, const int& = 0);
+    void add_bin(const T&, const float& = 0);
     void add_data(const T&);
-    void add_data(const T&, const int&);
+    void add_data(const T&, const float&);
     auto get_data(const T&);
 
     std::string formatted_string() const;
@@ -59,8 +59,9 @@ struct histogram
     inline auto num_bins()       const { return bins.size(); }
     inline auto minimum()        const { return min; }
     inline auto maximum()        const { return max; }
-    inline auto reset(const int& i = 0) { std::for_each(bins.begin(), bins.end(), [&i](auto& B) { B.counter = i;} ); }
+    inline auto reset(const float& i = 0) { std::for_each(bins.begin(), bins.end(), [&i](auto& B) { B.counter = i;} ); }
     inline auto clear()           { bins.clear(); min = 0; max = 0; }
+    inline auto normalise(const float& v) { std::for_each(bins.begin(), bins.end(), [&v](auto& B) { B.counter /= v; }); }
 
     inline auto begin()          const   { return bins.begin(); }
     inline auto begin()                  { return bins.begin(); }
@@ -79,7 +80,7 @@ protected:
 
 
 template<typename T>
-void histogram<T>::add_bin(const T& _value, const int& _counter)
+void histogram<T>::add_bin(const T& _value, const float& _counter)
 {
     if( bins.size() == 0 )
     {
@@ -109,7 +110,7 @@ inline void histogram<T>::add_data(const T& _data)
 
 
 template<typename T>
-inline void histogram<T>::add_data(const T& _data,  const int& _increment)
+inline void histogram<T>::add_data(const T& _data,  const float& _increment)
 {
     for( auto& B : bins )
         if (B(_data, _increment)) break;
@@ -143,7 +144,7 @@ inline std::string histogram<T>::formatted_string() const
     std::ostringstream STREAM;
     for( auto& B : bins )
         STREAM << std::setw(10) << std::setprecision(3) << B.value
-               << std::setw(20) << B.counter << '\n';
+               << std::setw(20) << std::setprecision(4) << B.counter << '\n';
     return STREAM.str();
 }
 

@@ -31,6 +31,8 @@ void MonteCarloHost::setParameters(ParametersWidget* prms)
 
 void MonteCarloHost::setup()
 {
+    qDebug() << __PRETTY_FUNCTION__ << '\n';
+    
     Q_CHECK_PTR(parameters);
     
     spinsystem.setParameters(parameters);
@@ -87,6 +89,10 @@ void MonteCarloHost::run(const unsigned long& steps)
             correlations.push_back(spinsystem.getCorrelation());
         }
     }
+
+    // testing:
+    print_correlation();
+    print_trajectory();
 }
 
 
@@ -108,12 +114,10 @@ void MonteCarloHost::print_correlation()
 {
     Q_CHECK_PTR(parameters);
     
-    std::ofstream FILE("correlation");
-    FILE << std::setw(10) << "# time" << std::setw(10) << "< s_i s_j >\n";
-    for(unsigned int t=0; t<correlation.size(); ++t)
-    {
-        FILE << std::setw(10) << t*parameters->getPrintFreq() << std::setw(10) << correlation[t] << '\n';
-    }
+    std::stringstream filename;
+    filename << "correlation-" << (correlations.size()-1)*parameters->getPrintFreq();
+    std::ofstream FILE(filename.str());
+    FILE << correlations.back().formatted_string();
     FILE.close();
 }
 
@@ -125,9 +129,9 @@ auto MonteCarloHost::getTrajectory() const -> const decltype(MonteCarloHost::tra
 }
 
 
-auto MonteCarloHost::getCorrelation() const -> const decltype(MonteCarloHost::correlation)&
+auto MonteCarloHost::getCorrelations() const -> const decltype(MonteCarloHost::correlations)&
 {
-    return correlation;
+    return correlations;
 }
 
 
