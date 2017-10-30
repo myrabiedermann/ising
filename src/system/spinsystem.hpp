@@ -27,6 +27,7 @@ class Spinsystem
     float distance(const Spin&, const Spin&) const;
     void  correlate();
 
+
 public:
     Spinsystem()  {};
     ~Spinsystem() {};
@@ -35,11 +36,15 @@ public:
 
     void setParameters(ParametersWidget*);
     void setup();
+    void randomise();
 
     void flip();
     void flip_back();
 
     inline auto& getCorrelation() { correlate(); return correlation; }
+    inline float getMagnetisation() const;
+    inline float getMagnetisationSquared() const;
+    inline float getSusceptibility() const;
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
@@ -64,4 +69,25 @@ constexpr inline int Spinsystem::num() const
     {
         return S.get_type() == T ? i+1 : i;
     });
+}
+
+
+inline float Spinsystem::getMagnetisation() const
+{
+    // return average magnetisation: <M> = 1/N sum( S_i )
+    return ( 1.f * num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size();
+}
+
+
+inline float Spinsystem::getMagnetisationSquared() const
+{
+    // return average magnetisation squared: <M^2> = 1/N sum( S_i*S_i )
+    return ( 1.f * num<SPINTYPE::UP>() + num<SPINTYPE::DOWN>() ) / spins.size();
+}
+
+
+inline float Spinsystem::getSusceptibility() const
+{
+    // return susceptibility: chi = dM/dB = ( <M^2> - <M>^2 ) / ( k_b * T )
+    return ( getMagnetisationSquared() - getMagnetisation()*getMagnetisation() ) / parameters->getTemperature();
 }

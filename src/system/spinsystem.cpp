@@ -18,7 +18,6 @@ void Spinsystem::setup()
     spins.clear();
     lastFlipped.clear();
     correlation.clear();
-    Hamiltonian = 0;
 
     // safety check:
     if( parameters->getConstrained() && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
@@ -57,7 +56,6 @@ void Spinsystem::setup()
             while( spins[random].get_type() == DOWN );
             spins[random].set_type(DOWN);
         }
-
     }
 
     // set neighbours:
@@ -104,20 +102,20 @@ void Spinsystem::setup()
     // debugging:
     for(auto& s: spins)
     {
-        qDebug() << "spin " << s.get_ID() << " has neighbours : ";
+        qDebug() << "spin" << s.get_ID() << "has neighbours :";
         std::for_each( s.begin(), s.end(), [](const auto& N){qDebug() << N.get().get_ID() << " ";} );
-        qDebug() << "\n";
     }
+    qDebug() << ' ';
 
     // calculate initial Hamiltonian:
     Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<float>(0), [&](float i, const Spin& S)
                         {
                             return i + local_energy(S);
                         }) / 2;
-    qDebug() << "initial H =  " << Hamiltonian << '\n';
+    qDebug() << "initial H = " << Hamiltonian;
+    qDebug() << ' ';
 
     // set bins in correlations:
-    std::cout << "setting possible distance values" << std::endl;
     for(unsigned int i=0; i<=parameters->getWidth()/2; ++i)
     {
         for(unsigned int j=i; j<=parameters->getHeight()/2; ++j)
@@ -126,9 +124,60 @@ void Spinsystem::setup()
                  correlation.add_bin( std::sqrt(i*i+j*j));
         }
     }
-    std::cout << correlation.formatted_string() << std::endl;
-    correlate();
-    std::cout << correlation.formatted_string() << std::endl;
+    qDebug() << "possible distance values: ";
+    qDebug() << correlation.formatted_string().c_str();
+    qDebug() << ' ';
+
+    // testing susceptibility:
+    // qDebug() << "<M> =" << getMagnetisation();
+    // qDebug() << "<M^2> =" << getMagnetisationSquared();
+    // qDebug() << "chi =" << getSusceptibility();
+    // qDebug() << ' ';
+}
+
+/***************************************************************************/
+
+void Spinsystem::randomise() 
+{
+    // randomly set types of all spins new
+    int random;
+    if( ! parameters->getConstrained() ) // initialise spins randomly
+    {
+        for( auto& s: spins )
+        {
+            random = enhance::random_int(0,1);
+            s.set_type( random == 1 ? UP : DOWN );
+        }
+    }                   // constrain: # spin up == # spin down
+    else
+    {
+        for( auto& s: spins ) 
+        {
+            s.set_type( UP );
+        }
+        for(unsigned int i=0; i<spins.size()/2; ++i)
+        {
+            do
+            {
+                random = enhance::random_int(0, spins.size()-1);
+            }
+            while( spins[random].get_type() == DOWN );
+            spins[random].set_type(DOWN);
+        }
+    }
+
+    // clear / reset all vectors: 
+    lastFlipped.clear();
+    correlation.reset();
+    
+    // calculate initial Hamiltonian:
+    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<float>(0), [&](float i, const Spin& S)
+    {
+        return i + local_energy(S);
+    }) / 2;
+    qDebug() << "initial H = " << Hamiltonian;
+    qDebug() << ' ';
+
 }
 
 /***************************************************************************/
@@ -207,7 +256,7 @@ void Spinsystem::flip()
 #ifndef NDEBUG
     qDebug() << "flipping spin: ";
     for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
-    qDebug() << "\n";
+    qDebug() << ' ';
 #endif
 }
 
@@ -233,7 +282,7 @@ void Spinsystem::flip_back()
 // #ifndef NDEBUG
     qDebug() << "flipping back: ";
     for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
-    qDebug() << "\n";
+    qDebug() << ' ';
 // #endif
 
 }
@@ -246,7 +295,7 @@ void Spinsystem::print(std::ostream & stream) const
     for(const auto& s: spins)
     {
         stream << ( s.get_type() == DOWN ? "-" : "+" )
-        << ( (static_cast<unsigned int long>(s.get_ID() + 1)) % parameters->getWidth() == 0 ? "\n" : " ");
+        << ( (static_cast<unsigned int long>(s.get_ID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
     }
 }
 
@@ -296,6 +345,7 @@ void Spinsystem::correlate()
 {
     // compute correlations between spins
 
+    qDebug() << "computing correlation <Si Sj>:\n";
     correlation.reset();
     int counter = 0;
 
@@ -303,14 +353,14 @@ void Spinsystem::correlate()
     {
         for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
         {
-            std::cout << "correlating " << std::setw(2) << s1->get_ID() << " with " << std::setw(2) << s2->get_ID() << " : ";
+            qDebug() << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : ";
             if( s1->get_type() == s2->get_type() )
             {
                 correlation.add_data( distance(*s1, *s2));
-                std::cout << " 1 ";
+                qDebug() << " 1 ";
             }
-            else std::cout << "   ";
-            std::cout << " distance " << distance(*s1, *s2) << std::endl;
+            else qDebug() << "   ";
+            qDebug() << " distance " << distance(*s1, *s2) << '\n';
             counter ++;
         }
     }

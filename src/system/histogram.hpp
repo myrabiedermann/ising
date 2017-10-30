@@ -52,6 +52,7 @@ struct histogram
     auto get_data(const T&);
 
     std::string formatted_string() const;
+    
     void        print_to_file (const std::string&) const;
 
     float meanHeight() const;

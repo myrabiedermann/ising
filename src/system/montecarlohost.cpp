@@ -86,13 +86,13 @@ void MonteCarloHost::run(const unsigned long& steps)
         if( t % parameters->getPrintFreq() == 0 ) 
         {
             trajectory.push_back(spinsystem.getHamiltonian());
-            correlations.push_back(spinsystem.getCorrelation());
+            // correlations.push_back(spinsystem.getCorrelation());
         }
     }
 
     // testing:
-    print_correlation();
-    print_trajectory();
+    // print_correlation();
+    // print_trajectory();
 }
 
 
