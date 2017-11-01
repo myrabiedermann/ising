@@ -42,8 +42,12 @@ public:
     unsigned int getHeight() const;
     unsigned int getWidth() const;
     unsigned int getPrintFreq() const;
+    unsigned int getCorrFreq() const;
+    unsigned int getSampleFreq() const;
     unsigned long getSteps() const;
-    
+
+    double getRatio() const;
+
     bool getConstrained() const;
     bool getPrint() const;
     

@@ -24,9 +24,12 @@ class MonteCarloHost
 {
     ParametersWidget* parameters = Q_NULLPTR;
     AcceptanceAdaptor* acceptance = nullptr;
-    std::vector<float>  trajectory {};
-    Spinsystem          spinsystem {};
-    std::vector<histogram<float>> correlations {};
+    Spinsystem           spinsystem {};
+
+    std::vector<double>  trajectory {};
+    std::vector<double>  magnetisations {};
+    std::vector<double>  susceptibilities {};
+    std::vector<histogram<double>> correlations {};
     
 protected:
     
@@ -44,8 +47,9 @@ public:
     const decltype(trajectory)&     getTrajectory() const;
     const decltype(correlations)&   getCorrelations() const;
     
-    void run(const unsigned long&);
+    void run(const unsigned long&, const bool& EQUIL = false);
     
     void print_trajectory();
     void print_correlation();
+    void print_data();
 };

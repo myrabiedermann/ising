@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     
     // ### averageSpinChart
     {
-        averageSpinChart->setTitle("Average Spin");
+        averageSpinChart->setTitle("<M>");
         averageSpinChart->setMinimumHeight(200);
         averageSpinChart->setMinimumWidth(700);
         
@@ -88,10 +88,11 @@ MainWindow::MainWindow(QWidget *parent) :
             averageSpinChart->draw
             (
                 steps, 
-                (double)(  
-                    system.getSpinsystem().num<SPINTYPE::UP>()-
-                    system.getSpinsystem().num<SPINTYPE::DOWN>()
-                )/prmsWidget->getWidth()/prmsWidget->getHeight() 
+                // (double)(  
+                    // system.getSpinsystem().num<SPINTYPE::UP>()-
+                    // system.getSpinsystem().num<SPINTYPE::DOWN>()
+                // )/prmsWidget->getWidth()/prmsWidget->getHeight() 
+                system.getSpinsystem().getMagnetisation()
             );
         });
     }

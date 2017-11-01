@@ -52,9 +52,6 @@ ParametersWidget::ParametersWidget(QWidget *parent)
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::criticalValueChanged );
     
 
-    // myra: attempt to connect contrainedBox with magneticSpinBox (constrained --> magnetic = 0)
-    // connect( constrainedBox    , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), magneticSpinBox, &QSpinBox::setValue(0) );
-
     adjustSize();
     setLayout(mainLayout);
 }
@@ -78,11 +75,11 @@ QGroupBox * ParametersWidget::createSystemBox()
     QGroupBox* labelBox = new QGroupBox("System Parameters");
 
     // default texts for LineEdits
-    interactionSpinBox->setMinimum(-10);
-    interactionSpinBox->setMaximum(10);
-    interactionSpinBox->setDecimals(1);
+    interactionSpinBox->setMinimum(-3);
+    interactionSpinBox->setMaximum(3);
+    interactionSpinBox->setDecimals(0.5);
 //     interactionSpinBox->setValue(1.0);
-    interactionSpinBox->setSingleStep(0.1);
+    interactionSpinBox->setSingleStep(0.5);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     magneticSpinBox->setMinimum(-10);
@@ -100,15 +97,15 @@ QGroupBox * ParametersWidget::createSystemBox()
     temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     heightSpinBox->setMinimum(1);
-    heightSpinBox->setMaximum(500);
+    heightSpinBox->setMaximum(300);
 //     heightSpinBox->setValue(50);
-    heightSpinBox->setSingleStep(2);
+    heightSpinBox->setSingleStep(1);
     heightSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     widthSpinBox->setMinimum(1);
-    widthSpinBox->setMaximum(500);
+    widthSpinBox->setMaximum(300);
 //     widthSpinBox->setValue(50);
-    widthSpinBox->setSingleStep(2);
+    widthSpinBox->setSingleStep(1);
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 
@@ -172,7 +169,7 @@ QGroupBox * ParametersWidget::createMCBox()
     // default texts for LineEdits
     stepsSpinBox->setMinimum(0);
     stepsSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
-    stepsSpinBox->setSingleStep(1000000);
+    stepsSpinBox->setSingleStep(1000);
 //     stepsSpinBox->setValue(100000000);
     stepsSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -279,6 +276,14 @@ unsigned int ParametersWidget::getWidth() const
 }
 
 
+double ParametersWidget::getRatio() const
+{
+    // Q_CHECK_PTR(widthSpinBox);   // CHANGE !!!
+    // return widthSpinBox->value();
+    return 0.5;
+}
+
+
 
 unsigned long ParametersWidget::getSteps() const
 {
@@ -291,6 +296,20 @@ unsigned long ParametersWidget::getSteps() const
 unsigned int ParametersWidget::getPrintFreq() const
 {
     Q_CHECK_PTR(printFreqSpinBox);
+    return printFreqSpinBox->value();
+}
+
+
+unsigned int ParametersWidget::getCorrFreq() const
+{
+    Q_CHECK_PTR(printFreqSpinBox);  // CHANGE !!
+    return printFreqSpinBox->value();
+}
+
+
+unsigned int ParametersWidget::getSampleFreq() const
+{
+    Q_CHECK_PTR(printFreqSpinBox);  // CHANGE !!
     return printFreqSpinBox->value();
 }
 

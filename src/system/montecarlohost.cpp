@@ -40,6 +40,10 @@ void MonteCarloHost::setup()
     
     trajectory.clear();
     trajectory.push_back(spinsystem.getHamiltonian());
+
+    magnetisations.clear();
+    susceptibilities.clear();
+    correlations.clear();
     
     qDebug() << "initial: H = " << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();
@@ -49,7 +53,7 @@ void MonteCarloHost::setup()
 
 
 
-void MonteCarloHost::run(const unsigned long& steps)
+void MonteCarloHost::run(const unsigned long& steps, const bool& EQUIL)
 {
     Q_CHECK_PTR(parameters);
     assert(acceptance);
@@ -81,18 +85,27 @@ void MonteCarloHost::run(const unsigned long& steps)
             #endif
         }
         
-        
-        // save to trajectory
-        if( t % parameters->getPrintFreq() == 0 ) 
+        if( !EQUIL )
         {
-            trajectory.push_back(spinsystem.getHamiltonian());
-            // correlations.push_back(spinsystem.getCorrelation());
+            // save to trajectory
+            if( t % parameters->getPrintFreq() == 0 ) 
+            {
+                trajectory.push_back(spinsystem.getHamiltonian());
+            }
+            // save correlation
+            if( t % parameters->getCorrFreq() == 0 )
+            {
+                correlations.push_back(spinsystem.getCorrelation());
+            }
+            // save data
+            if( t % parameters->getSampleFreq() == 0 )
+            {
+                magnetisations.push_back(spinsystem.getMagnetisation());
+                susceptibilities.push_back(spinsystem.getSusceptibility());
+            }
         }
     }
 
-    // testing:
-    // print_correlation();
-    // print_trajectory();
 }
 
 
@@ -100,7 +113,7 @@ void MonteCarloHost::print_trajectory()
 {
     Q_CHECK_PTR(parameters);
     
-    std::ofstream STREAM("trajectory");
+    std::ofstream STREAM("ising.trajectory");
     STREAM << std::setw(10) << "# time" << std::setw(6) << "Hamiltonian\n";
     for(unsigned int t=0; t<trajectory.size(); ++t)
     {
@@ -115,9 +128,43 @@ void MonteCarloHost::print_correlation()
     Q_CHECK_PTR(parameters);
     
     std::stringstream filename;
-    filename << "correlation-" << (correlations.size()-1)*parameters->getPrintFreq();
+    filename << "ising.correlation-" << (correlations.size()-1)*parameters->getPrintFreq();
     std::ofstream FILE(filename.str());
     FILE << correlations.back().formatted_string();
+    FILE.close();
+}
+
+
+void MonteCarloHost::print_data()
+{
+    // save to file: J temperature B <M> <chi>
+
+    Q_CHECK_PTR(parameters);
+
+    std::ofstream FILE;
+    if( ! enhance::fileExists("ising.data") )
+    {
+        // print header line
+        FILE.open("ising.data");
+        FILE << std::setw(8) << "# J"
+             << std::setw(8) << "T"
+             << std::setw(8) << "B"
+             << std::setw(8) << "<M>"
+             << std::setw(8) << "<chi>"
+             << '\n';
+    }
+    else
+    {
+        FILE.open("ising.data", std::ios::app);
+    }
+
+    FILE << std::setw(8) << parameters->getInteraction()
+         << std::setw(8) << parameters->getTemperature()
+         << std::setw(8) << parameters->getMagnetic()
+         << std::setw(8) << std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0) / magnetisations.size()
+         << std::setw(8) << std::accumulate(std::begin(susceptibilities), std::end(susceptibilities), 0) / susceptibilities.size()
+         << '\n';
+
     FILE.close();
 }
 

@@ -42,12 +42,12 @@ void Spinsystem::setup()
             random = enhance::random_int(0,1);
             spins.emplace_back(i, random == 1 ? UP : DOWN );
         }
-    }                   // constrain: # spin up == # spin down
+    }                   // constrained to specific up-spin to down-spin ratio
     else
     {
         for(unsigned int i=0; i<totalnumber; ++i)
             spins.emplace_back(i, UP);
-        for(unsigned int i=0; i<totalnumber/2; ++i)
+        for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * totalnumber); ++i)
         {
             do
             {
@@ -108,7 +108,7 @@ void Spinsystem::setup()
     qDebug() << ' ';
 
     // calculate initial Hamiltonian:
-    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<float>(0), [&](float i, const Spin& S)
+    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
                         {
                             return i + local_energy(S);
                         }) / 2;
@@ -148,14 +148,12 @@ void Spinsystem::randomise()
             random = enhance::random_int(0,1);
             s.set_type( random == 1 ? UP : DOWN );
         }
-    }                   // constrain: # spin up == # spin down
+    }                   // constrained to specific up-spin to down-spin ratio
     else
     {
         for( auto& s: spins ) 
-        {
             s.set_type( UP );
-        }
-        for(unsigned int i=0; i<spins.size()/2; ++i)
+        for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * spins.size()); ++i)
         {
             do
             {
@@ -171,7 +169,7 @@ void Spinsystem::randomise()
     correlation.reset();
     
     // calculate initial Hamiltonian:
-    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<float>(0), [&](float i, const Spin& S)
+    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
     {
         return i + local_energy(S);
     }) / 2;
@@ -182,12 +180,12 @@ void Spinsystem::randomise()
 
 /***************************************************************************/
 
-float Spinsystem::local_energy(const Spin& _spin) const
+double Spinsystem::local_energy(const Spin& _spin) const
 {
     // calculate local energy for given spin
     
-    float energy = - Jij(SPINTYPE::UP, _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
-                   - Jij(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>();
+    double energy = - Jij(SPINTYPE::UP, _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
+                    - Jij(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>();
     energy -= parameters->getMagnetic() * (_spin.get_type() == SPINTYPE::UP ? 2.f : -2.f);
     qDebug() << "spin # " << _spin.get_ID() << "  has local energy " << energy;
     return energy;
@@ -195,7 +193,7 @@ float Spinsystem::local_energy(const Spin& _spin) const
 
 /***************************************************************************/
 
-float Spinsystem::Jij(const SPINTYPE _spin1, const SPINTYPE _spin2) const
+double Spinsystem::Jij(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
     
@@ -210,8 +208,8 @@ float Spinsystem::Jij(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 void Spinsystem::flip()
 {
     lastFlipped.clear();
-    float localEnergy_before = 0.f;
-    float localEnergy_after = 0.f;
+    double localEnergy_before = 0.f;
+    double localEnergy_after = 0.f;
 
     if( ! parameters->getConstrained() )
     {
@@ -279,11 +277,9 @@ void Spinsystem::flip_back()
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
 
-// #ifndef NDEBUG
     qDebug() << "flipping back: ";
     for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
     qDebug() << ' ';
-// #endif
 
 }
 
@@ -303,13 +299,8 @@ void Spinsystem::print(std::ostream & stream) const
 
 std::string Spinsystem::str() const
 {
-    // print spinarray to stream
     std::stringstream sstream;
-    for(const auto& s: spins)
-    {
-        sstream << ( s.get_type() == DOWN ? "-" : "+" )
-        << ( (static_cast<unsigned int long>(s.get_ID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
-    }
+    sstream << *this;
     
     return sstream.str(); 
 }
@@ -318,13 +309,14 @@ std::string Spinsystem::str() const
 
 const char* Spinsystem::c_str() const
 {
-    return this->str().c_str();
+    return str().c_str();
 }
 
 /***************************************************************************/
 
-float Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
+double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 {
+    // compute distance between spins _spin1 and _spin2
     int a, b, c, d, x, y;
 
     a = _spin1.get_ID() % getWidth();

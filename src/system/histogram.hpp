@@ -74,7 +74,7 @@ struct histogram
 protected:
     T min = 0;
     T max = 0;
-    std::vector<Bin<T>> bins;
+    std::vector<Bin<T>> bins {};
 
 };
 

@@ -7,6 +7,7 @@
 #include <iterator>
 #include <type_traits>
 #include <string>
+#include <sys/stat.h>
 
 // to be able to pass my own class objects to a stream via << :
 template<typename T>
@@ -54,6 +55,10 @@ namespace enhance
             return std::begin(_container) + dist(rand_engine);
         }
     } random_iterator __attribute__((unused));
+
+
+    // check if a file exists
+    bool fileExists(const std::string&);
 }
 
 

@@ -20,4 +20,16 @@ namespace enhance
         std::uniform_int_distribution<int> intdistribution(a,b);
         return intdistribution(rand_engine);
     }
+
+    
+    // check if a file exists
+    bool fileExists(const std::string& filename)
+    {
+        struct stat buf;
+        if (stat(filename.c_str(), &buf) != -1)
+        {
+            return true;
+        }
+        return false;
+    }
 }

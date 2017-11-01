@@ -16,16 +16,16 @@
 
 class Spinsystem
 {
-    float Hamiltonian = 0;
+    double Hamiltonian = 0;
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
     ParametersWidget* parameters = Q_NULLPTR;
-    histogram<float>  correlation {};
+    histogram<double>  correlation {};
 
-    float local_energy(const Spin&) const;
-    float Jij(const SPINTYPE, const SPINTYPE) const;
-    float distance(const Spin&, const Spin&) const;
-    void  correlate();
+    double local_energy(const Spin&) const;
+    double Jij(const SPINTYPE, const SPINTYPE) const;
+    double distance(const Spin&, const Spin&) const;
+    void   correlate();
 
 
 public:
@@ -42,9 +42,9 @@ public:
     void flip_back();
 
     inline auto& getCorrelation() { correlate(); return correlation; }
-    inline float getMagnetisation() const;
-    inline float getMagnetisationSquared() const;
-    inline float getSusceptibility() const;
+    inline double getMagnetisation() const;
+    inline double getMagnetisationSquared() const;
+    inline double getSusceptibility() const;
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
@@ -72,21 +72,21 @@ constexpr inline int Spinsystem::num() const
 }
 
 
-inline float Spinsystem::getMagnetisation() const
+inline double Spinsystem::getMagnetisation() const
 {
     // return average magnetisation: <M> = 1/N sum( S_i )
-    return ( 1.f * num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size();
+    return ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size();
 }
 
 
-inline float Spinsystem::getMagnetisationSquared() const
+inline double Spinsystem::getMagnetisationSquared() const
 {
     // return average magnetisation squared: <M^2> = 1/N sum( S_i*S_i )
-    return ( 1.f * num<SPINTYPE::UP>() + num<SPINTYPE::DOWN>() ) / spins.size();
+    return ( (double) num<SPINTYPE::UP>() + num<SPINTYPE::DOWN>() ) / spins.size();
 }
 
 
-inline float Spinsystem::getSusceptibility() const
+inline double Spinsystem::getSusceptibility() const
 {
     // return susceptibility: chi = dM/dB = ( <M^2> - <M>^2 ) / ( k_b * T )
     return ( getMagnetisationSquared() - getMagnetisation()*getMagnetisation() ) / parameters->getTemperature();
