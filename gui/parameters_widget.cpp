@@ -6,11 +6,13 @@
     Q_CHECK_PTR(temperatureSpinBox); \
     Q_CHECK_PTR(heightSpinBox);      \
     Q_CHECK_PTR(widthSpinBox);       \
+    Q_CHECK_PTR(stepsEquilSpinBox);  \
+    Q_CHECK_PTR(stepsProdSpinBox);   \
     Q_CHECK_PTR(printFreqSpinBox);   \
-    Q_CHECK_PTR(stepsSpinBox);       \
-    Q_CHECK_PTR(applyBtn);           \
+    Q_CHECK_PTR(randomiseBtn);       \
     Q_CHECK_PTR(constrainedBox);     \
-    Q_CHECK_PTR(printBox);           \
+    Q_CHECK_PTR(printDataBox);       \
+    Q_CHECK_PTR(printAverBox);       \
 
 
 ParametersWidget::ParametersWidget(QWidget *parent)
@@ -26,23 +28,30 @@ ParametersWidget::ParametersWidget(QWidget *parent)
 
     // add Box with Line Edits
     mainLayout->addWidget(createSystemBox());
-    mainLayout->addWidget(createMCBox());
-    mainLayout->addWidget(createOutputBox());
+    mainLayout->addWidget(createEquilBox());
+    mainLayout->addWidget(createProdBox());
     setDefault();
 
     // add applyBtn
-    applyBtn->setFocusPolicy(Qt::NoFocus);
-    connect(applyBtn, &QPushButton::clicked, this, &ParametersWidget::applyValues);
-    mainLayout->addWidget(applyBtn);
+    // applyBtn->setFocusPolicy(Qt::NoFocus);
+    // connect(applyBtn, &QPushButton::clicked, this, &ParametersWidget::applyValues);
+    // mainLayout->addWidget(applyBtn);
+    
+    // add randomiseBtn
+    randomiseBtn->setFocusPolicy(Qt::NoFocus);
+    connect(randomiseBtn, &QPushButton::clicked, this, &ParametersWidget::randomiseSystem);
+    mainLayout->addWidget(randomiseBtn);
 
     // https://stackoverflow.com/a/16795664
     connect( interactionSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( magneticSpinBox   , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( temperatureSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( stepsEquilSpinBox , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
+    connect( stepsProdSpinBox  , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
-    connect( stepsSpinBox      , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &ParametersWidget::valueChanged );
     connect( constrainedBox    , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
-    connect( printBox          , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
+    connect( printDataBox      , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
+    connect( printAverBox      , &QCheckBox::stateChanged, this, &ParametersWidget::valueChanged );
 
     // connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), widthSpinBox, &QSpinBox::setValue );
     // connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), heightSpinBox, &QSpinBox::setValue );
@@ -72,12 +81,12 @@ QGroupBox * ParametersWidget::createSystemBox()
     PARAMETERS_WIDGET_ASSERT_ALL
 
     // the group
-    QGroupBox* labelBox = new QGroupBox("System Parameters");
+    QGroupBox* labelBox = new QGroupBox("System parameters");
 
     // default texts for LineEdits
     interactionSpinBox->setMinimum(-3);
     interactionSpinBox->setMaximum(3);
-    interactionSpinBox->setDecimals(0.5);
+    interactionSpinBox->setDecimals(1);
 //     interactionSpinBox->setValue(1.0);
     interactionSpinBox->setSingleStep(0.5);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -114,11 +123,11 @@ QGroupBox * ParametersWidget::createSystemBox()
     // align content
     formLayout->setLabelAlignment(Qt::AlignLeft);
     // add Line Edits
+    formLayout->addRow("width",widthSpinBox);
+    formLayout->addRow("height",heightSpinBox);
     formLayout->addRow("J",interactionSpinBox);
-    formLayout->addRow("H",magneticSpinBox);
+    formLayout->addRow("B",magneticSpinBox);
     formLayout->addRow("Temperature",temperatureSpinBox);
-    formLayout->addRow("System Height",heightSpinBox);
-    formLayout->addRow("System Width",widthSpinBox);
     formLayout->addWidget(constrainedBox);
 
     // set group layout
@@ -129,56 +138,59 @@ QGroupBox * ParametersWidget::createSystemBox()
 
 
 
-QGroupBox * ParametersWidget::createOutputBox()
+QGroupBox* ParametersWidget::createEquilBox()
 {
     qDebug() << __PRETTY_FUNCTION__;
     PARAMETERS_WIDGET_ASSERT_ALL
 
     // the group
-    QGroupBox* labelBox = new QGroupBox("Output Parameters");
+    QGroupBox* labelBox = new QGroupBox("Equilibration parameters");
+
+    // default texts for LineEdits
+    stepsEquilSpinBox->setMinimum(0);
+    stepsEquilSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
+    stepsEquilSpinBox->setSingleStep(1000);
+    stepsEquilSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    // the layout
+    QFormLayout* formLayout = new QFormLayout();
+    formLayout->setLabelAlignment(Qt::AlignVCenter);
+    formLayout->addRow("Equilibration steps",stepsEquilSpinBox);
+
+    // set group layout
+    labelBox->setLayout(formLayout);
+
+    return labelBox;
+}
+
+
+
+QGroupBox* ParametersWidget::createProdBox()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
+
+    // the group
+    QGroupBox* labelBox = new QGroupBox("Production parameters");
 
     // default texts for LineEdits
     printFreqSpinBox->setMinimum(0);
-    printFreqSpinBox->setMaximum(100000);
-    printFreqSpinBox->setSingleStep(100);
-//     printFreqSpinBox->setValue(1000);
+    printFreqSpinBox->setMaximum(1000000);
+    printFreqSpinBox->setSingleStep(10);
     printFreqSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    // the layout
-    QFormLayout* formLayout = new QFormLayout();
-    formLayout->setLabelAlignment(Qt::AlignLeft);
-    formLayout->addRow("Print every",printFreqSpinBox);
-    formLayout->addWidget(printBox);
-
-    // set group layout
-    labelBox->setLayout(formLayout);
-
-    return labelBox;
-}
-
-
-
-QGroupBox * ParametersWidget::createMCBox()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-    PARAMETERS_WIDGET_ASSERT_ALL
-
-    // the group
-    QGroupBox* labelBox = new QGroupBox("Monte Carlo Parameters");
-
-    // default texts for LineEdits
-    stepsSpinBox->setMinimum(0);
-    stepsSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
-    stepsSpinBox->setSingleStep(1000);
-//     stepsSpinBox->setValue(100000000);
-    stepsSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
+    stepsProdSpinBox->setMinimum(0);
+    stepsProdSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
+    stepsProdSpinBox->setSingleStep(1000);
+    stepsProdSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     // the layout
     QFormLayout* formLayout = new QFormLayout();
-    formLayout->setLabelAlignment(Qt::AlignLeft);
-    formLayout->addRow("Simulation Steps",stepsSpinBox);
-    formLayout->addWidget(constrainedBox);
+    formLayout->setLabelAlignment(Qt::AlignHCenter);
+    formLayout->addRow("Production steps",stepsProdSpinBox);
+    formLayout->addWidget(printDataBox);
+    formLayout->addWidget(printAverBox);
+    formLayout->addRow("save every ...", printFreqSpinBox); 
 
 
     // set group layout
@@ -189,11 +201,23 @@ QGroupBox * ParametersWidget::createMCBox()
 
 
 
-void ParametersWidget::applyValues()
+
+// void ParametersWidget::applyValues()
+// {
+//     qDebug() << __PRETTY_FUNCTION__;
+//     PARAMETERS_WIDGET_ASSERT_ALL
+//     qInfo() << "Apply button was hit!";
+//     emit valueChanged();
+// }
+
+
+
+void ParametersWidget::randomiseSystem()
 {
     qDebug() << __PRETTY_FUNCTION__;
     PARAMETERS_WIDGET_ASSERT_ALL
-    qInfo() << "I hope this button makes you feel better :)";
+    qInfo() << "Randomise button was hit!";
+    emit randomise();
 }
 
 
@@ -209,11 +233,14 @@ void ParametersWidget::setReadOnly(bool flag)
     temperatureSpinBox->setReadOnly(flag);
     heightSpinBox->setReadOnly(flag);
     widthSpinBox->setReadOnly(flag);
+    stepsEquilSpinBox->setReadOnly(flag);
+    stepsProdSpinBox->setReadOnly(flag);
     printFreqSpinBox->setReadOnly(flag);
-    stepsSpinBox->setReadOnly(flag);
-    applyBtn->setEnabled(!flag);
+    // applyBtn->setEnabled(!flag);
+    randomiseBtn->setEnabled(!flag);
     constrainedBox->setEnabled(!flag);
-    printBox->setEnabled(!flag);
+    printDataBox->setEnabled(!flag);
+    printAverBox->setEnabled(!flag);
 }
 
 
@@ -224,15 +251,17 @@ void ParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     PARAMETERS_WIDGET_ASSERT_ALL
 
+    heightSpinBox->setValue(6);
+    widthSpinBox->setValue(6);
     interactionSpinBox->setValue(1.0);
     magneticSpinBox->setValue(0.0);
     temperatureSpinBox->setValue(1.0);
-    heightSpinBox->setValue(4);
-    widthSpinBox->setValue(4);
-    printFreqSpinBox->setValue(1);
-    stepsSpinBox->setValue(10);
     constrainedBox->setEnabled(true);
-    printBox->setEnabled(false);
+    stepsEquilSpinBox->setValue(1000);
+    stepsProdSpinBox->setValue(1000);
+    printFreqSpinBox->setValue(1);
+    printDataBox->setEnabled(true);
+    printAverBox->setEnabled(true);
 }
 
 
@@ -285,10 +314,18 @@ double ParametersWidget::getRatio() const
 
 
 
-unsigned long ParametersWidget::getSteps() const
+unsigned long ParametersWidget::getStepsEquil() const
 {
-    Q_CHECK_PTR(stepsSpinBox);
-    return stepsSpinBox->value();
+    Q_CHECK_PTR(stepsEquilSpinBox);
+    return stepsEquilSpinBox->value();
+}
+
+
+
+unsigned long ParametersWidget::getStepsProd() const
+{
+    Q_CHECK_PTR(stepsProdSpinBox);
+    return stepsProdSpinBox->value();
 }
 
 
@@ -296,20 +333,6 @@ unsigned long ParametersWidget::getSteps() const
 unsigned int ParametersWidget::getPrintFreq() const
 {
     Q_CHECK_PTR(printFreqSpinBox);
-    return printFreqSpinBox->value();
-}
-
-
-unsigned int ParametersWidget::getCorrFreq() const
-{
-    Q_CHECK_PTR(printFreqSpinBox);  // CHANGE !!
-    return printFreqSpinBox->value();
-}
-
-
-unsigned int ParametersWidget::getSampleFreq() const
-{
-    Q_CHECK_PTR(printFreqSpinBox);  // CHANGE !!
     return printFreqSpinBox->value();
 }
 
@@ -323,8 +346,18 @@ bool ParametersWidget::getConstrained() const
 
 
 
-bool ParametersWidget::getPrint() const
+bool ParametersWidget::getPrintData() const
 {
-    Q_CHECK_PTR(printBox);
-    return printBox->isChecked();
+    Q_CHECK_PTR(printDataBox);
+    return printDataBox->isChecked();
 }
+
+
+
+bool ParametersWidget::getPrintAver() const
+{
+    Q_CHECK_PTR(printAverBox);
+    return printAverBox->isChecked();
+}
+
+

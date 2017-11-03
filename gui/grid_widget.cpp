@@ -96,8 +96,8 @@ QBrush GridWidget::getSpinColor(const Spin& spin)
 {
     switch (spin.get_type())
     {
-        case SPINTYPE::UP : return QBrush(Qt::red);
-        case SPINTYPE::DOWN : return QBrush(Qt::yellow);
+        case SPINTYPE::UP : return QBrush(Qt::blue);
+        case SPINTYPE::DOWN : return QBrush(Qt::gray);
         default : return QBrush(Qt::black);
     }
 }

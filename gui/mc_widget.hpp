@@ -34,17 +34,23 @@ public:
     
     bool getRunning();
     
+    void equilibrateAction();
     void runAction();
     void pauseAction();
     void abortAction();
+    void saveAction();
+    void correlateAction();
     void setParameters(ParametersWidget*);
     
 public slots:
     void setRunning(bool);
     void makeSystemNew();
+    void makeRecordsNew();
+    void randomiseSystem();
     
 signals:
     void resetSignal();
+    void resetChartSignal();
     void runningSignal(bool);
     void drawRequest(const MonteCarloHost&, const unsigned long);
     void finishedSteps(const unsigned long);
@@ -55,20 +61,24 @@ private:
     void server();
     
     ParametersWidget* prmsWidget = Q_NULLPTR;
-    QPushButton* runBtn = new QPushButton("Run",this);
+    QPushButton* equilBtn = new QPushButton("Equilibration Run",this);
+    QPushButton* runBtn = new QPushButton("Production Run",this);
     QPushButton* pauseBtn = new QPushButton("Pause",this);
-    QPushButton* abortBtn = new QPushButton("Abort",this);
+    QPushButton* abortBtn = new QPushButton("Abort + Reset",this);
+    QPushButton* saveBtn = new QPushButton("Print data",this);
+    QPushButton* correlateBtn = new QPushButton("Print correlation",this);
     
     QTimer* drawRequestTimer;
     QTimer* progressTimer;
     
 //     QFuture<void>* server_ptr = Q_NULLPTR;
     
+    std::atomic<bool> equilibration_mode {false};
     std::atomic<bool> simulation_running {false};
     std::atomic<bool> parameters_linked {false};
     
     MonteCarloHost MC {};
     
-    std::atomic<unsigned long> steps_done{0};
+    std::atomic<unsigned long> steps_done {0};
 };
 

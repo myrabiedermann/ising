@@ -48,9 +48,9 @@ private:
     ParametersWidget* prmsWidget;
     MCWidget* MCwidget;
     ChartWidget* hamiltonianChart;
-    ChartWidget* averageSpinChart;
+    ChartWidget* averageMagnetisationChart;
     
-    QProgressBar* progressBar;
+    // QProgressBar* progressBar;
     QPushButton* quitBtn = new QPushButton("Quit",this);
     
     Ui::MainWindow* ui;

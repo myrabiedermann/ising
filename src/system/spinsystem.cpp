@@ -115,24 +115,6 @@ void Spinsystem::setup()
     qDebug() << "initial H = " << Hamiltonian;
     qDebug() << ' ';
 
-    // set bins in correlations:
-    for(unsigned int i=0; i<=parameters->getWidth()/2; ++i)
-    {
-        for(unsigned int j=i; j<=parameters->getHeight()/2; ++j)
-        {
-            if( j != 0 )
-                 correlation.add_bin( std::sqrt(i*i+j*j));
-        }
-    }
-    qDebug() << "possible distance values: ";
-    qDebug() << correlation.formatted_string().c_str();
-    qDebug() << ' ';
-
-    // testing susceptibility:
-    // qDebug() << "<M> =" << getMagnetisation();
-    // qDebug() << "<M^2> =" << getMagnetisationSquared();
-    // qDebug() << "chi =" << getSusceptibility();
-    // qDebug() << ' ';
 }
 
 /***************************************************************************/
@@ -338,23 +320,39 @@ void Spinsystem::correlate()
     // compute correlations between spins
 
     qDebug() << "computing correlation <Si Sj>:\n";
-    correlation.reset();
-    int counter = 0;
+    correlation.clear();
+
+    auto counter = correlation;
+    double dist;
 
     for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
     {
         for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
         {
-            qDebug() << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : ";
+            dist = distance(*s1, *s2);
             if( s1->get_type() == s2->get_type() )
             {
-                correlation.add_data( distance(*s1, *s2));
-                qDebug() << " 1 ";
+                if( ! correlation.contains(dist) )
+                {
+                    correlation.add_bin(dist);
+                    counter.add_bin(dist);
+                }
+                correlation.add_data( dist );
+                qDebug() << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << " 1 ";
             }
-            else qDebug() << "   ";
-            qDebug() << " distance " << distance(*s1, *s2) << '\n';
-            counter ++;
+            else 
+            {
+                qDebug() << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << "   ";
+            }
+            counter.add_data( dist );
+            qDebug() << " distance " << dist << '\n';
         }
     }
-    correlation.normalise( (getWidth() * getHeight()) * ((getWidth() * getHeight()) - 1) / 2);
+
+    // normalisation:
+    std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
+    { 
+        B.counter /= counter.get_data(B.value); 
+    });
+
 }

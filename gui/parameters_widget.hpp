@@ -36,47 +36,54 @@ public:
     
     ~ParametersWidget();
     
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
     double getInteraction() const;
     double getMagnetic() const;
     double getTemperature() const;
-    unsigned int getHeight() const;
-    unsigned int getWidth() const;
+    unsigned long getStepsEquil() const;
+    unsigned long getStepsProd() const;
     unsigned int getPrintFreq() const;
-    unsigned int getCorrFreq() const;
-    unsigned int getSampleFreq() const;
-    unsigned long getSteps() const;
-
+    
     double getRatio() const;
 
     bool getConstrained() const;
-    bool getPrint() const;
+    bool getPrintData() const;
+    bool getPrintAver() const;
     
 public slots:
     void setReadOnly(bool);
     void setDefault();
     
 signals:
-    void valueChanged();
+    void valueChanged(); 
     void criticalValueChanged();
+    void randomise();
     
 protected:
-    void applyValues();
+    // // void applyValues();
+    void randomiseSystem();
     QGroupBox* createSystemBox();
-    QGroupBox* createOutputBox();
-    QGroupBox* createMCBox();
+    QGroupBox* createEquilBox();
+    QGroupBox* createProdBox();
     
 private:
     // Line edits
+    QSpinBox* heightSpinBox = new QSpinBox(this);
+    QSpinBox* widthSpinBox = new QSpinBox(this);
     QDoubleSpinBox* interactionSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* magneticSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* temperatureSpinBox = new QDoubleSpinBox(this);
-    QSpinBox* heightSpinBox = new QSpinBox(this);
-    QSpinBox* widthSpinBox = new QSpinBox(this);
+    QtLongLongSpinBox* stepsEquilSpinBox = new QtLongLongSpinBox(this);
+    QtLongLongSpinBox* stepsProdSpinBox = new QtLongLongSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
-    QtLongLongSpinBox* stepsSpinBox = new QtLongLongSpinBox(this);
     
     // Buttons
-    QPushButton* applyBtn = new QPushButton("Apply",this);
+    // QPushButton* applyBtn = new QPushButton("Apply",this);
+    QPushButton* randomiseBtn = new QPushButton("Randomise spins", this);
+
+    // Check Box
     QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
-    QCheckBox* printBox = new QCheckBox("Save trajectory", this);
+    QCheckBox* printDataBox = new QCheckBox("Save data", this);
+    QCheckBox* printAverBox = new QCheckBox("Save averages", this);
 };

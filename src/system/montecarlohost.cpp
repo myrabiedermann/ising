@@ -29,6 +29,7 @@ void MonteCarloHost::setParameters(ParametersWidget* prms)
 }
 
 
+
 void MonteCarloHost::setup()
 {
     qDebug() << __PRETTY_FUNCTION__ << '\n';
@@ -38,12 +39,9 @@ void MonteCarloHost::setup()
     spinsystem.setParameters(parameters);
     spinsystem.setup();
     
-    trajectory.clear();
-    trajectory.push_back(spinsystem.getHamiltonian());
-
+    energies.clear();
     magnetisations.clear();
     susceptibilities.clear();
-    correlations.clear();
     
     qDebug() << "initial: H = " << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();
@@ -52,8 +50,25 @@ void MonteCarloHost::setup()
 
 
 
+void MonteCarloHost::randomiseSystem()
+{
+    qDebug() << __PRETTY_FUNCTION__ << '\n';
 
-void MonteCarloHost::run(const unsigned long& steps, const bool& EQUIL)
+    Q_CHECK_PTR(parameters);
+
+    spinsystem.randomise();
+
+    energies.clear();
+    magnetisations.clear();
+    susceptibilities.clear();
+
+    qDebug() << "initial: H =" << spinsystem.getHamiltonian();
+    qDebug() << spinsystem.c_str();
+}
+
+
+
+void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 {
     Q_CHECK_PTR(parameters);
     assert(acceptance);
@@ -84,103 +99,111 @@ void MonteCarloHost::run(const unsigned long& steps, const bool& EQUIL)
             qDebug() << spinsystem.c_str();
             #endif
         }
-        
-        if( !EQUIL )
-        {
-            // save to trajectory
-            if( t % parameters->getPrintFreq() == 0 ) 
-            {
-                trajectory.push_back(spinsystem.getHamiltonian());
-            }
-            // save correlation
-            if( t % parameters->getCorrFreq() == 0 )
-            {
-                correlations.push_back(spinsystem.getCorrelation());
-            }
-            // save data
-            if( t % parameters->getSampleFreq() == 0 )
-            {
-                magnetisations.push_back(spinsystem.getMagnetisation());
-                susceptibilities.push_back(spinsystem.getSusceptibility());
-            }
-        }
     }
-
-}
-
-
-void MonteCarloHost::print_trajectory()
-{
-    Q_CHECK_PTR(parameters);
     
-    std::ofstream STREAM("ising.trajectory");
-    STREAM << std::setw(10) << "# time" << std::setw(6) << "Hamiltonian\n";
-    for(unsigned int t=0; t<trajectory.size(); ++t)
+    if( !EQUILMODE )
     {
-        STREAM << std::setw(10) << t*parameters->getPrintFreq() << std::setw(6)  << trajectory[t] << '\n';
+        energies.push_back(spinsystem.getHamiltonian());
+        magnetisations.push_back(spinsystem.getMagnetisation());
+        susceptibilities.push_back(spinsystem.getSusceptibility());
     }
-    STREAM.close();
 }
 
-
-void MonteCarloHost::print_correlation()
-{
-    Q_CHECK_PTR(parameters);
-    
-    std::stringstream filename;
-    filename << "ising.correlation-" << (correlations.size()-1)*parameters->getPrintFreq();
-    std::ofstream FILE(filename.str());
-    FILE << correlations.back().formatted_string();
-    FILE.close();
-}
 
 
 void MonteCarloHost::print_data()
 {
-    // save to file: J temperature B <M> <chi>
-
+    // save to file:  step  J  temperature  B  H  M  chi
+    
     Q_CHECK_PTR(parameters);
-
+    
     std::ofstream FILE;
     if( ! enhance::fileExists("ising.data") )
     {
         // print header line
         FILE.open("ising.data");
-        FILE << std::setw(8) << "# J"
-             << std::setw(8) << "T"
-             << std::setw(8) << "B"
-             << std::setw(8) << "<M>"
-             << std::setw(8) << "<chi>"
-             << '\n';
+        FILE << std::setw(8) << "# step"
+        << std::setw(8) << "J"
+        << std::setw(8) << "T"
+        << std::setw(8) << "B"
+        << std::setw(8) << "H"
+        << std::setw(8) << "M"
+        << std::setw(8) << "chi"
+        << '\n';
     }
     else
     {
         FILE.open("ising.data", std::ios::app);
     }
-
-    FILE << std::setw(8) << parameters->getInteraction()
-         << std::setw(8) << parameters->getTemperature()
-         << std::setw(8) << parameters->getMagnetic()
-         << std::setw(8) << std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0) / magnetisations.size()
-         << std::setw(8) << std::accumulate(std::begin(susceptibilities), std::end(susceptibilities), 0) / susceptibilities.size()
-         << '\n';
-
+    
+    for(unsigned int i=0; i<energies.size(); ++i)
+    {
+        FILE << std::setw(8) << i*parameters->getPrintFreq()
+             << std::setw(8) << parameters->getInteraction()
+             << std::setw(8) << parameters->getTemperature()
+             << std::setw(8) << parameters->getMagnetic()
+             << std::setw(8) << energies[i]
+             << std::setw(8) << magnetisations[i]
+             << std::setw(8) << susceptibilities[i];
+        
+        FILE << '\n';
+    }
+    
     FILE.close();
 }
 
 
 
-auto MonteCarloHost::getTrajectory() const -> const decltype(MonteCarloHost::trajectory)&
+void MonteCarloHost::print_correlation()
 {
-    return trajectory;
+    // compute correlations of actual state and save to file
+
+    Q_CHECK_PTR(parameters);
+    
+    std::ofstream FILE("ising.correlation");
+    FILE << "# correlation <Si Sj>(r)\n";
+    FILE << spinsystem.getCorrelation().formatted_string();
+    FILE.close();
 }
 
 
-auto MonteCarloHost::getCorrelations() const -> const decltype(MonteCarloHost::correlations)&
-{
-    return correlations;
-}
 
+void MonteCarloHost::print_averages()
+{
+    // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>
+
+    Q_CHECK_PTR(parameters);
+
+    std::ofstream FILE;
+    if( ! enhance::fileExists("ising.averaged_data") )
+    {
+        // print header line
+        FILE.open("ising.averaged_data");
+        FILE << std::setw(10) << "J"
+             << std::setw(10) << "T"
+             << std::setw(10) << "B"
+             << std::setw(12) << "<H>"
+             << std::setw(12) << "<M>"
+             << std::setw(12) << "<chi>"
+             << std::setw(12) << "# of samples"
+             << '\n';
+    }
+    else
+    {
+        FILE.open("ising.averaged_data", std::ios::app);
+    }
+    
+    FILE << std::setw(10) << parameters->getInteraction()
+         << std::setw(10) << parameters->getTemperature()
+         << std::setw(10) << parameters->getMagnetic()
+         << std::setw(12) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(energies), std::end(energies), 0.0) / energies.size()
+         << std::setw(12) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0) / magnetisations.size()
+         << std::setw(12) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(susceptibilities), std::end(susceptibilities), 0.0) / susceptibilities.size()
+         << std::setw(12) << ( energies.size() == magnetisations.size() and energies.size() == susceptibilities.size() ? energies.size() : -1 )
+         << '\n';
+    
+    FILE.close();
+}
 
 
 
