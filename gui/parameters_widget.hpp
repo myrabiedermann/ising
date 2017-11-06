@@ -48,8 +48,8 @@ public:
     double getRatio() const;
 
     bool getConstrained() const;
-    bool getPrintData() const;
-    bool getPrintAver() const;
+    // bool getPrintData() const;
+    // bool getPrintAver() const;
     
 public slots:
     void setReadOnly(bool);
@@ -83,7 +83,7 @@ private:
     QPushButton* randomiseBtn = new QPushButton("Randomise spins", this);
 
     // Check Box
-    QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
-    QCheckBox* printDataBox = new QCheckBox("Save data", this);
-    QCheckBox* printAverBox = new QCheckBox("Save averages", this);
+    // QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
+    // QCheckBox* printDataBox = new QCheckBox("Save data", this);
+    // QCheckBox* printAverBox = new QCheckBox("Save averages", this);
 };

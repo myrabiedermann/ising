@@ -18,38 +18,6 @@
             "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
             "targets": [
               {
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
-                "fileGroups": [
-                  {
-                    "isGenerated": true,
-                    "sources": [
-                      "build/CMakeFiles/enhance_autogen",
-                      "build/CMakeFiles/enhance_autogen.rule"
-                    ]
-                  }
-                ],
-                "fullName": "enhance_autogen",
-                "name": "enhance_autogen",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
-                "type": "UTILITY"
-              },
-              {
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
-                "fileGroups": [
-                  {
-                    "isGenerated": true,
-                    "sources": [
-                      "build/CMakeFiles/ising_autogen",
-                      "build/CMakeFiles/ising_autogen.rule"
-                    ]
-                  }
-                ],
-                "fullName": "ising_autogen",
-                "name": "ising_autogen",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
-                "type": "UTILITY"
-              },
-              {
                 "artifacts": [
                   "/Users/myra/my-programs/ising_masterpraktikum/build/ising"
                 ],
@@ -123,7 +91,7 @@
                     "isGenerated": true,
                     "language": "CXX",
                     "sources": [
-                      "build/ising_autogen/moc_compilation.cpp"
+                      "build/ising_autogen/mocs_compilation.cpp"
                     ]
                   },
                   {
@@ -245,7 +213,7 @@
                     "isGenerated": true,
                     "language": "CXX",
                     "sources": [
-                      "build/enhance_autogen/moc_compilation.cpp"
+                      "build/enhance_autogen/mocs_compilation.cpp"
                     ]
                   },
                   {
@@ -282,13 +250,45 @@
                 "name": "enhance",
                 "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
                 "type": "SHARED_LIBRARY"
+              },
+              {
+                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/CMakeFiles/ising_autogen",
+                      "build/CMakeFiles/ising_autogen.rule"
+                    ]
+                  }
+                ],
+                "fullName": "ising_autogen",
+                "name": "ising_autogen",
+                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "type": "UTILITY"
+              },
+              {
+                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/CMakeFiles/enhance_autogen",
+                      "build/CMakeFiles/enhance_autogen.rule"
+                    ]
+                  }
+                ],
+                "fullName": "enhance_autogen",
+                "name": "enhance_autogen",
+                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "type": "UTILITY"
               }
             ]
           }
         ]
       }
     ],
-    "cookie": "0.7769437514799729",
+    "cookie": "0.93259957229257",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

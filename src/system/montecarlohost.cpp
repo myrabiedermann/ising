@@ -39,9 +39,7 @@ void MonteCarloHost::setup()
     spinsystem.setParameters(parameters);
     spinsystem.setup();
     
-    energies.clear();
-    magnetisations.clear();
-    susceptibilities.clear();
+    clearRecords();
     
     qDebug() << "initial: H = " << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();
@@ -55,15 +53,25 @@ void MonteCarloHost::randomiseSystem()
     qDebug() << __PRETTY_FUNCTION__ << '\n';
 
     Q_CHECK_PTR(parameters);
-
+    
     spinsystem.randomise();
+    
+    clearRecords();
+    
+    qDebug() << "initial: H =" << spinsystem.getHamiltonian();
+    qDebug() << spinsystem.c_str();
+}
+
+
+
+void MonteCarloHost::clearRecords()
+{
+    qDebug() << __PRETTY_FUNCTION__ << '\n';
 
     energies.clear();
     magnetisations.clear();
     susceptibilities.clear();
-
-    qDebug() << "initial: H =" << spinsystem.getHamiltonian();
-    qDebug() << spinsystem.c_str();
+    
 }
 
 
@@ -118,33 +126,29 @@ void MonteCarloHost::print_data()
     Q_CHECK_PTR(parameters);
     
     std::ofstream FILE;
-    if( ! enhance::fileExists("ising.data") )
-    {
-        // print header line
-        FILE.open("ising.data");
-        FILE << std::setw(8) << "# step"
-        << std::setw(8) << "J"
-        << std::setw(8) << "T"
-        << std::setw(8) << "B"
-        << std::setw(8) << "H"
-        << std::setw(8) << "M"
-        << std::setw(8) << "chi"
-        << '\n';
-    }
-    else
-    {
-        FILE.open("ising.data", std::ios::app);
-    }
+    FILE.open("ising.data");
     
+    // print header line
+    FILE << std::setw(14) << "# step"
+    << std::setw(8) << "J"
+    << std::setw(8) << "T"
+    << std::setw(8) << "B"
+    << std::setw(14) << "H"
+    << std::setw(14) << "M"
+    << std::setw(14) << "chi"
+    << '\n';
+    
+    assert(energies.size() == magnetisations.size());
+    assert(energies.size() == susceptibilities.size());
     for(unsigned int i=0; i<energies.size(); ++i)
     {
-        FILE << std::setw(8) << i*parameters->getPrintFreq()
-             << std::setw(8) << parameters->getInteraction()
-             << std::setw(8) << parameters->getTemperature()
-             << std::setw(8) << parameters->getMagnetic()
-             << std::setw(8) << energies[i]
-             << std::setw(8) << magnetisations[i]
-             << std::setw(8) << susceptibilities[i];
+        FILE << std::setw(14) << std::fixed << std::setprecision(0)<< (i+1)*parameters->getPrintFreq()
+             << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getInteraction()
+             << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getTemperature()
+             << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getMagnetic()
+             << std::setw(14) << std::fixed << std::setprecision(6) << energies[i]
+             << std::setw(14) << std::fixed << std::setprecision(6) << magnetisations[i]
+             << std::setw(14) << std::fixed << std::setprecision(6) << susceptibilities[i];
         
         FILE << '\n';
     }
@@ -179,13 +183,13 @@ void MonteCarloHost::print_averages()
     {
         // print header line
         FILE.open("ising.averaged_data");
-        FILE << std::setw(10) << "J"
-             << std::setw(10) << "T"
-             << std::setw(10) << "B"
-             << std::setw(12) << "<H>"
-             << std::setw(12) << "<M>"
-             << std::setw(12) << "<chi>"
-             << std::setw(12) << "# of samples"
+        FILE << std::setw(8) << "J"
+             << std::setw(8) << "T"
+             << std::setw(8) << "B"
+             << std::setw(14) << "<H>"
+             << std::setw(14) << "<M>"
+             << std::setw(14) << "<chi>"
+             << std::setw(14) << "# of samples"
              << '\n';
     }
     else
@@ -193,13 +197,13 @@ void MonteCarloHost::print_averages()
         FILE.open("ising.averaged_data", std::ios::app);
     }
     
-    FILE << std::setw(10) << parameters->getInteraction()
-         << std::setw(10) << parameters->getTemperature()
-         << std::setw(10) << parameters->getMagnetic()
-         << std::setw(12) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(energies), std::end(energies), 0.0) / energies.size()
-         << std::setw(12) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0) / magnetisations.size()
-         << std::setw(12) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(susceptibilities), std::end(susceptibilities), 0.0) / susceptibilities.size()
-         << std::setw(12) << ( energies.size() == magnetisations.size() and energies.size() == susceptibilities.size() ? energies.size() : -1 )
+    FILE << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getInteraction()
+         << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getTemperature()
+         << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getMagnetic()
+         << std::setw(14) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(energies), std::end(energies), 0.0) / energies.size()
+         << std::setw(14) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0) / magnetisations.size()
+         << std::setw(14) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(susceptibilities), std::end(susceptibilities), 0.0) / susceptibilities.size()
+         << std::setw(14) << ( energies.size() == magnetisations.size() and energies.size() == susceptibilities.size() ? energies.size() : -1 )
          << '\n';
     
     FILE.close();

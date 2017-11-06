@@ -45,13 +45,17 @@ MCWidget::MCWidget(QWidget *parent)
     connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
     connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
     
+
     QHBoxLayout *hbox = new QHBoxLayout;
+    Q_CHECK_PTR(hbox);
+
     hbox->addWidget(equilBtn);
     hbox->addWidget(runBtn);
     hbox->addWidget(pauseBtn);
+    hbox->addWidget(abortBtn);
     hbox->addWidget(saveBtn);
     hbox->addWidget(correlateBtn);
-    hbox->addWidget(abortBtn);
+
     setLayout(hbox);  
 }
 
@@ -111,6 +115,7 @@ void MCWidget::makeRecordsNew()
     Q_CHECK_PTR(prmsWidget);
 
     steps_done.store(0);
+    MC.clearRecords();
     emit resetChartSignal();
 }
 
@@ -122,8 +127,8 @@ void MCWidget::randomiseSystem()
 
     steps_done.store(0);
     MC.randomiseSystem();
-    emit drawRequest(MC, steps_done.load());
     emit resetChartSignal();
+    emit drawRequest(MC, steps_done.load());
 }
 
 
@@ -285,10 +290,10 @@ void MCWidget::saveAction()
     
     emit runningSignal(false);
 
-    if( prmsWidget->getPrintData() )
-        MC.print_data();
-    if( prmsWidget->getPrintAver() )
-        MC.print_averages();
+    // if( prmsWidget->getPrintData() )
+    MC.print_data();
+    // if( prmsWidget->getPrintAver() )
+    MC.print_averages();
 }
 
 
@@ -336,8 +341,8 @@ void MCWidget::server()
     {
         while(simulation_running.load() && steps_done.load() < prmsWidget->getStepsEquil())
         {
-            MC.run(1, true);
-            steps_done.store(steps_done.load() + 1);
+            MC.run(5, true);
+            steps_done.store(steps_done.load() + 5);
             
             if( steps_done.load() >= prmsWidget->getStepsEquil() )
                 emit pauseBtn->clicked();

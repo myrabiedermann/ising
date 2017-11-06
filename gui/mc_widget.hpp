@@ -64,7 +64,7 @@ private:
     QPushButton* equilBtn = new QPushButton("Equilibration Run",this);
     QPushButton* runBtn = new QPushButton("Production Run",this);
     QPushButton* pauseBtn = new QPushButton("Pause",this);
-    QPushButton* abortBtn = new QPushButton("Abort + Reset",this);
+    QPushButton* abortBtn = new QPushButton("Reset",this);
     QPushButton* saveBtn = new QPushButton("Print data",this);
     QPushButton* correlateBtn = new QPushButton("Print correlation",this);
     
