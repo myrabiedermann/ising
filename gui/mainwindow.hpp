@@ -8,6 +8,7 @@
 #endif
 
 
+#include "default_layout_widget.hpp"
 #include "parameters_widget.hpp"
 #include "grid_widget.hpp"
 #include "mc_widget.hpp"
@@ -40,18 +41,9 @@ public:
     
 
 protected:
-    QGroupBox* createBottomActionGroup();
     
 private:
-    
-    GridWidget* gridWidget;
-    ParametersWidget* prmsWidget;
-    MCWidget* MCwidget;
-    ChartWidget* hamiltonianChart;
-    ChartWidget* averageMagnetisationChart;
-    
-    // QProgressBar* progressBar;
-    QPushButton* quitBtn = new QPushButton("Quit",this);
+    DefaultLayoutWidget* defaultLayoutWidget;
     
     Ui::MainWindow* ui;
 };

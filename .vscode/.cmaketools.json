@@ -18,6 +18,22 @@
             "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
             "targets": [
               {
+                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/CMakeFiles/enhance_autogen",
+                      "build/CMakeFiles/enhance_autogen.rule"
+                    ]
+                  }
+                ],
+                "fullName": "enhance_autogen",
+                "name": "enhance_autogen",
+                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "type": "UTILITY"
+              },
+              {
                 "artifacts": [
                   "/Users/myra/my-programs/ising_masterpraktikum/build/ising"
                 ],
@@ -49,19 +65,19 @@
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtWidgets.framework"
+                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtWidgets.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework/Headers"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtGui.framework"
+                        "path": "/usr/local/opt/qt/lib/QtGui.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtGui.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtGui.framework/Headers"
                       },
                       {
                         "isSystem": true,
@@ -69,23 +85,23 @@
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCore.framework"
+                        "path": "/usr/local/opt/qt/lib/QtCore.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCore.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtCore.framework/Headers"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/./mkspecs/macx-clang"
+                        "path": "/usr/local/opt/qt/./mkspecs/macx-clang"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCharts.framework"
+                        "path": "/usr/local/opt/qt/lib/QtCharts.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCharts.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtCharts.framework/Headers"
                       }
                     ],
                     "isGenerated": true,
@@ -120,19 +136,19 @@
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtWidgets.framework"
+                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtWidgets.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework/Headers"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtGui.framework"
+                        "path": "/usr/local/opt/qt/lib/QtGui.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtGui.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtGui.framework/Headers"
                       },
                       {
                         "isSystem": true,
@@ -140,23 +156,23 @@
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCore.framework"
+                        "path": "/usr/local/opt/qt/lib/QtCore.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCore.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtCore.framework/Headers"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/./mkspecs/macx-clang"
+                        "path": "/usr/local/opt/qt/./mkspecs/macx-clang"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCharts.framework"
+                        "path": "/usr/local/opt/qt/lib/QtCharts.framework"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt@5.7/lib/QtCharts.framework/Headers"
+                        "path": "/usr/local/opt/qt/lib/QtCharts.framework/Headers"
                       }
                     ],
                     "isGenerated": false,
@@ -166,6 +182,7 @@
                       "src/system/montecarlohost.cpp",
                       "src/system/spinsystem.cpp",
                       "gui/chart_widget.cpp",
+                      "gui/default_layout_widget.cpp",
                       "gui/grid_widget.cpp",
                       "gui/long_qspinbox.cpp",
                       "gui/mainwindow.cpp",
@@ -176,7 +193,7 @@
                 ],
                 "fullName": "ising",
                 "linkLanguageFlags": "-Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG",
-                "linkLibraries": "-Wl,-rpath,/Users/myra/my-programs/ising_masterpraktikum/build libenhance.dylib /usr/local/opt/qt@5.7/lib/QtCharts.framework/QtCharts /usr/local/opt/qt@5.7/lib/QtWidgets.framework/QtWidgets /usr/local/opt/qt@5.7/lib/QtGui.framework/QtGui /usr/local/opt/qt@5.7/lib/QtCore.framework/QtCore",
+                "linkLibraries": "-Wl,-rpath,/Users/myra/my-programs/ising_masterpraktikum/build libenhance.dylib /usr/local/opt/qt/lib/QtCharts.framework/QtCharts /usr/local/opt/qt/lib/QtWidgets.framework/QtWidgets /usr/local/opt/qt/lib/QtGui.framework/QtGui /usr/local/opt/qt/lib/QtCore.framework/QtCore",
                 "linkerLanguage": "CXX",
                 "name": "ising",
                 "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
@@ -266,29 +283,13 @@
                 "name": "ising_autogen",
                 "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
                 "type": "UTILITY"
-              },
-              {
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
-                "fileGroups": [
-                  {
-                    "isGenerated": true,
-                    "sources": [
-                      "build/CMakeFiles/enhance_autogen",
-                      "build/CMakeFiles/enhance_autogen.rule"
-                    ]
-                  }
-                ],
-                "fullName": "enhance_autogen",
-                "name": "enhance_autogen",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
-                "type": "UTILITY"
               }
             ]
           }
         ]
       }
     ],
-    "cookie": "0.93259957229257",
+    "cookie": "0.23727511779250854",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

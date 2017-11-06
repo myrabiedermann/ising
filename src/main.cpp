@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     qInfo() << "seed for random number generator:    " << enhance::seed;
     
     QApplication app(argc, argv);
+    qDebug() << "built QApplication";
     MainWindow w;
     w.show();
 

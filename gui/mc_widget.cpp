@@ -57,6 +57,8 @@ MCWidget::MCWidget(QWidget *parent)
     hbox->addWidget(correlateBtn);
 
     setLayout(hbox);  
+
+    qDebug() << "test test test ";
 }
 
 

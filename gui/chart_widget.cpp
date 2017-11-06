@@ -7,6 +7,7 @@ ChartWidget::ChartWidget(QWidget *parent)
   , chart(new QtCharts::QChart())
   , series(new QtCharts::QLineSeries())
 {
+    qDebug() << "test";
     qDebug() << __PRETTY_FUNCTION__;
     Q_CHECK_PTR(series);
     Q_CHECK_PTR(chart);

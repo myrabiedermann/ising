@@ -16,8 +16,8 @@ set(CMAKE_CXX_STANDARD 14)
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Find the QtWidgets library
-find_package(Qt5Widgets PATHS /usr/local/opt/qt@5.7/lib/cmake/Qt5Widgets REQUIRED)   # paths necessary on macbook
-find_package(Qt5Charts PATHS /usr/local/opt/qt@5.7/lib/cmake/Qt5Charts REQUIRED)
+find_package(Qt5Widgets REQUIRED)  
+find_package(Qt5Charts REQUIRED)
 
 # The enhance functions
 add_library(enhance SHARED lib/enhance.cpp)
