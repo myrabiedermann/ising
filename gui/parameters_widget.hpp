@@ -47,6 +47,7 @@ public:
     
     double getRatio() const;
 
+    void setConstrained(const bool);
     bool getConstrained() const;
     // bool getPrintData() const;
     // bool getPrintAver() const;
@@ -68,6 +69,7 @@ protected:
     QGroupBox* createProdBox();
     
 private:
+    bool CONSTRAINED;
     // Line edits
     QSpinBox* heightSpinBox = new QSpinBox(this);
     QSpinBox* widthSpinBox = new QSpinBox(this);

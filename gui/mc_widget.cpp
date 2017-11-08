@@ -58,7 +58,6 @@ MCWidget::MCWidget(QWidget *parent)
 
     setLayout(hbox);  
 
-    qDebug() << "test test test ";
 }
 
 

@@ -13,7 +13,8 @@
 
 
 ParametersWidget::ParametersWidget(QWidget *parent)
-: QWidget(parent)
+: QWidget(parent),
+CONSTRAINED(false)
 {
     qDebug() << __PRETTY_FUNCTION__;
     PARAMETERS_WIDGET_ASSERT_ALL
@@ -279,7 +280,10 @@ double ParametersWidget::getInteraction() const
 double ParametersWidget::getMagnetic() const
 {
     Q_CHECK_PTR(magneticSpinBox);
-    return magneticSpinBox->value();
+    if( CONSTRAINED )
+        return 0.0;
+    else
+        return magneticSpinBox->value();
 }
 
 
@@ -340,11 +344,16 @@ unsigned int ParametersWidget::getPrintFreq() const
 
 
 
+void ParametersWidget::setConstrained(const bool constrained) 
+{
+    CONSTRAINED = constrained;
+} 
+
+
+
 bool ParametersWidget::getConstrained() const
 {
-    // Q_CHECK_PTR(constrainedBox);
-    // return constrainedBox->isChecked();
-    return false;
+    return CONSTRAINED;
 }
 
 

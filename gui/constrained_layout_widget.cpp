@@ -1,6 +1,6 @@
-#include "default_layout_widget.hpp"
+#include "constrained_layout_widget.hpp"
 
-DefaultLayoutWidget::DefaultLayoutWidget(QWidget *parent) :
+ConstrainedLayoutWidget::ConstrainedLayoutWidget(QWidget *parent) :
     QWidget(parent),
     gridWidget(new GridWidget(this)),
     prmsWidget(new ParametersWidget(this)),
@@ -37,7 +37,7 @@ DefaultLayoutWidget::DefaultLayoutWidget(QWidget *parent) :
         prmsWidget->setMinimumWidth(300);
         connect( MCwidget, &MCWidget::runningSignal, prmsWidget, &ParametersWidget::setReadOnly );
         connect( MCwidget, &MCWidget::resetSignal, prmsWidget, &ParametersWidget::setDefault );
-        prmsWidget->setConstrained(false);
+        prmsWidget->setConstrained(true);
     }
     
     // ### MCWidget
@@ -126,7 +126,7 @@ DefaultLayoutWidget::DefaultLayoutWidget(QWidget *parent) :
 
     
 
-QGroupBox* DefaultLayoutWidget::createBottomActionGroup()
+QGroupBox* ConstrainedLayoutWidget::createBottomActionGroup()
 {
     qDebug() << __PRETTY_FUNCTION__;
     
@@ -153,7 +153,7 @@ QGroupBox* DefaultLayoutWidget::createBottomActionGroup()
 }
 
 
-DefaultLayoutWidget::~DefaultLayoutWidget()
+ConstrainedLayoutWidget::~ConstrainedLayoutWidget()
 {
     qDebug() << __PRETTY_FUNCTION__;
 }

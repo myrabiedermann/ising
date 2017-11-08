@@ -1,14 +1,14 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    defaultLayoutWidget(new DefaultLayoutWidget(this)),
+    LayoutWidget(Q_NULLPTR),
     ui(new Ui::MainWindow)
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    Q_CHECK_PTR(defaultLayoutWidget);
     
     ui->setupUi(this);
     
@@ -16,8 +16,21 @@ MainWindow::MainWindow(QWidget *parent) :
     {    
         QVBoxLayout* mainLayout = new QVBoxLayout;
         Q_CHECK_PTR(mainLayout);
+        
+        // ask user for systemType
+        MessageBox msgBox;
+        msgBox.exec();
 
-        mainLayout->addWidget(defaultLayoutWidget);
+        // create layout according to systemType
+        switch( msgBox.getType() )
+        {
+            case SYSTEMTYPE::Default :      LayoutWidget = new DefaultLayoutWidget(this); break;
+            
+            case SYSTEMTYPE::Constrained :  LayoutWidget = new ConstrainedLayoutWidget(this); break;
+            default :                       throw std::logic_error("nope");
+        }
+        Q_CHECK_PTR(LayoutWidget);
+        mainLayout->addWidget(LayoutWidget);
         
         // getting rid of unnecessary empty toolbar
         Q_FOREACH(QToolBar *tb, findChildren<QToolBar*>()) removeToolBar(tb);

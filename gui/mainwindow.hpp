@@ -8,7 +8,9 @@
 #endif
 
 
+#include "message_box.hpp"
 #include "default_layout_widget.hpp"
+#include "constrained_layout_widget.hpp"
 #include "parameters_widget.hpp"
 #include "grid_widget.hpp"
 #include "mc_widget.hpp"
@@ -39,11 +41,12 @@ public:
     void operator=(const MainWindow&) = delete;
     ~MainWindow();
     
-
+    
 protected:
     
 private:
-    DefaultLayoutWidget* defaultLayoutWidget;
+    QWidget* LayoutWidget;
+    
     
     Ui::MainWindow* ui;
 };
