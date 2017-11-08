@@ -16,17 +16,20 @@
 
 class Spinsystem
 {
-    double Hamiltonian = 0;
+    double Hamiltonian {0};
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
     ParametersWidget* parameters = Q_NULLPTR;
-    histogram<double>  correlation {};
 
-    double local_energy(const Spin&) const;
+    void computeHamiltonian();
+    double calcHamiltonian();
+    double local_energy_interaction(const Spin&) const;
+    double local_energy_magnetic(const Spin&) const;
     double Jij(const SPINTYPE, const SPINTYPE) const;
+    double Bi(const SPINTYPE) const;
     double distance(const Spin&, const Spin&) const;
-    void   correlate();
 
+    void setSpins();
 
 public:
     Spinsystem()  {};
@@ -36,12 +39,13 @@ public:
 
     void setParameters(ParametersWidget*);
     void setup();
-    void randomise();
+    void resetParameters();
+    void resetSpins();
 
     void flip();
     void flip_back();
 
-    inline auto& getCorrelation() { correlate(); return correlation; }
+    histogram<double> getCorrelation() const;
     inline double getMagnetisation() const;
     inline double getMagnetisationSquared() const;
     inline double getSusceptibility() const;

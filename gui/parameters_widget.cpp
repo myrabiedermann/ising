@@ -28,6 +28,7 @@ CONSTRAINED(false)
     mainLayout->addWidget(createSystemBox());
     mainLayout->addWidget(createEquilBox());
     mainLayout->addWidget(createProdBox());
+    // mainLayout->addWidget(createAdvancedBox());
     setDefault();
 
     // add applyBtn
@@ -90,13 +91,16 @@ QGroupBox * ParametersWidget::createSystemBox()
     interactionSpinBox->setMinimumWidth(40);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    magneticSpinBox->setMinimum(-10);
-    magneticSpinBox->setMaximum(10);
-    magneticSpinBox->setDecimals(1);
-//     magneticSpinBox->setValue(0.0);
-    magneticSpinBox->setSingleStep(0.1);
-    magneticSpinBox->setMinimumWidth(40);
-    magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    if( ! CONSTRAINED )
+    {
+        magneticSpinBox->setMinimum(-10);
+        magneticSpinBox->setMaximum(10);
+        magneticSpinBox->setDecimals(1);
+    //     magneticSpinBox->setValue(0.0);
+        magneticSpinBox->setSingleStep(0.1);
+        magneticSpinBox->setMinimumWidth(40);
+        magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    }
 
     temperatureSpinBox->setMinimum(0.1);
     temperatureSpinBox->setMaximum(10);
@@ -127,9 +131,15 @@ QGroupBox * ParametersWidget::createSystemBox()
     formLayout->addRow("width",widthSpinBox);
     formLayout->addRow("height",heightSpinBox);
     formLayout->addRow("J",interactionSpinBox);
-    formLayout->addRow("B",magneticSpinBox);
+    if( ! CONSTRAINED )
+    {
+        formLayout->addRow("B",magneticSpinBox);
+    }
+    else
+    {
+        magneticSpinBox->setValue(0.0);
+    }
     formLayout->addRow("Temperature",temperatureSpinBox);
-    // formLayout->addWidget(constrainedBox);
 
     // set group layout
     labelBox->setLayout(formLayout);
@@ -204,14 +214,27 @@ QGroupBox* ParametersWidget::createProdBox()
 
 
 
+QGroupBox* ParametersWidget::createAdvancedBox()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    PARAMETERS_WIDGET_ASSERT_ALL
 
-// void ParametersWidget::applyValues()
-// {
-//     qDebug() << __PRETTY_FUNCTION__;
-//     PARAMETERS_WIDGET_ASSERT_ALL
-//     qInfo() << "Apply button was hit!";
-//     emit valueChanged();
-// }
+    // // the group
+    // QGroupBox* advancedBox = new QGroupBox("Advanced Options");
+
+    // // set up the ComboBox:
+    // advancedOptionsBox->addItem("standard MC");
+    // advancedOptionsBox->addItem("");
+
+    // // the layout 
+    // QFormLayout* formLayout = new QFormLayout();
+    // formLayout->setLabelAlignment(Qt::AlignHCenter);
+    // formLayout->addRow("produce a ...", advancedOptionsBox);
+
+    // advancedBox->setLayout(formLayout);
+    // return advancedBox;
+}
+
 
 
 
@@ -254,14 +277,14 @@ void ParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     PARAMETERS_WIDGET_ASSERT_ALL
 
-    heightSpinBox->setValue(10);
-    widthSpinBox->setValue(10);
+    heightSpinBox->setValue(4);
+    widthSpinBox->setValue(4);
     interactionSpinBox->setValue(1.0);
-    magneticSpinBox->setValue(0.0);
+    magneticSpinBox->setValue(1.0);
     temperatureSpinBox->setValue(2.0);
     // constrainedBox->setEnabled(true);
-    stepsEquilSpinBox->setValue(1000);
-    stepsProdSpinBox->setValue(1000);
+    stepsEquilSpinBox->setValue(10000);
+    stepsProdSpinBox->setValue(10000);
     printFreqSpinBox->setValue(10);
     // printDataBox->setEnabled(true);
     // printAverBox->setEnabled(true);
@@ -280,10 +303,7 @@ double ParametersWidget::getInteraction() const
 double ParametersWidget::getMagnetic() const
 {
     Q_CHECK_PTR(magneticSpinBox);
-    if( CONSTRAINED )
-        return 0.0;
-    else
-        return magneticSpinBox->value();
+    return magneticSpinBox->value();
 }
 
 

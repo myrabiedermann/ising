@@ -11,6 +11,7 @@
 #include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -67,6 +68,7 @@ protected:
     QGroupBox* createSystemBox();
     QGroupBox* createEquilBox();
     QGroupBox* createProdBox();
+    QGroupBox* createAdvancedBox();
     
 private:
     bool CONSTRAINED;
@@ -79,6 +81,7 @@ private:
     QtLongLongSpinBox* stepsEquilSpinBox = new QtLongLongSpinBox(this);
     QtLongLongSpinBox* stepsProdSpinBox = new QtLongLongSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
+    // QComboBox* advancedOptionsBox = new QComboBox(this);
     
     // Buttons
     // QPushButton* applyBtn = new QPushButton("Apply",this);
@@ -86,6 +89,4 @@ private:
 
     // Check Box
     // QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
-    // QCheckBox* printDataBox = new QCheckBox("Save data", this);
-    // QCheckBox* printAverBox = new QCheckBox("Save averages", this);
 };

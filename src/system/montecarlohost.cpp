@@ -3,12 +3,16 @@
 
 
 MonteCarloHost::MonteCarloHost()
-{}
+{
+    qDebug() << __PRETTY_FUNCTION__;
+}
 
 
 
 MonteCarloHost::~MonteCarloHost()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     delete acceptance;
 }
 
@@ -16,6 +20,8 @@ MonteCarloHost::~MonteCarloHost()
 
 void MonteCarloHost::setAcceptance(AcceptanceAdaptor* acceptanceAdaptorDerived)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     acceptance = acceptanceAdaptorDerived;
 }
 
@@ -23,6 +29,8 @@ void MonteCarloHost::setAcceptance(AcceptanceAdaptor* acceptanceAdaptorDerived)
 
 void MonteCarloHost::setParameters(ParametersWidget* prms)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     Q_CHECK_PTR(prms);
     parameters = prms;
     Q_CHECK_PTR(parameters);
@@ -32,7 +40,7 @@ void MonteCarloHost::setParameters(ParametersWidget* prms)
 
 void MonteCarloHost::setup()
 {
-    qDebug() << __PRETTY_FUNCTION__ << '\n';
+    qDebug() << __PRETTY_FUNCTION__;
     
     Q_CHECK_PTR(parameters);
     
@@ -41,7 +49,7 @@ void MonteCarloHost::setup()
     
     clearRecords();
     
-    qDebug() << "initial: H = " << spinsystem.getHamiltonian();
+    qDebug() << "[mc] initial: H = " << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();
 
 }
@@ -50,15 +58,15 @@ void MonteCarloHost::setup()
 
 void MonteCarloHost::randomiseSystem()
 {
-    qDebug() << __PRETTY_FUNCTION__ << '\n';
+    qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
     
-    spinsystem.randomise();
+    spinsystem.resetSpins();
     
     clearRecords();
     
-    qDebug() << "initial: H =" << spinsystem.getHamiltonian();
+    qDebug() << "[mc] initial: H =" << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();
 }
 
@@ -66,11 +74,13 @@ void MonteCarloHost::randomiseSystem()
 
 void MonteCarloHost::clearRecords()
 {
-    qDebug() << __PRETTY_FUNCTION__ << '\n';
+    qDebug() << __PRETTY_FUNCTION__;
 
     energies.clear();
     magnetisations.clear();
     susceptibilities.clear();
+
+    spinsystem.resetParameters();
     
 }
 
@@ -78,6 +88,8 @@ void MonteCarloHost::clearRecords()
 
 void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     Q_CHECK_PTR(parameters);
     assert(acceptance);
     
@@ -97,13 +109,13 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         {
             spinsystem.flip_back(); 
             #ifndef QT_NO_DEBUG 
-            qDebug() << "random = " << acceptance->latestRandomNumber() << " >= " << acceptance->latestConditionValue() << " = exp(-(energy_new-energy_old)/temperature)";
-            qDebug() << "new H would have been: " << energy_new << "\n";
+            qDebug() << "[mc] random = " << acceptance->latestRandomNumber() << " >= " << acceptance->latestConditionValue() << " = exp(-(energy_new-energy_old)/temperature)";
+            qDebug() << "[mc] new H would have been: " << energy_new;
         }
         else
         {
-            qDebug() << acceptance->latestRandomNumber() << " < " << acceptance->latestConditionValue();
-            qDebug() << "new H: " << energy_new;
+            qDebug() << "[mc] " << acceptance->latestRandomNumber() << " < " << acceptance->latestConditionValue();
+            qDebug() << "[mc] new H: " << energy_new;
             qDebug() << spinsystem.c_str();
             #endif
         }
@@ -122,6 +134,8 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 void MonteCarloHost::print_data()
 {
     // save to file:  step  J  temperature  B  H  M  chi
+
+    qDebug() << __PRETTY_FUNCTION__;
     
     Q_CHECK_PTR(parameters);
     
@@ -162,6 +176,8 @@ void MonteCarloHost::print_correlation()
 {
     // compute correlations of actual state and save to file
 
+    qDebug() << __PRETTY_FUNCTION__;
+
     Q_CHECK_PTR(parameters);
     
     std::ofstream FILE("ising.correlation");
@@ -175,6 +191,8 @@ void MonteCarloHost::print_correlation()
 void MonteCarloHost::print_averages()
 {
     // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>
+
+    qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
 
@@ -213,6 +231,8 @@ void MonteCarloHost::print_averages()
 
 const Spinsystem& MonteCarloHost::getSpinsystem() const
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     return spinsystem;
 }
 

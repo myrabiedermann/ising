@@ -3,6 +3,8 @@
 
 void Spinsystem::setParameters(ParametersWidget* prms)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     Q_CHECK_PTR(prms);
     parameters = prms;
     Q_CHECK_PTR(parameters);
@@ -10,23 +12,35 @@ void Spinsystem::setParameters(ParametersWidget* prms)
 
 
 
+void Spinsystem::resetParameters()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    Q_CHECK_PTR(parameters);
+
+    computeHamiltonian();
+    qDebug() << "[spinsystem] initial H = " << Hamiltonian;
+}
+
+
 
 void Spinsystem::setup()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     Q_CHECK_PTR(parameters);
 
     spins.clear();
     lastFlipped.clear();
-    correlation.clear();
 
-    // safety check:
+    // some safety checks:
     if( parameters->getConstrained() && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
     {
-        throw std::logic_error("system size must be an even number if system is constrained");
+        throw std::logic_error("spinsystem] system size must be an even number if system is constrained");
     }
     if( parameters->getConstrained() && parameters->getMagnetic() != 0 )
     {
-        throw std::logic_error("constrained system cannot have a magnetic field");
+        throw std::logic_error("spinsystem] constrained system cannot have a magnetic field");
     }
 
     auto width  = parameters->getWidth();
@@ -102,26 +116,27 @@ void Spinsystem::setup()
     // debugging:
     for(auto& s: spins)
     {
-        qDebug() << "spin" << s.get_ID() << "has neighbours :";
+        qDebug() << "spinsystem] spin" << s.get_ID() << "has neighbours :";
         std::for_each( s.begin(), s.end(), [](const auto& N){qDebug() << N.get().get_ID() << " ";} );
     }
     qDebug() << ' ';
 
     // calculate initial Hamiltonian:
-    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
-                        {
-                            return i + local_energy(S);
-                        }) / 2;
-    qDebug() << "initial H = " << Hamiltonian;
-    qDebug() << ' ';
+    computeHamiltonian();
+    qDebug() << "spinsystem] initial H = " << Hamiltonian;
 
 }
 
 /***************************************************************************/
 
-void Spinsystem::randomise() 
+void Spinsystem::resetSpins() 
 {
     // randomly set types of all spins new
+
+    qDebug() << __PRETTY_FUNCTION__;
+
+    Q_CHECK_PTR(parameters);
+
     int random;
     if( ! parameters->getConstrained() ) // initialise spins randomly
     {
@@ -148,28 +163,58 @@ void Spinsystem::randomise()
 
     // clear / reset all vectors: 
     lastFlipped.clear();
-    correlation.reset();
     
     // calculate initial Hamiltonian:
-    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
-    {
-        return i + local_energy(S);
-    }) / 2;
-    qDebug() << "initial H = " << Hamiltonian;
-    qDebug() << ' ';
+    computeHamiltonian();
+    qDebug() << "spinsystem] initial H = " << Hamiltonian;
 
 }
 
 /***************************************************************************/
 
-double Spinsystem::local_energy(const Spin& _spin) const
+double Spinsystem::local_energy_interaction(const Spin& _spin) const
 {
-    // calculate local energy for given spin
+    // calculate interaction contribution to local energy for given spin
     
     double energy = - Jij(SPINTYPE::UP, _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
-                    - Jij(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>();
-    energy -= parameters->getMagnetic() * (_spin.get_type() == SPINTYPE::UP ? 2.f : -2.f);
-    qDebug() << "spin # " << _spin.get_ID() << "  has local energy " << energy;
+    - Jij(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>();
+    // qDebug() << "spinsystem] spin # " << _spin.get_ID() << "has local energy:";
+    // qDebug() << "spinsystem] \t interaction part" << energy;
+    return energy;
+}
+
+/***************************************************************************/
+
+double Spinsystem::local_energy_magnetic(const Spin& _spin) const
+{
+    // calculate magnetic contribution to local energy for given spin
+    
+    double energy = - Bi(_spin.get_type());
+    // qDebug() << "spinsystem] \t magnetic part" << energy;
+    return energy;
+}
+
+/***************************************************************************/
+
+void Spinsystem::computeHamiltonian()
+{
+    // calculate Hamiltonian of the system
+
+    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
+    {
+        return i + local_energy_interaction(S) / 2 + local_energy_magnetic(S);
+    });
+}
+
+double Spinsystem::calcHamiltonian()
+{
+    // calculate Hamiltonian of the system
+
+    double energy = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
+    {
+        return i + local_energy_interaction(S) / 2 + local_energy_magnetic(S);
+    });
+
     return energy;
 }
 
@@ -187,6 +232,18 @@ double Spinsystem::Jij(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 
 /***************************************************************************/
 
+double Spinsystem::Bi(const SPINTYPE _spintype) const
+{
+    // return correct J for this pair of spins depending on CONSTRAINED
+    
+    if( ! parameters->getConstrained() ) 
+        return parameters->getMagnetic() * (_spintype == SPINTYPE::UP ? 1 : -1) ;
+    else                
+        return 0;
+}
+
+/***************************************************************************/
+
 void Spinsystem::flip()
 {
     lastFlipped.clear();
@@ -199,9 +256,9 @@ void Spinsystem::flip()
         auto randomspin = enhance::random_iterator(spins);
         lastFlipped.emplace_back( std::ref(*randomspin) );
         // flip spin
-        localEnergy_before = local_energy( *randomspin );
+        localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
         randomspin->flip();
-        localEnergy_after = local_energy( *randomspin );
+        localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
         // update Hamiltonian:
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
@@ -218,25 +275,25 @@ void Spinsystem::flip()
         auto randomneighbour = enhance::random_iterator(randomspin->get_neighbours());
         do
         {
-                randomneighbour = enhance::random_iterator(randomspin->get_neighbours());
+            randomneighbour = enhance::random_iterator(randomspin->get_neighbours());
         } while( randomneighbour->get().get_type() == randomspin->get_type() );
         
         // flip spins
         lastFlipped.emplace_back(*randomspin);
         lastFlipped.emplace_back(randomneighbour->get());
-        localEnergy_before = local_energy(*randomspin) + local_energy(randomneighbour->get());
+        localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
         randomspin->flip();
         randomneighbour->get().flip();
-        localEnergy_after = local_energy(*randomspin) + local_energy(randomneighbour->get());
+        localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
 
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
+        
     }
 
 #ifndef NDEBUG
-    qDebug() << "flipping spin: ";
-    for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
-    qDebug() << ' ';
+    qDebug() << "spinsystem] flipping spin: ";
+    for(const auto& s: lastFlipped) qDebug() << "            " << s.get().get_ID();
 #endif
 }
 
@@ -245,23 +302,31 @@ void Spinsystem::flip()
 void Spinsystem::flip_back()
 {
     if( lastFlipped.size() == 0 )
-        throw std::logic_error("Cannot flip back, since nothing has flipped yet");
+        throw std::logic_error("spinsystem] Cannot flip back, since nothing has flipped yet");
     else
     {
-        int localEnergy_before = 0;
-        int localEnergy_after = 0;
+        double localEnergy_before = 0;
+        double localEnergy_after = 0;
 
-        for( const auto& s: lastFlipped ) localEnergy_before += local_energy( s.get() );
-        for( const auto& s: lastFlipped ) s.get().flip();
-        for( const auto& s: lastFlipped ) localEnergy_after += local_energy( s.get() );
+        for( const auto& s: lastFlipped ) 
+        {
+            localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+        }
+        for( const auto& s: lastFlipped ) 
+        {
+            s.get().flip();
+        }
+        for( const auto& s: lastFlipped ) 
+        {
+            localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+        }
 
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
 
-    qDebug() << "flipping back: ";
-    for(const auto& s: lastFlipped) qDebug() << s.get().get_ID() << " ";
-    qDebug() << ' ';
+    qDebug() << "spinsystem] flipping back: ";
+    for(const auto& s: lastFlipped) qDebug() << "            " << s.get().get_ID();
 
 }
 
@@ -315,12 +380,12 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
 /***************************************************************************/
 
-void Spinsystem::correlate()
+histogram<double> Spinsystem::getCorrelation() const
 {
     // compute correlations between spins
 
-    qDebug() << "computing correlation <Si Sj>:\n";
-    correlation.clear();
+    qDebug() << "spinsystem] computing correlation <Si Sj>:\n";
+    histogram<double> correlation;
 
     auto counter = correlation;
     double dist;
@@ -338,14 +403,14 @@ void Spinsystem::correlate()
                     counter.add_bin(dist);
                 }
                 correlation.add_data( dist );
-                qDebug() << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << " 1 ";
+                qDebug() << "spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << " 1 ";
             }
             else 
             {
-                qDebug() << "correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << "   ";
+                qDebug() << "spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << "   ";
             }
             counter.add_data( dist );
-            qDebug() << " distance " << dist << '\n';
+            qDebug() << "spinsystem]    distance " << dist << '\n';
         }
     }
 
@@ -354,5 +419,7 @@ void Spinsystem::correlate()
     { 
         B.counter /= counter.get_data(B.value); 
     });
+
+    return correlation;
 
 }
