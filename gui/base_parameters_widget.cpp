@@ -8,7 +8,8 @@
     Q_CHECK_PTR(stepsEquilSpinBox);  \
     Q_CHECK_PTR(stepsProdSpinBox);   \
     Q_CHECK_PTR(printFreqSpinBox);   \
-    Q_CHECK_PTR(randomiseBtn);            
+    Q_CHECK_PTR(randomiseBtn);       \
+    Q_CHECK_PTR(filenameLineEdit);           
 
 
 
@@ -31,6 +32,35 @@ void BaseParametersWidget::randomiseSystem()
     BASE_PARAMETERS_WIDGET_ASSERT_ALL
     qInfo() << "Randomise button was hit!";
     emit randomise();
+}
+
+
+
+QGroupBox* BaseParametersWidget::createOutputBox()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    BASE_PARAMETERS_WIDGET_ASSERT_ALL
+
+    // the group
+    QGroupBox* labelBox = new QGroupBox("Output parameters");
+    
+    // default texts for LineEdits
+    filenameLineEdit->setMaxLength(20);
+    // stepsEquilSpinBox->setMinimum(0);
+    // stepsEquilSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
+    // stepsEquilSpinBox->setSingleStep(1000);
+    // stepsEquilSpinBox->setMinimumWidth(100);
+    filenameLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    // the layout
+    QFormLayout* formLayout = new QFormLayout();
+    formLayout->setLabelAlignment(Qt::AlignVCenter);
+    formLayout->addRow("file key:",filenameLineEdit);
+
+    // set group layout
+    labelBox->setLayout(formLayout);
+
+    return labelBox;
 }
 
 
@@ -81,4 +111,10 @@ unsigned int BaseParametersWidget::getPrintFreq() const
 {
     Q_CHECK_PTR(printFreqSpinBox);
     return printFreqSpinBox->value();
+}
+
+std::string BaseParametersWidget::getFileKey() const{
+
+    Q_CHECK_PTR(filenameLineEdit);
+    return filenameLineEdit->displayText().toStdString();
 }

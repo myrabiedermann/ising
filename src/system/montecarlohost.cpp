@@ -136,9 +136,12 @@ void MonteCarloHost::print_data()
     qDebug() << __PRETTY_FUNCTION__;
     
     Q_CHECK_PTR(parameters);
-    
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".data");
+
     std::ofstream FILE;
-    FILE.open("ising.data");
+    FILE.open(filekey);
     
     // print header line
     FILE << std::setw(14) << "# step"
@@ -177,8 +180,11 @@ void MonteCarloHost::print_correlation()
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
-    
-    std::ofstream FILE("ising.correlation");
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".correlation");
+
+    std::ofstream FILE(filekey);
     FILE << "# correlation <Si Sj>(r)\n";
     FILE << spinsystem.getCorrelation().formatted_string();
     FILE.close();
@@ -193,12 +199,15 @@ void MonteCarloHost::print_averages()
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".averaged_data");
 
     std::ofstream FILE;
-    if( ! enhance::fileExists("ising.averaged_data") )
+    if( ! enhance::fileExists(filekey) )
     {
         // print header line
-        FILE.open("ising.averaged_data");
+        FILE.open(filekey);
         FILE << std::setw(8) << "J"
              << std::setw(8) << "T"
              << std::setw(8) << "B"
@@ -210,7 +219,7 @@ void MonteCarloHost::print_averages()
     }
     else
     {
-        FILE.open("ising.averaged_data", std::ios::app);
+        FILE.open(filekey, std::ios::app);
     }
     
     FILE << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getInteraction()

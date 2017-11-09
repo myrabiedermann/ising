@@ -38,6 +38,7 @@ public:
     unsigned long getStepsEquil() const;
     unsigned long getStepsProd() const;
     unsigned int  getPrintFreq() const;
+    std::string getFileKey() const;
 
     virtual double getMagnetic() const = 0;
     virtual double getRatio() const = 0;
@@ -59,6 +60,7 @@ protected:
     void operator=(const BaseParametersWidget&) = delete;
 
     void randomiseSystem();
+    QGroupBox* createOutputBox();
     virtual QGroupBox* createSystemBox() = 0;
     virtual QGroupBox* createEquilBox() = 0;
     virtual QGroupBox* createProdBox() = 0;
@@ -72,6 +74,8 @@ protected:
     QtLongLongSpinBox* stepsEquilSpinBox = new QtLongLongSpinBox(this);
     QtLongLongSpinBox* stepsProdSpinBox = new QtLongLongSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
+
+    QLineEdit* filenameLineEdit = new QLineEdit(this);
 
     QDoubleSpinBox* magneticSpinBox {Q_NULLPTR};
     QDoubleSpinBox* ratioSpinBox {Q_NULLPTR};

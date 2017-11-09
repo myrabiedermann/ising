@@ -9,6 +9,7 @@
     Q_CHECK_PTR(stepsProdSpinBox);   \
     Q_CHECK_PTR(printFreqSpinBox);   \
     Q_CHECK_PTR(randomiseBtn);       \
+    Q_CHECK_PTR(filenameLineEdit);   \
     Q_CHECK_PTR(ratioSpinBox);    
 
 
@@ -50,6 +51,7 @@ void ConstrainedParametersWidget::setup()
     mainLayout->addWidget(createSystemBox());
     mainLayout->addWidget(createEquilBox());
     mainLayout->addWidget(createProdBox());
+    mainLayout->addWidget(createOutputBox());
     setDefault();
     
     // add randomiseBtn
@@ -216,6 +218,7 @@ void ConstrainedParametersWidget::setReadOnly(bool flag)
     stepsProdSpinBox->setReadOnly(flag);
     printFreqSpinBox->setReadOnly(flag);
     randomiseBtn->setEnabled(!flag);
+    filenameLineEdit->setReadOnly(flag);
     ratioSpinBox->setReadOnly(flag);
 }
 
@@ -234,6 +237,7 @@ void ConstrainedParametersWidget::setDefault()
     stepsEquilSpinBox->setValue(10000);
     stepsProdSpinBox->setValue(10000);
     printFreqSpinBox->setValue(10);
+    filenameLineEdit->setText("ising");
     ratioSpinBox->setValue(0.5);
 }
 
