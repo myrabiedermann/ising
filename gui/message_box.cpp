@@ -10,9 +10,9 @@ constrainedButton(Q_NULLPTR)
 
     setText("Program Ising");
     setInformativeText("Please choose your system type:");
-    setDetailedText("Default: \nstandard Ising system \n\nConstrained: \nIsing system constrained to # up-spins = # down-spins");
-    defaultButton = addButton("Default", QMessageBox::YesRole);
-    constrainedButton = addButton("Constrained", QMessageBox::NoRole);
+    setDetailedText("Default: \nstandard Ising system \n\nConstrained: \nIsing system constrained to \n# up-spins = # down-spins \n(phase-separating particles model)");
+    defaultButton = addButton("Default", QMessageBox::NoRole);
+    constrainedButton = addButton("Constrained", QMessageBox::YesRole);
 
 }
 
@@ -20,6 +20,8 @@ constrainedButton(Q_NULLPTR)
 
 SYSTEMTYPE MessageBox::getType() const
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     Q_CHECK_PTR(defaultButton);
     Q_CHECK_PTR(constrainedButton);
 

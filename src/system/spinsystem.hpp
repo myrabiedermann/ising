@@ -3,7 +3,7 @@
 #include "lib/enhance.hpp"
 #include "spin.hpp"
 #include "histogram.hpp"
-#include "gui/parameters_widget.hpp"
+#include "gui/default_parameters_widget.hpp"
 #include <cassert>
 #include <numeric>
 #include <ostream>
@@ -19,7 +19,7 @@ class Spinsystem
     double Hamiltonian {0};
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
-    ParametersWidget* parameters = Q_NULLPTR;
+    BaseParametersWidget* parameters = Q_NULLPTR;
 
     void computeHamiltonian();
     double calcHamiltonian();
@@ -37,7 +37,7 @@ public:
     Spinsystem(const Spinsystem&) = delete;
     void operator=(const Spinsystem&) = delete;
 
-    void setParameters(ParametersWidget*);
+    void setParameters(BaseParametersWidget*);
     void setup();
     void resetParameters();
     void resetSpins();

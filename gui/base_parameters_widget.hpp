@@ -7,11 +7,9 @@
     #endif
 #endif
 
-// #include "global.hpp"
 #include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
-#include <QComboBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -26,36 +24,29 @@
 
 
 
-class ParametersWidget : public QWidget
+class BaseParametersWidget : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit ParametersWidget(QWidget *parent = Q_NULLPTR);
-    ParametersWidget(const ParametersWidget&) = delete;
-    void operator=(const ParametersWidget&) = delete;
-    
-    ~ParametersWidget();
+    ~BaseParametersWidget();
     
     unsigned int getHeight() const;
     unsigned int getWidth() const;
     double getInteraction() const;
-    double getMagnetic() const;
     double getTemperature() const;
     unsigned long getStepsEquil() const;
     unsigned long getStepsProd() const;
-    unsigned int getPrintFreq() const;
-    
-    double getRatio() const;
+    unsigned int  getPrintFreq() const;
 
-    void setConstrained(const bool);
-    bool getConstrained() const;
-    // bool getPrintData() const;
-    // bool getPrintAver() const;
+    virtual double getMagnetic() const = 0;
+    virtual double getRatio() const = 0;
+    
+    virtual bool getConstrained() const = 0;
     
 public slots:
-    void setReadOnly(bool);
-    void setDefault();
+    virtual void setReadOnly(bool) = 0;
+    virtual void setDefault() = 0;
     
 signals:
     void valueChanged(); 
@@ -63,30 +54,28 @@ signals:
     void randomise();
     
 protected:
-    // // void applyValues();
+    explicit BaseParametersWidget(QWidget* parent = Q_NULLPTR);
+    BaseParametersWidget(const BaseParametersWidget&) = delete;
+    void operator=(const BaseParametersWidget&) = delete;
+
     void randomiseSystem();
-    QGroupBox* createSystemBox();
-    QGroupBox* createEquilBox();
-    QGroupBox* createProdBox();
-    QGroupBox* createAdvancedBox();
+    virtual QGroupBox* createSystemBox() = 0;
+    virtual QGroupBox* createEquilBox() = 0;
+    virtual QGroupBox* createProdBox() = 0;
+    virtual void setup() = 0;
     
-private:
-    bool CONSTRAINED;
     // Line edits
     QSpinBox* heightSpinBox = new QSpinBox(this);
     QSpinBox* widthSpinBox = new QSpinBox(this);
     QDoubleSpinBox* interactionSpinBox = new QDoubleSpinBox(this);
-    QDoubleSpinBox* magneticSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* temperatureSpinBox = new QDoubleSpinBox(this);
     QtLongLongSpinBox* stepsEquilSpinBox = new QtLongLongSpinBox(this);
     QtLongLongSpinBox* stepsProdSpinBox = new QtLongLongSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
-    // QComboBox* advancedOptionsBox = new QComboBox(this);
+
+    QDoubleSpinBox* magneticSpinBox {Q_NULLPTR};
+    QDoubleSpinBox* ratioSpinBox {Q_NULLPTR};
     
     // Buttons
-    // QPushButton* applyBtn = new QPushButton("Apply",this);
     QPushButton* randomiseBtn = new QPushButton("Randomise spins", this);
-
-    // Check Box
-    // QCheckBox* constrainedBox = new QCheckBox("Constrained", this);
 };

@@ -1,7 +1,7 @@
 #include "spinsystem.hpp"
 
 
-void Spinsystem::setParameters(ParametersWidget* prms)
+void Spinsystem::setParameters(BaseParametersWidget* prms)
 {
     qDebug() << __PRETTY_FUNCTION__;
 
@@ -36,11 +36,11 @@ void Spinsystem::setup()
     // some safety checks:
     if( parameters->getConstrained() && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
     {
-        throw std::logic_error("spinsystem] system size must be an even number if system is constrained");
+        throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
     }
     if( parameters->getConstrained() && parameters->getMagnetic() != 0 )
     {
-        throw std::logic_error("spinsystem] constrained system cannot have a magnetic field");
+        throw std::logic_error("[spinsystem] constrained system cannot have a magnetic field");
     }
 
     auto width  = parameters->getWidth();
@@ -59,6 +59,7 @@ void Spinsystem::setup()
     }                   // constrained to specific up-spin to down-spin ratio
     else
     {
+        qDebug() << "[spinsystem] ratio =" << parameters->getRatio() << ", results in " << static_cast<unsigned int>(parameters->getRatio() * totalnumber) << " down spins.";
         for(unsigned int i=0; i<totalnumber; ++i)
             spins.emplace_back(i, UP);
         for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * totalnumber); ++i)
@@ -116,14 +117,14 @@ void Spinsystem::setup()
     // debugging:
     for(auto& s: spins)
     {
-        qDebug() << "spinsystem] spin" << s.get_ID() << "has neighbours :";
+        qDebug() << "[spinsystem] spin" << s.get_ID() << "has neighbours :";
         std::for_each( s.begin(), s.end(), [](const auto& N){qDebug() << N.get().get_ID() << " ";} );
     }
     qDebug() << ' ';
 
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    qDebug() << "spinsystem] initial H = " << Hamiltonian;
+    qDebug() << "[spinsystem] initial H = " << Hamiltonian;
 
 }
 
@@ -166,7 +167,7 @@ void Spinsystem::resetSpins()
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    qDebug() << "spinsystem] initial H = " << Hamiltonian;
+    qDebug() << "[spinsystem] initial H = " << Hamiltonian;
 
 }
 
@@ -292,7 +293,7 @@ void Spinsystem::flip()
     }
 
 #ifndef NDEBUG
-    qDebug() << "spinsystem] flipping spin: ";
+    qDebug() << "[spinsystem] flipping spin: ";
     for(const auto& s: lastFlipped) qDebug() << "            " << s.get().get_ID();
 #endif
 }
@@ -302,7 +303,7 @@ void Spinsystem::flip()
 void Spinsystem::flip_back()
 {
     if( lastFlipped.size() == 0 )
-        throw std::logic_error("spinsystem] Cannot flip back, since nothing has flipped yet");
+        throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
     else
     {
         double localEnergy_before = 0;
@@ -325,7 +326,7 @@ void Spinsystem::flip_back()
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
 
-    qDebug() << "spinsystem] flipping back: ";
+    qDebug() << "[spinsystem] flipping back: ";
     for(const auto& s: lastFlipped) qDebug() << "            " << s.get().get_ID();
 
 }
@@ -384,7 +385,7 @@ histogram<double> Spinsystem::getCorrelation() const
 {
     // compute correlations between spins
 
-    qDebug() << "spinsystem] computing correlation <Si Sj>:\n";
+    qDebug() << "[spinsystem] computing correlation <Si Sj>:\n";
     histogram<double> correlation;
 
     auto counter = correlation;
@@ -403,14 +404,14 @@ histogram<double> Spinsystem::getCorrelation() const
                     counter.add_bin(dist);
                 }
                 correlation.add_data( dist );
-                qDebug() << "spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << " 1 ";
+                qDebug() << "[spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << " 1 ";
             }
             else 
             {
-                qDebug() << "spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << "   ";
+                qDebug() << "[spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << "   ";
             }
             counter.add_data( dist );
-            qDebug() << "spinsystem]    distance " << dist << '\n';
+            qDebug() << "[spinsystem]    distance " << dist << '\n';
         }
     }
 

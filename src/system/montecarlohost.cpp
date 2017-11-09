@@ -27,7 +27,7 @@ void MonteCarloHost::setAcceptance(AcceptanceAdaptor* acceptanceAdaptorDerived)
 
 
 
-void MonteCarloHost::setParameters(ParametersWidget* prms)
+void MonteCarloHost::setParameters(BaseParametersWidget* prms)
 {
     qDebug() << __PRETTY_FUNCTION__;
 
@@ -63,8 +63,6 @@ void MonteCarloHost::randomiseSystem()
     Q_CHECK_PTR(parameters);
     
     spinsystem.resetSpins();
-    
-    clearRecords();
     
     qDebug() << "[mc] initial: H =" << spinsystem.getHamiltonian();
     qDebug() << spinsystem.c_str();

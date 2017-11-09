@@ -7,7 +7,7 @@
 #endif
 
 
-#include "gui/parameters_widget.hpp"
+#include "gui/default_parameters_widget.hpp"
 #include "spinsystem.hpp"
 #include "histogram.hpp"
 #include "acceptance.hpp"
@@ -22,7 +22,7 @@
 
 class MonteCarloHost
 {
-    ParametersWidget*  parameters = Q_NULLPTR;
+    BaseParametersWidget*  parameters = Q_NULLPTR;
     AcceptanceAdaptor* acceptance = nullptr;
     Spinsystem         spinsystem {};
 
@@ -39,7 +39,7 @@ public:
     ~MonteCarloHost();
     
     void setup();
-    void setParameters(ParametersWidget*);
+    void setParameters(BaseParametersWidget*);
     void setAcceptance(AcceptanceAdaptor*);
     void randomiseSystem();
     void clearRecords();

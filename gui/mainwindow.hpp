@@ -9,9 +9,8 @@
 
 
 #include "message_box.hpp"
-#include "default_layout_widget.hpp"
-#include "constrained_layout_widget.hpp"
-#include "parameters_widget.hpp"
+#include "default_parameters_widget.hpp"
+#include "constrained_parameters_widget.hpp"
 #include "grid_widget.hpp"
 #include "mc_widget.hpp"
 #include "chart_widget.hpp"
@@ -43,10 +42,17 @@ public:
     
     
 protected:
+    QGroupBox* createBottomActionGroup();
     
 private:
-    QWidget* LayoutWidget;
+    GridWidget* gridWidget;
+    BaseParametersWidget* prmsWidget;
+    MCWidget* MCwidget;
+    ChartWidget* hamiltonianChart;
+    ChartWidget* averageMagnetisationChart;
     
+    // QProgressBar* progressBar;
+    QPushButton* quitBtn = new QPushButton("Quit",this);
     
     Ui::MainWindow* ui;
 };

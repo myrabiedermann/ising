@@ -165,15 +165,15 @@
                       "src/main.cpp",
                       "src/system/montecarlohost.cpp",
                       "src/system/spinsystem.cpp",
+                      "gui/base_parameters_widget.cpp",
                       "gui/chart_widget.cpp",
-                      "gui/constrained_layout_widget.cpp",
-                      "gui/default_layout_widget.cpp",
+                      "gui/constrained_parameters_widget.cpp",
+                      "gui/default_parameters_widget.cpp",
                       "gui/grid_widget.cpp",
                       "gui/long_qspinbox.cpp",
                       "gui/mainwindow.cpp",
                       "gui/mc_widget.cpp",
-                      "gui/message_box.cpp",
-                      "gui/parameters_widget.cpp"
+                      "gui/message_box.cpp"
                     ]
                   }
                 ],
@@ -184,6 +184,22 @@
                 "name": "ising",
                 "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
                 "type": "EXECUTABLE"
+              },
+              {
+                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/CMakeFiles/enhance_autogen",
+                      "build/CMakeFiles/enhance_autogen.rule"
+                    ]
+                  }
+                ],
+                "fullName": "enhance_autogen",
+                "name": "enhance_autogen",
+                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "type": "UTILITY"
               },
               {
                 "artifacts": [
@@ -260,22 +276,6 @@
                   {
                     "isGenerated": true,
                     "sources": [
-                      "build/CMakeFiles/enhance_autogen",
-                      "build/CMakeFiles/enhance_autogen.rule"
-                    ]
-                  }
-                ],
-                "fullName": "enhance_autogen",
-                "name": "enhance_autogen",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
-                "type": "UTILITY"
-              },
-              {
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
-                "fileGroups": [
-                  {
-                    "isGenerated": true,
-                    "sources": [
                       "build/CMakeFiles/ising_autogen",
                       "build/CMakeFiles/ising_autogen.rule"
                     ]
@@ -291,7 +291,7 @@
         ]
       }
     ],
-    "cookie": "0.31923983175986814",
+    "cookie": "0.8728559837614478",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

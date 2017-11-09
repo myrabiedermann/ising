@@ -38,6 +38,7 @@ struct Metropolis : public AcceptanceAdaptor
         latestCondition = std::exp(-(energy_new-energy_old)/temperature);
         return latestRandom < latestCondition ? true : false;
         #endif
+        
         return enhance::random_double(0.0, 1.0) < std::exp(-(energy_new-energy_old)/temperature) ? true : false;
     }
 };

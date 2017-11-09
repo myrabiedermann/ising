@@ -7,10 +7,11 @@
 #endif
 
 
-#include "parameters_widget.hpp"
+#include "default_parameters_widget.hpp"
 #include "system/montecarlohost.hpp"
 #include <QWidget>
 #include <QPushButton>
+#include <QComboBox>
 #include <QtConcurrent/QtConcurrent>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -35,18 +36,20 @@ public:
     bool getRunning();
     
     void equilibrateAction();
-    void runAction();
+    void productionAction();
     void pauseAction();
     void abortAction();
     void saveAction();
     void correlateAction();
-    void setParameters(ParametersWidget*);
+    void runAction();
+
+    void setParameters(BaseParametersWidget*);
     
 public slots:
     void setRunning(bool);
     void makeSystemNew();
     void makeRecordsNew();
-    void randomiseSystem();
+    void makeSystemRandom();
     
 signals:
     void resetSignal();
@@ -60,18 +63,27 @@ protected:
 private:
     void server();
     
-    ParametersWidget* prmsWidget = Q_NULLPTR;
+    BaseParametersWidget* prmsWidget = Q_NULLPTR;
     QPushButton* equilBtn = new QPushButton("Equilibration Run",this);
-    QPushButton* runBtn = new QPushButton("Production Run",this);
+    QPushButton* prodBtn = new QPushButton("Production Run",this);
     QPushButton* pauseBtn = new QPushButton("Pause",this);
     QPushButton* abortBtn = new QPushButton("Reset",this);
-    QPushButton* saveBtn = new QPushButton("Print data",this);
-    QPushButton* correlateBtn = new QPushButton("Print correlation",this);
+    QPushButton* saveBtn = new QPushButton("Save sample data",this);
+    QPushButton* correlateBtn = new QPushButton("Save correlation",this);
+
+    // QComboBox* advancedComboBox = new QComboBox(this);
+
+    // QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
+    // QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
+    // QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
+
+    // QPushButton* runBtn = new QPushButton("Run", this);
+
+    QGroupBox* createAdvancedOptionsBox();
+    QGroupBox* createStandardMCOptionsBox();
     
     QTimer* drawRequestTimer;
     QTimer* progressTimer;
-    
-//     QFuture<void>* server_ptr = Q_NULLPTR;
     
     std::atomic<bool> equilibration_mode {false};
     std::atomic<bool> simulation_running {false};
