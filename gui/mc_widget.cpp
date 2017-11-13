@@ -390,14 +390,21 @@ void MCWidget::advancedRunAction()
     for(double stepper = prmsWidget->getStartValue(); stepper <= prmsWidget->getStopValue(); stepper += prmsWidget->getStepValue() )
     {
         prmsWidget->setAdvancedValue(stepper);
-        
-        equilibrateAction();
-        productionAction();
+        {
+            QEventLoop pause;
+            connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
+            equilibrateAction();
+            pause.exec();
+        }
+        {
+            QEventLoop pause;
+            connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
+            productionAction();
+            pause.exec();
+        }
         saveAction();
-
         steps_done.store(0);
         emit resetChartSignal();
-
     }
 }
 
@@ -435,6 +442,7 @@ void MCWidget::server()
                 emit pauseBtn->clicked();
         }
     }
+    emit serverReturn();
 }
 
 

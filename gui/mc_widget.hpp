@@ -57,6 +57,7 @@ signals:
     void runningSignal(bool);
     void drawRequest(const MonteCarloHost&, const unsigned long);
     void finishedSteps(const unsigned long);
+    void serverReturn();
     
 protected:
     
