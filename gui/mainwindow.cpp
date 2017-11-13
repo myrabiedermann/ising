@@ -62,7 +62,9 @@ MainWindow::MainWindow(QWidget *parent) :
     
     // ### hamiltonianChart
     {
-        hamiltonianChart->setTitle("Hamiltonian");
+        // hamiltonianChart->setTitle("Hamiltonian");
+        hamiltonianChart->setXLabel("MC steps");
+        hamiltonianChart->setYLabel("Hamiltonian");
         hamiltonianChart->setMinimumHeight(400);
         hamiltonianChart->setMinimumWidth(600);
         
@@ -81,7 +83,9 @@ MainWindow::MainWindow(QWidget *parent) :
             averageMagnetisationChart = new ChartWidget(this);
             Q_CHECK_PTR(averageMagnetisationChart);
 
-            averageMagnetisationChart->setTitle("average magnetisation per spin");
+            // averageMagnetisationChart->setTitle("average magnetisation per spin");
+            averageMagnetisationChart->setXLabel("MC steps");
+            averageMagnetisationChart->setYLabel("Magnetisation per spin");
             averageMagnetisationChart->setMinimumHeight(400);
             averageMagnetisationChart->setMinimumWidth(600);
             
@@ -144,7 +148,8 @@ QGroupBox* MainWindow::createBottomActionGroup()
     Q_CHECK_PTR(groupBox);
     
     // the quit button
-    quitBtn->setMaximumWidth(100);
+    quitBtn->setMaximumWidth(150);
+    quitBtn->setMinimumWidth(50);
     connect(quitBtn, &QPushButton::clicked, QCoreApplication::instance(), &QApplication::quit);
     
     // pack buttons into layout

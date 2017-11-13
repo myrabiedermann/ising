@@ -30,6 +30,8 @@ public slots:
     void draw(qreal, qreal);
     void refresh();
     void setTitle(const QString&);
+    void setXLabel(const QString&);
+    void setYLabel(const QString&);
     void setPen(const QPen&);
     void reset();
     

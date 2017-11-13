@@ -17,6 +17,8 @@
 #include <QtDebug>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
 #include <QDoubleValidator>
 #include <QIntValidator>
 #include <QSize>
@@ -44,6 +46,12 @@ public:
     virtual double getRatio() const = 0;
     
     virtual bool getConstrained() const = 0;
+
+    double getStartValue() const;
+    double getStopValue() const;
+    double getStepValue() const;
+    // double getAdvancedValue() const;
+    virtual void setAdvancedValue(const double&) = 0;
     
 public slots:
     virtual void setReadOnly(bool) = 0;
@@ -60,6 +68,7 @@ protected:
     void operator=(const BaseParametersWidget&) = delete;
 
     void randomiseSystem();
+    QGroupBox* createAdvancedOptionsBox();
     QGroupBox* createOutputBox();
     virtual QGroupBox* createSystemBox() = 0;
     virtual QGroupBox* createEquilBox() = 0;
@@ -79,6 +88,11 @@ protected:
 
     QDoubleSpinBox* magneticSpinBox {Q_NULLPTR};
     QDoubleSpinBox* ratioSpinBox {Q_NULLPTR};
+
+    QComboBox* advancedComboBox = new QComboBox(this);
+    QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
+    QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
+    QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
     
     // Buttons
     QPushButton* randomiseBtn = new QPushButton("Randomise spins", this);

@@ -16,6 +16,7 @@
 
 class Spinsystem
 {
+    bool CONSTRAINED {false};
     double Hamiltonian {0};
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};

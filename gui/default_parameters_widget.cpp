@@ -10,6 +10,9 @@
     Q_CHECK_PTR(printFreqSpinBox);   \
     Q_CHECK_PTR(randomiseBtn);       \
     Q_CHECK_PTR(filenameLineEdit);   \
+    Q_CHECK_PTR(startValueSpinBox);  \
+    Q_CHECK_PTR(stepValueSpinBox);   \
+    Q_CHECK_PTR(stopValueSpinBox);   \
     Q_CHECK_PTR(magneticSpinBox);    
 
 
@@ -20,7 +23,6 @@ DefaultParametersWidget::DefaultParametersWidget(QWidget* parent)
     qDebug() << __PRETTY_FUNCTION__;
 
     magneticSpinBox = new QDoubleSpinBox(this);
-    // ratioSpinBox = new QDoubleSpinBox(this);
 
     DEFAULT_PARAMETERS_WIDGET_ASSERT_ALL
     setup();
@@ -46,18 +48,19 @@ void DefaultParametersWidget::setup()
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setAlignment(Qt::AlignVCenter);
 
-    
-    // add Box with Line Edits
-    mainLayout->addWidget(createSystemBox());
-    mainLayout->addWidget(createEquilBox());
-    mainLayout->addWidget(createProdBox());
-    mainLayout->addWidget(createOutputBox());
-    setDefault();
-    
     // add randomiseBtn
     randomiseBtn->setFocusPolicy(Qt::NoFocus);
     connect(randomiseBtn, &QPushButton::clicked, this, &DefaultParametersWidget::randomiseSystem);
+    
+    // add Box with Line Edits
+    mainLayout->addWidget(createSystemBox());
     mainLayout->addWidget(randomiseBtn);
+    mainLayout->addWidget(createEquilBox());
+    mainLayout->addWidget(createProdBox());
+    mainLayout->addWidget(createOutputBox());
+    mainLayout->addWidget(createAdvancedOptionsBox());
+    setDefault();
+    
     
     // https://stackoverflow.com/a/16795664
     connect( interactionSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &DefaultParametersWidget::valueChanged );
@@ -160,7 +163,7 @@ QGroupBox* DefaultParametersWidget::createEquilBox()
     // the layout
     QFormLayout* formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignVCenter);
-    formLayout->addRow("Equilibration steps",stepsEquilSpinBox);
+    formLayout->addRow("equilibration steps",stepsEquilSpinBox);
 
     // set group layout
     labelBox->setLayout(formLayout);
@@ -193,7 +196,7 @@ QGroupBox* DefaultParametersWidget::createProdBox()
     // the layout
     QFormLayout* formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignHCenter);
-    formLayout->addRow("Production steps",stepsProdSpinBox);
+    formLayout->addRow("production steps",stepsProdSpinBox);
     formLayout->addRow("sample every ...", printFreqSpinBox); 
 
 
@@ -219,6 +222,10 @@ void DefaultParametersWidget::setReadOnly(bool flag)
     printFreqSpinBox->setReadOnly(flag);
     randomiseBtn->setEnabled(!flag);
     filenameLineEdit->setReadOnly(flag);
+    advancedComboBox->setEditable(!flag);
+    startValueSpinBox->setReadOnly(flag);
+    stepValueSpinBox->setReadOnly(flag);
+    stopValueSpinBox->setReadOnly(flag);
     magneticSpinBox->setReadOnly(flag);
 }
 
@@ -230,15 +237,19 @@ void DefaultParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     DEFAULT_PARAMETERS_WIDGET_ASSERT_ALL
 
-    heightSpinBox->setValue(4);
-    widthSpinBox->setValue(4);
+    heightSpinBox->setValue(30);
+    widthSpinBox->setValue(30);
     interactionSpinBox->setValue(1.0);
-    temperatureSpinBox->setValue(2.0);
-    stepsEquilSpinBox->setValue(10000);
-    stepsProdSpinBox->setValue(10000);
-    printFreqSpinBox->setValue(10);
+    temperatureSpinBox->setValue(1.0);
+    stepsEquilSpinBox->setValue(1000000);
+    stepsProdSpinBox->setValue(5000000);
+    printFreqSpinBox->setValue(100);
     filenameLineEdit->setText("ising");
-    magneticSpinBox->setValue(1.0);
+    advancedComboBox->setCurrentIndex(0);
+    startValueSpinBox->setValue(0);
+    stepValueSpinBox->setValue(0.1);
+    stopValueSpinBox->setValue(0);
+    magneticSpinBox->setValue(0.0);
 }
 
 
@@ -261,6 +272,30 @@ bool DefaultParametersWidget::getConstrained() const
 {
     return false;
 }
-                
+     
+void DefaultParametersWidget::setAdvancedValue(const double& value) 
+{
+    Q_CHECK_PTR(advancedComboBox);
+    Q_CHECK_PTR(magneticSpinBox);
+    Q_CHECK_PTR(temperatureSpinBox);
+    Q_CHECK_PTR(interactionSpinBox);
+
+    if( advancedComboBox->currentIndex() == 0 )
+    {
+        // qInfo() << "setting temperature";
+        temperatureSpinBox->setValue(value);
+    }
+    else if( advancedComboBox->currentIndex() == 1 )
+    {
+        // qInfo() << "setting magnetic";
+        magneticSpinBox->setValue(value);
+    }
+    else if( advancedComboBox->currentIndex() == 2 )
+    {
+        // qInfo() << "setting interaction";
+        interactionSpinBox->setValue(value);
+    }
+    else throw std::runtime_error("something went wrong in setAdvancedValue");
+}
                 
                 

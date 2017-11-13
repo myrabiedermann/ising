@@ -8,6 +8,7 @@ void Spinsystem::setParameters(BaseParametersWidget* prms)
     Q_CHECK_PTR(prms);
     parameters = prms;
     Q_CHECK_PTR(parameters);
+    CONSTRAINED = parameters->getConstrained();
 }
 
 
@@ -17,6 +18,7 @@ void Spinsystem::resetParameters()
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
+    CONSTRAINED = parameters->getConstrained();
 
     computeHamiltonian();
     qDebug() << "[spinsystem] initial H = " << Hamiltonian;
@@ -34,7 +36,7 @@ void Spinsystem::setup()
     lastFlipped.clear();
 
     // some safety checks:
-    if( parameters->getConstrained() && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
+    if( CONSTRAINED && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
     {
         throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
     }
@@ -49,7 +51,7 @@ void Spinsystem::setup()
 
     // set spinarray:
     int random;
-    if( ! parameters->getConstrained() ) // initialise spins randomly
+    if( ! CONSTRAINED ) // initialise spins randomly
     {
         for(unsigned int i=0; i<totalnumber; ++i)
         {
@@ -139,7 +141,7 @@ void Spinsystem::resetSpins()
     Q_CHECK_PTR(parameters);
 
     int random;
-    if( ! parameters->getConstrained() ) // initialise spins randomly
+    if( ! CONSTRAINED ) // initialise spins randomly
     {
         for( auto& s: spins )
         {
@@ -225,7 +227,7 @@ double Spinsystem::Jij(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
     
-    if( ! parameters->getConstrained() ) 
+    if( ! CONSTRAINED ) 
         return parameters->getInteraction();
     else                
         return _spin1 != _spin2 ? parameters->getInteraction() : 0;
@@ -237,7 +239,7 @@ double Spinsystem::Bi(const SPINTYPE _spintype) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
     
-    if( ! parameters->getConstrained() ) 
+    if( ! CONSTRAINED ) 
         return parameters->getMagnetic() * (_spintype == SPINTYPE::UP ? 1 : -1) ;
     else                
         return 0;
@@ -251,7 +253,7 @@ void Spinsystem::flip()
     double localEnergy_before = 0.f;
     double localEnergy_after = 0.f;
 
-    if( ! parameters->getConstrained() )
+    if( ! CONSTRAINED )
     {
         // find random spin
         auto randomspin = enhance::random_iterator(spins);

@@ -13,33 +13,40 @@ MCWidget::MCWidget(QWidget *parent)
     
     equilBtn->setCheckable(false);
     equilBtn->setChecked(false);
-    equilBtn->setMaximumWidth(150);
+    equilBtn->setMaximumWidth(350);
+    equilBtn->setMinimumWidth(150);
 
     prodBtn->setCheckable(false);
     prodBtn->setChecked(false);
-    prodBtn->setMaximumWidth(150);
+    prodBtn->setMaximumWidth(350);
+    prodBtn->setMinimumWidth(150);
     
     pauseBtn->setCheckable(false);
-    pauseBtn->setMaximumWidth(150);
     pauseBtn->setEnabled(false);
+    pauseBtn->setMaximumWidth(350);
+    pauseBtn->setMinimumWidth(150);
     
     abortBtn->setCheckable(false);
-    abortBtn->setMaximumWidth(150);
     abortBtn->setEnabled(false);
+    abortBtn->setMaximumWidth(350);
+    abortBtn->setMinimumWidth(150);
 
     saveBtn->setCheckable(false);
-    saveBtn->setMaximumWidth(150);
     saveBtn->setEnabled(false);
+    saveBtn->setMaximumWidth(350);
+    saveBtn->setMinimumWidth(150);
 
     correlateBtn->setCheckable(false);
-    correlateBtn->setMaximumWidth(150);
     correlateBtn->setEnabled(false);
+    correlateBtn->setMaximumWidth(350);
+    correlateBtn->setMinimumWidth(150);
 
-    // runBtn->setCheckable(false);
-    // runBtn->setChecked(false);
-    // runBtn->setMaximumWidth(150);
+    advancedRunBtn->setCheckable(false);
+    advancedRunBtn->setChecked(false);
+    advancedRunBtn->setMaximumWidth(350);
+    advancedRunBtn->setMinimumWidth(150);
 
-    // connect(runBtn,       &QPushButton::clicked, this, &MCWidget::runAction);
+    connect(advancedRunBtn, &QPushButton::clicked, this, &MCWidget::advancedRunAction);
     connect(equilBtn,     &QPushButton::clicked, this, &MCWidget::equilibrateAction);
     connect(prodBtn,      &QPushButton::clicked, this, &MCWidget::productionAction);
     connect(pauseBtn,     &QPushButton::clicked, this, &MCWidget::pauseAction);
@@ -49,13 +56,26 @@ MCWidget::MCWidget(QWidget *parent)
     connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
     connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
     
-     // main layout
-     QHBoxLayout* mainLayout = new QHBoxLayout;
-     Q_CHECK_PTR(mainLayout);
-     mainLayout->setAlignment(Qt::AlignHCenter);
+    // main layout
+    QHBoxLayout* mainLayout = new QHBoxLayout;
+    Q_CHECK_PTR(mainLayout);
+    mainLayout->setAlignment(Qt::AlignHCenter);
  
-    mainLayout->addWidget(createStandardMCOptionsBox());
-    mainLayout->addWidget(createAdvancedOptionsBox());
+    Q_CHECK_PTR(equilBtn);
+    Q_CHECK_PTR(prodBtn);
+    Q_CHECK_PTR(pauseBtn);
+    Q_CHECK_PTR(abortBtn);
+    Q_CHECK_PTR(saveBtn);
+    Q_CHECK_PTR(correlateBtn);
+    Q_CHECK_PTR(advancedRunBtn);
+    
+    mainLayout->addWidget(equilBtn);
+    mainLayout->addWidget(prodBtn);
+    mainLayout->addWidget(advancedRunBtn);
+    mainLayout->addWidget(pauseBtn);
+    mainLayout->addWidget(abortBtn);
+    mainLayout->addWidget(saveBtn);
+    mainLayout->addWidget(correlateBtn);
 
     setLayout(mainLayout);  
 
@@ -136,78 +156,6 @@ void MCWidget::makeSystemRandom()
 
 
 
-QGroupBox* MCWidget::createAdvancedOptionsBox()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-
-    // the group
-    QGroupBox* advancedOptionsBox = new QGroupBox("Advanced Simulation Commands");
-    Q_CHECK_PTR(advancedOptionsBox);
-    
-    // // set up the ComboBox:
-    // Q_CHECK_PTR(advancedComboBox);
-    // advancedComboBox->addItem("B");
-    // advancedComboBox->addItem("T");
-    // advancedComboBox->addItem("J");
-
-    // // set up the range options:
-    // startValueSpinBox->setMinimumWidth(40);
-    // startValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    // stopValueSpinBox->setMinimumWidth(40);
-    // stopValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    // stepValueSpinBox->setMinimumWidth(40);
-    // stepValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    
-    // // the layout 
-    // QFormLayout* formLayout = new QFormLayout();
-    // Q_CHECK_PTR(formLayout);
-    // formLayout->setLabelAlignment(Qt::AlignCenter);
-    // formLayout->addRow("produce a range of MC simulations with varying ... ", advancedComboBox);
-    
-    // QHBoxLayout* rangeOptions = new QHBoxLayout();
-    // Q_CHECK_PTR(rangeOptions);
-    // rangeOptions->addWidget(startValueSpinBox);
-    // rangeOptions->addWidget(stopValueSpinBox);
-    // rangeOptions->addWidget(stepValueSpinBox);
-    // formLayout->addRow("start : end : step", rangeOptions);
-    
-    // Q_CHECK_PTR(runBtn);
-    // formLayout->addWidget(runBtn);
-
-    // advancedOptionsBox->setLayout(formLayout);
-    return advancedOptionsBox;
-}
-
-
-
-
-QGroupBox* MCWidget::createStandardMCOptionsBox()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-
-    // the group
-    QGroupBox* standardOptionsBox = new QGroupBox("Standard MC Simulation Commands");
-    Q_CHECK_PTR(standardOptionsBox);
-
-    // the layout 
-    QHBoxLayout *hbox = new QHBoxLayout;
-    Q_CHECK_PTR(hbox);
-
-    hbox->addWidget(equilBtn);
-    hbox->addWidget(prodBtn);
-    hbox->addWidget(pauseBtn);
-    hbox->addWidget(abortBtn);
-    hbox->addWidget(saveBtn);
-    hbox->addWidget(correlateBtn);
-
-    standardOptionsBox->setLayout(hbox);
-    return standardOptionsBox;
-}
-
-
-
-
 void MCWidget::equilibrateAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -218,7 +166,7 @@ void MCWidget::equilibrateAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
@@ -228,7 +176,7 @@ void MCWidget::equilibrateAction()
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(false);
-    // runBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(false);
     drawRequestTimer->start(34);
     progressTimer->start(100);
 
@@ -248,6 +196,7 @@ void MCWidget::equilibrateAction()
         });
 }
     
+
 void MCWidget::productionAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -257,7 +206,7 @@ void MCWidget::productionAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
@@ -268,7 +217,7 @@ void MCWidget::productionAction()
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(false);
-    // runBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(false);
     drawRequestTimer->start(34);
     progressTimer->start(100);
     
@@ -298,7 +247,7 @@ void MCWidget::pauseAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
@@ -309,7 +258,7 @@ void MCWidget::pauseAction()
     saveBtn->setEnabled(true);
     correlateBtn->setEnabled(true);
     abortBtn->setEnabled(true);
-    // runBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(false);
     
     emit drawRequest(MC, steps_done.load());
     emit finishedSteps(steps_done.load());
@@ -330,7 +279,7 @@ void MCWidget::abortAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
@@ -340,7 +289,7 @@ void MCWidget::abortAction()
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(false);
-    // runBtn->setEnabled(true);
+    advancedRunBtn->setEnabled(true);
     
     drawRequestTimer->stop();
     progressTimer->stop();
@@ -361,7 +310,7 @@ void MCWidget::saveAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
@@ -371,7 +320,7 @@ void MCWidget::saveAction()
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(true);
     abortBtn->setEnabled(true);
-    // runBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(false);
 
     drawRequestTimer->stop();
     progressTimer->stop();
@@ -392,7 +341,7 @@ void MCWidget::correlateAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
@@ -402,7 +351,7 @@ void MCWidget::correlateAction()
     saveBtn->setEnabled(true);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(true);
-    // runBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(false);
 
     drawRequestTimer->stop();
     progressTimer->stop();
@@ -414,7 +363,7 @@ void MCWidget::correlateAction()
 
 
 
-void MCWidget::runAction()
+void MCWidget::advancedRunAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
     
@@ -423,11 +372,33 @@ void MCWidget::runAction()
     Q_CHECK_PTR(saveBtn);
     Q_CHECK_PTR(correlateBtn);
     Q_CHECK_PTR(abortBtn);
-    // Q_CHECK_PTR(runBtn);
+    Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
 
-    // add code here
+    simulation_running.store(true);
+    equilBtn->setEnabled(false);
+    prodBtn->setEnabled(false);
+    pauseBtn->setEnabled(true);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(false);
+    drawRequestTimer->start(34);
+    progressTimer->start(100);
+
+    for(double stepper = prmsWidget->getStartValue(); stepper <= prmsWidget->getStopValue(); stepper += prmsWidget->getStepValue() )
+    {
+        prmsWidget->setAdvancedValue(stepper);
+        
+        equilibrateAction();
+        productionAction();
+        saveAction();
+
+        steps_done.store(0);
+        emit resetChartSignal();
+
+    }
 }
 
 
@@ -446,17 +417,18 @@ void MCWidget::server()
     {
         while(simulation_running.load() && steps_done.load() < prmsWidget->getStepsEquil())
         {
-            MC.run(5, true);
-            steps_done.store(steps_done.load() + 5);
+            MC.run(prmsWidget->getPrintFreq(), true);
+            steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
             
             if( steps_done.load() >= prmsWidget->getStepsEquil() )
                 emit pauseBtn->clicked();
         }
     }
-    else{
+    else
+    {
         while(simulation_running.load() && steps_done.load() < prmsWidget->getStepsProd())
         {
-            MC.run(prmsWidget->getPrintFreq());
+            MC.run(prmsWidget->getPrintFreq(), false);
             steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
             
             if (steps_done.load() >= prmsWidget->getStepsProd())

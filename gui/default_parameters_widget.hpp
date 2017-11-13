@@ -40,6 +40,7 @@ public:
     double getRatio() const;
 
     bool getConstrained() const;
+    void setAdvancedValue(const double&);
     
 public slots:
     void setReadOnly(bool);

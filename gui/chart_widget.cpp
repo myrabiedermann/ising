@@ -15,7 +15,7 @@ ChartWidget::ChartWidget(QWidget *parent)
     chart->legend()->hide();
     chart->addSeries(series);
     chart->createDefaultAxes();
-    chart->setTitle("DEFAULT TEXT");
+    // chart->setTitle("DEFAULT TEXT");
     
     setChart(chart);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -41,7 +41,6 @@ void ChartWidget::append(qreal x, qreal y)
 
 
 
-
 void ChartWidget::draw(qreal x, qreal y)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -61,7 +60,6 @@ void ChartWidget::refresh()
 
 
 
-
 void ChartWidget::setTitle(const QString& s)
 {
     Q_CHECK_PTR(chart);
@@ -69,13 +67,25 @@ void ChartWidget::setTitle(const QString& s)
 }
 
 
+void ChartWidget::setXLabel(const QString& s)
+{
+    Q_CHECK_PTR(chart);
+    chart->axisX()->setTitleText(s);
+}
+
+
+void ChartWidget::setYLabel(const QString& s)
+{
+    Q_CHECK_PTR(chart);
+    chart->axisY()->setTitleText(s);
+}
+
 
 void ChartWidget::reset()
 {
     Q_CHECK_PTR(chart);
     series->clear();
 }
-
 
 
 void ChartWidget::setPen(const QPen& pen)

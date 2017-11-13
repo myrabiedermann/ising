@@ -10,6 +10,9 @@
     Q_CHECK_PTR(printFreqSpinBox);   \
     Q_CHECK_PTR(randomiseBtn);       \
     Q_CHECK_PTR(filenameLineEdit);   \
+    Q_CHECK_PTR(startValueSpinBox);  \
+    Q_CHECK_PTR(stepValueSpinBox);   \
+    Q_CHECK_PTR(stopValueSpinBox);   \
     Q_CHECK_PTR(ratioSpinBox);    
 
 
@@ -19,7 +22,6 @@ ConstrainedParametersWidget::ConstrainedParametersWidget(QWidget* parent)
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    // magneticSpinBox = new QDoubleSpinBox(this);
     ratioSpinBox = new QDoubleSpinBox(this);
 
     CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
@@ -49,9 +51,11 @@ void ConstrainedParametersWidget::setup()
     
     // add Box with Line Edits
     mainLayout->addWidget(createSystemBox());
+    mainLayout->addWidget(randomiseBtn);
     mainLayout->addWidget(createEquilBox());
     mainLayout->addWidget(createProdBox());
     mainLayout->addWidget(createOutputBox());
+    mainLayout->addWidget(createAdvancedOptionsBox());
     setDefault();
     
     // add randomiseBtn
@@ -160,7 +164,7 @@ QGroupBox* ConstrainedParametersWidget::createEquilBox()
     // the layout
     QFormLayout* formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignVCenter);
-    formLayout->addRow("Equilibration steps",stepsEquilSpinBox);
+    formLayout->addRow("equilibration steps",stepsEquilSpinBox);
 
     // set group layout
     labelBox->setLayout(formLayout);
@@ -193,7 +197,7 @@ QGroupBox* ConstrainedParametersWidget::createProdBox()
     // the layout
     QFormLayout* formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignHCenter);
-    formLayout->addRow("Production steps",stepsProdSpinBox);
+    formLayout->addRow("production steps",stepsProdSpinBox);
     formLayout->addRow("sample every ...", printFreqSpinBox); 
 
 
@@ -219,6 +223,10 @@ void ConstrainedParametersWidget::setReadOnly(bool flag)
     printFreqSpinBox->setReadOnly(flag);
     randomiseBtn->setEnabled(!flag);
     filenameLineEdit->setReadOnly(flag);
+    advancedComboBox->setEditable(!flag);
+    startValueSpinBox->setReadOnly(flag);
+    stepValueSpinBox->setReadOnly(flag);
+    stopValueSpinBox->setReadOnly(flag);
     ratioSpinBox->setReadOnly(flag);
 }
 
@@ -238,6 +246,10 @@ void ConstrainedParametersWidget::setDefault()
     stepsProdSpinBox->setValue(10000);
     printFreqSpinBox->setValue(10);
     filenameLineEdit->setText("ising");
+    advancedComboBox->setCurrentIndex(0);
+    startValueSpinBox->setValue(0);
+    stepValueSpinBox->setValue(0.1);
+    stopValueSpinBox->setValue(0);
     ratioSpinBox->setValue(0.5);
 }
 
@@ -261,6 +273,10 @@ bool ConstrainedParametersWidget::getConstrained() const
 {
     return true;
 }
-                
+
+void ConstrainedParametersWidget::setAdvancedValue(const double& value)
+{
+    // add code
+}
                 
                 

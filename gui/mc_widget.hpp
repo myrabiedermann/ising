@@ -41,7 +41,7 @@ public:
     void abortAction();
     void saveAction();
     void correlateAction();
-    void runAction();
+    void advancedRunAction();
 
     void setParameters(BaseParametersWidget*);
     
@@ -70,17 +70,7 @@ private:
     QPushButton* abortBtn = new QPushButton("Reset",this);
     QPushButton* saveBtn = new QPushButton("Save sample data",this);
     QPushButton* correlateBtn = new QPushButton("Save correlation",this);
-
-    // QComboBox* advancedComboBox = new QComboBox(this);
-
-    // QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
-    // QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
-    // QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
-
-    // QPushButton* runBtn = new QPushButton("Run", this);
-
-    QGroupBox* createAdvancedOptionsBox();
-    QGroupBox* createStandardMCOptionsBox();
+    QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
     
     QTimer* drawRequestTimer;
     QTimer* progressTimer;
