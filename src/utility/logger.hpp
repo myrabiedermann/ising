@@ -139,7 +139,7 @@ constexpr inline typename std::enable_if<sep!=SEPERATOR::NONE>::type Logger::wri
     assert(&getInstance());
     assert(logfile.is_open());
     using expander = int[];
-    (void) expander {0, (void(logfile << SYMBOL::get<sep>() << std::forward<Args>(args)),0)...};
+    (void) expander {0, (void(logfile << std::forward<Args>(args) << SYMBOL::get<sep>()),0)...};
 }
 
 

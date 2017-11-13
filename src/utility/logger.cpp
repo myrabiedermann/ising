@@ -4,7 +4,8 @@
 
     
 Logger::Logger() 
-  : logfile("ising.log", std::ios::app | std::ios::out)
+//   : logfile("ising.log", std::ios::app | std::ios::out)
+  : logfile("ising.log", std::ios::out)
 {
     // if ( !ProgramOptions::getInstance()("nolog"))
     // {

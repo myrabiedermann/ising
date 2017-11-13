@@ -19,6 +19,75 @@
             "targets": [
               {
                 "artifacts": [
+                  "/Users/myra/my-programs/ising_masterpraktikum/build/libenhance.dylib"
+                ],
+                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "fileGroups": [
+                  {
+                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
+                    "defines": [
+                      "enhance_EXPORTS"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/enhance_autogen/include"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
+                      }
+                    ],
+                    "isGenerated": true,
+                    "language": "CXX",
+                    "sources": [
+                      "build/enhance_autogen/mocs_compilation.cpp"
+                    ]
+                  },
+                  {
+                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
+                    "defines": [
+                      "enhance_EXPORTS"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/enhance_autogen/include"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
+                      },
+                      {
+                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "lib/enhance.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "libenhance.dylib",
+                "linkerLanguage": "CXX",
+                "name": "enhance",
+                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "type": "SHARED_LIBRARY"
+              },
+              {
+                "artifacts": [
                   "/Users/myra/my-programs/ising_masterpraktikum/build/ising"
                 ],
                 "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
@@ -187,75 +256,6 @@
                 "type": "EXECUTABLE"
               },
               {
-                "artifacts": [
-                  "/Users/myra/my-programs/ising_masterpraktikum/build/libenhance.dylib"
-                ],
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
-                "fileGroups": [
-                  {
-                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
-                    "defines": [
-                      "enhance_EXPORTS"
-                    ],
-                    "includePath": [
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/enhance_autogen/include"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
-                      }
-                    ],
-                    "isGenerated": true,
-                    "language": "CXX",
-                    "sources": [
-                      "build/enhance_autogen/mocs_compilation.cpp"
-                    ]
-                  },
-                  {
-                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
-                    "defines": [
-                      "enhance_EXPORTS"
-                    ],
-                    "includePath": [
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/enhance_autogen/include"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "lib/enhance.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "libenhance.dylib",
-                "linkerLanguage": "CXX",
-                "name": "enhance",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
-                "type": "SHARED_LIBRARY"
-              },
-              {
                 "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
                 "fileGroups": [
                   {
@@ -292,7 +292,7 @@
         ]
       }
     ],
-    "cookie": "0.43375176323745346",
+    "cookie": "0.4754120216816564",
     "inReplyTo": "codemodel",
     "type": "reply"
   }
