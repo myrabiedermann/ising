@@ -49,8 +49,8 @@ void MonteCarloHost::setup()
     
     clearRecords();
     
-    qDebug() << "[mc] initial: H = " << spinsystem.getHamiltonian();
-    qDebug() << spinsystem.c_str();
+    Logger::getInstance().debug("[mc]", "initial: H = ", spinsystem.getHamiltonian());
+    Logger::getInstance().debug(spinsystem.c_str());
 
 }
 
@@ -64,8 +64,8 @@ void MonteCarloHost::randomiseSystem()
     
     spinsystem.resetSpins();
     
-    qDebug() << "[mc] initial: H =" << spinsystem.getHamiltonian();
-    qDebug() << spinsystem.c_str();
+    Logger::getInstance().debug("[mc] initial: H =", spinsystem.getHamiltonian());
+    Logger::getInstance().debug(spinsystem.c_str());
 }
 
 
@@ -106,15 +106,15 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         if( ! acceptance->valid(energy_old, energy_new, parameters->getTemperature()) )
         {
             spinsystem.flip_back(); 
-            #ifndef QT_NO_DEBUG 
-            qDebug() << "[mc] random = " << acceptance->latestRandomNumber() << " >= " << acceptance->latestConditionValue() << " = exp(-(energy_new-energy_old)/temperature)";
-            qDebug() << "[mc] new H would have been: " << energy_new;
+            #ifndef MDEBUG
+            Logger::getInstance().debug("[mc]", "random = ", acceptance->latestRandomNumber()," >= ", acceptance->latestConditionValue(), " = exp(-(energy_new-energy_old)/temperature)");
+            Logger::getInstance().debug("[mc]", "new H would have been: ", energy_new);
         }
         else
         {
-            qDebug() << "[mc] " << acceptance->latestRandomNumber() << " < " << acceptance->latestConditionValue();
-            qDebug() << "[mc] new H: " << energy_new;
-            qDebug() << spinsystem.c_str();
+            Logger::getInstance().debug("[mc]", acceptance->latestRandomNumber(), " < ", acceptance->latestConditionValue());
+            Logger::getInstance().debug("[mc]", "new H: ", energy_new);
+            Logger::getInstance().debug(spinsystem.c_str());
             #endif
         }
     }

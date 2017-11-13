@@ -11,7 +11,7 @@
 #include <sstream>
 #include <functional>
 
-#include <iostream>
+#include "utility/logger.hpp"
 
 
 class Spinsystem

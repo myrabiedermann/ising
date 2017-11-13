@@ -12,6 +12,7 @@
 #include "histogram.hpp"
 #include "acceptance.hpp"
 #include "lib/enhance.hpp"
+#include "utility/logger.hpp"
 #include <QDebug>
 #include <cassert>
 #include <cmath>

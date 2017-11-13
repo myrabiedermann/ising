@@ -21,7 +21,7 @@ void Spinsystem::resetParameters()
     CONSTRAINED = parameters->getConstrained();
 
     computeHamiltonian();
-    qDebug() << "[spinsystem] initial H = " << Hamiltonian;
+    Logger::getInstance().debug("[spinsystem]", "initial H = ", Hamiltonian);
 }
 
 
@@ -61,7 +61,7 @@ void Spinsystem::setup()
     }                   // constrained to specific up-spin to down-spin ratio
     else
     {
-        qDebug() << "[spinsystem] ratio =" << parameters->getRatio() << ", results in " << static_cast<unsigned int>(parameters->getRatio() * totalnumber) << " down spins.";
+        Logger::getInstance().debug("[spinsystem]",  "ratio =", parameters->getRatio(), ", results in", static_cast<unsigned int>(parameters->getRatio() * totalnumber), " down spins.");
         for(unsigned int i=0; i<totalnumber; ++i)
             spins.emplace_back(i, UP);
         for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * totalnumber); ++i)
@@ -119,14 +119,13 @@ void Spinsystem::setup()
     // debugging:
     for(auto& s: spins)
     {
-        qDebug() << "[spinsystem] spin" << s.get_ID() << "has neighbours :";
-        std::for_each( s.begin(), s.end(), [](const auto& N){qDebug() << N.get().get_ID() << " ";} );
+        Logger::getInstance().debug("[spinsystem]",  "spin", s.get_ID(), "has neighbours :");
+        std::for_each( s.begin(), s.end(), [](const auto& N){ Logger::getInstance().debug( N.get().get_ID()," "); } );
     }
-    qDebug() << ' ';
 
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    qDebug() << "[spinsystem] initial H = " << Hamiltonian;
+    Logger::getInstance().debug("[spinsystem]", " initial H = ", Hamiltonian);
 
 }
 
@@ -169,7 +168,7 @@ void Spinsystem::resetSpins()
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    qDebug() << "[spinsystem] initial H = " << Hamiltonian;
+    Logger::getInstance().debug("[spinsystem]",  "initial H =", Hamiltonian);
 
 }
 
@@ -181,8 +180,6 @@ double Spinsystem::local_energy_interaction(const Spin& _spin) const
     
     double energy = - Jij(SPINTYPE::UP, _spin.get_type()) * _spin.num_signed<SPINTYPE::UP>()
     - Jij(SPINTYPE::DOWN, _spin.get_type()) * _spin.num_signed<SPINTYPE::DOWN>();
-    // qDebug() << "spinsystem] spin # " << _spin.get_ID() << "has local energy:";
-    // qDebug() << "spinsystem] \t interaction part" << energy;
     return energy;
 }
 
@@ -193,7 +190,6 @@ double Spinsystem::local_energy_magnetic(const Spin& _spin) const
     // calculate magnetic contribution to local energy for given spin
     
     double energy = - Bi(_spin.get_type());
-    // qDebug() << "spinsystem] \t magnetic part" << energy;
     return energy;
 }
 
@@ -295,8 +291,8 @@ void Spinsystem::flip()
     }
 
 #ifndef NDEBUG
-    qDebug() << "[spinsystem] flipping spin: ";
-    for(const auto& s: lastFlipped) qDebug() << "            " << s.get().get_ID();
+    Logger::getInstance().debug("[spinsystem]",  "flipping spin: ");
+    for(const auto& s: lastFlipped) Logger::getInstance().debug( "            ", s.get().get_ID());
 #endif
 }
 
@@ -328,8 +324,8 @@ void Spinsystem::flip_back()
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
 
-    qDebug() << "[spinsystem] flipping back: ";
-    for(const auto& s: lastFlipped) qDebug() << "            " << s.get().get_ID();
+    Logger::getInstance().debug("[spinsystem]", "flipping back: ");
+    for(const auto& s: lastFlipped) Logger::getInstance().debug("            ", s.get().get_ID());
 
 }
 
@@ -387,7 +383,7 @@ histogram<double> Spinsystem::getCorrelation() const
 {
     // compute correlations between spins
 
-    qDebug() << "[spinsystem] computing correlation <Si Sj>:\n";
+    Logger::getInstance().debug("[spinsystem]", "computing correlation <Si Sj>:");
     histogram<double> correlation;
 
     auto counter = correlation;
@@ -406,14 +402,14 @@ histogram<double> Spinsystem::getCorrelation() const
                     counter.add_bin(dist);
                 }
                 correlation.add_data( dist );
-                qDebug() << "[spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << " 1 ";
+                Logger::getInstance().debug("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", " 1 ");
             }
             else 
             {
-                qDebug() << "[spinsystem] correlating " << s1->get_ID() << " with " << s2->get_ID() << " : " << "   ";
+                Logger::getInstance().debug("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", "   ");
             }
             counter.add_data( dist );
-            qDebug() << "[spinsystem]    distance " << dist << '\n';
+            Logger::getInstance().debug("[spinsystem]", "    distance ", dist);
         }
     }
 

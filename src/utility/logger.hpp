@@ -14,11 +14,7 @@
 
 #pragma once
 
-#ifndef PISPECTOR_VERSION
-    #define PISPECTOR_VERSION "unknown"
-#endif
 
-#include "program_options.hpp"
 #include "singleton.hpp"
 #include <mutex>
 #include <fstream>
@@ -59,35 +55,30 @@ struct Logger
 {
     friend struct Singleton<Logger>;
     
-    
-    
     template<SEPERATOR sep = SEPERATOR::WHITESPACE, typename ... Args>
     void write_new_line( Args&& ... args ); 
-    
     
     template<SEPERATOR sep = SEPERATOR::NONE, typename ... Args>
     void write( Args&& ... args ); 
     
+    template<SEPERATOR sep = SEPERATOR::WHITESPACE, typename ... Args>
+    void debug( Args&& ... args ); 
     
-    std::_Put_time<char> wallTime();
+    // std::_Put_time<char> wallTime();
     
     
 private:
     Logger();
     ~Logger();
     
-    
     template <SEPERATOR sep, typename... Args>
     constexpr inline typename std::enable_if<sep!=SEPERATOR::NONE>::type write_args(Args&&... args);
-    
     
     template <SEPERATOR sep, typename... Args>
     constexpr inline typename std::enable_if<sep==SEPERATOR::NONE>::type write_args(Args&&... args); 
     
-    
     Logger(const Logger&) = delete;
     Logger& operator = (const Logger&) = delete;
-    
     
     std::mutex mutex { };
     std::ofstream logfile;
@@ -104,7 +95,7 @@ void Logger::write_new_line( Args&& ... args )
     assert(logfile.is_open());
     std::lock_guard<std::mutex> lock(mutex);
     logfile << SYMBOL::get<SEPERATOR::NEWLINE>();
-    logfile << wallTime();
+    // logfile << wallTime();
     write_args<sep>(args...);
     logfile.flush();
 }
@@ -122,6 +113,23 @@ void Logger::write( Args&& ... args )
     logfile.flush();
 }
 
+
+
+template<SEPERATOR sep, typename ... Args>
+void Logger::debug( Args&& ... args ) 
+{
+    assert(&getInstance());
+    assert(logfile.is_open());
+    #ifndef NDEBUG
+    std::lock_guard<std::mutex> lock(mutex);
+    logfile << SYMBOL::get<SEPERATOR::NEWLINE>();
+    // logfile << wallTime();
+    write_args<sep>(args...);
+    logfile.flush();
+    #else
+    return;
+    #endif
+}
 
 
 

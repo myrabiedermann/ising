@@ -4,14 +4,14 @@
 
     
 Logger::Logger() 
-  : logfile("/dev/null", std::ios::app | std::ios::out)
+  : logfile("ising.log", std::ios::app | std::ios::out)
 {
-    if ( !ProgramOptions::getInstance()("nolog"))
-    {
-        if(logfile.is_open())
-            logfile.close();
-        logfile.open("pispector.log", std::ios::app | std::ios::out);
-    }
+    // if ( !ProgramOptions::getInstance()("nolog"))
+    // {
+        // if(logfile.is_open())
+            // logfile.close();
+        // logfile.open("ising.log", std::ios::app | std::ios::out);
+    // }
 }
 
 
@@ -28,9 +28,9 @@ Logger::~Logger()
 
 
 
-std::_Put_time<char> Logger::wallTime()
-{
-    using namespace std::chrono;
-    std::time_t now = system_clock::to_time_t( system_clock::now() );
-    return std::put_time(std::localtime(&now), "%F %T");
-}
+// std::_Put_time<char> Logger::wallTime()
+// {
+//     using namespace std::chrono;
+//     std::time_t now = system_clock::to_time_t( system_clock::now() );
+//     return std::put_time(std::localtime(&now), "%F %T");
+// }
