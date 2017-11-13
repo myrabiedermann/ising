@@ -56,6 +56,8 @@ void ChartWidget::refresh()
     chart->removeSeries(series);
     chart->addSeries( series );
     chart->createDefaultAxes();
+    chart->axisX()->setTitleText(xLabel);
+    chart->axisY()->setTitleText(yLabel);
 }
 
 
@@ -71,6 +73,7 @@ void ChartWidget::setXLabel(const QString& s)
 {
     Q_CHECK_PTR(chart);
     chart->axisX()->setTitleText(s);
+    xLabel = s;
 }
 
 
@@ -78,6 +81,7 @@ void ChartWidget::setYLabel(const QString& s)
 {
     Q_CHECK_PTR(chart);
     chart->axisY()->setTitleText(s);
+    yLabel = s;
 }
 
 

@@ -43,4 +43,6 @@ protected:
 private:
     QtCharts::QChart* chart;
     QtCharts::QLineSeries* series;
+    QString xLabel {};
+    QString yLabel {};
 };

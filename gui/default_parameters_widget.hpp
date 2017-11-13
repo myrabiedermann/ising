@@ -52,6 +52,7 @@ protected:
     QGroupBox* createSystemBox();
     QGroupBox* createEquilBox();
     QGroupBox* createProdBox();
+    QGroupBox* createAdvancedOptionsBox();
     void setup();
     
 private:

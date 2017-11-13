@@ -387,9 +387,12 @@ void MCWidget::advancedRunAction()
     drawRequestTimer->start(34);
     progressTimer->start(100);
 
-    for(double stepper = prmsWidget->getStartValue(); stepper <= prmsWidget->getStopValue(); stepper += prmsWidget->getStepValue() )
+    unsigned nrsteps = static_cast<unsigned int>( ( prmsWidget->getStopValue() - prmsWidget->getStartValue() ) / prmsWidget->getStepValue() );
+    qInfo() << nrsteps;
+
+    for(unsigned int stepper = 0; stepper <= nrsteps; ++stepper)
     {
-        prmsWidget->setAdvancedValue(stepper);
+        prmsWidget->setAdvancedValue( prmsWidget->getStartValue() + prmsWidget->getStepValue() * stepper );
         {
             QEventLoop pause;
             connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
@@ -403,8 +406,7 @@ void MCWidget::advancedRunAction()
             pause.exec();
         }
         saveAction();
-        steps_done.store(0);
-        emit resetChartSignal();
+        makeRecordsNew();
     }
 }
 

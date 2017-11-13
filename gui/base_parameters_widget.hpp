@@ -50,7 +50,6 @@ public:
     double getStartValue() const;
     double getStopValue() const;
     double getStepValue() const;
-    // double getAdvancedValue() const;
     virtual void setAdvancedValue(const double&) = 0;
     
 public slots:
@@ -68,11 +67,11 @@ protected:
     void operator=(const BaseParametersWidget&) = delete;
 
     void randomiseSystem();
-    QGroupBox* createAdvancedOptionsBox();
     QGroupBox* createOutputBox();
     virtual QGroupBox* createSystemBox() = 0;
     virtual QGroupBox* createEquilBox() = 0;
     virtual QGroupBox* createProdBox() = 0;
+    virtual QGroupBox* createAdvancedOptionsBox() = 0;
     virtual void setup() = 0;
     
     // Line edits
