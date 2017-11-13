@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         case SYSTEMTYPE::Default :      prmsWidget = new DefaultParametersWidget(this); break;
         
-        case SYSTEMTYPE::Constrained :  prmsWidget = new ConstrainedParametersWidget(this); break;
+        case SYSTEMTYPE::Constrained :  prmsWidget = new ConstrainedParametersWidget(this); break; 
+
         default :                       throw std::logic_error("nope");
     }
 
@@ -122,8 +123,6 @@ MainWindow::MainWindow(QWidget *parent) :
         mainLayout->addLayout(CentralAreaLayout);
         mainLayout->addWidget(createBottomActionGroup());
         
-        setLayout(mainLayout);
-
         // getting rid of unnecessary empty toolbar
         Q_FOREACH(QToolBar *tb, findChildren<QToolBar*>()) removeToolBar(tb);
         centralWidget()->setLayout(mainLayout);

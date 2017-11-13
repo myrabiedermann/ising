@@ -170,7 +170,8 @@ void MCWidget::equilibrateAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
-    simulation_running.store(true);
+    // simulation_running.store(true);
+    setRunning(true);
     prodBtn->setEnabled(false);
     pauseBtn->setEnabled(true);
     saveBtn->setEnabled(false);
@@ -210,7 +211,8 @@ void MCWidget::productionAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
-    simulation_running.store(true);
+    // simulation_running.store(true);
+    setRunning(true);
     equilBtn->setEnabled(false);
     prodBtn->setEnabled(false);
     pauseBtn->setEnabled(true);
@@ -251,7 +253,8 @@ void MCWidget::pauseAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
-    simulation_running.store(false);
+    // simulation_running.store(false);
+    setRunning(false);
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
@@ -376,7 +379,8 @@ void MCWidget::advancedRunAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
 
-    simulation_running.store(true);
+    // simulation_running.store(true);
+    setRunning(true);
     equilBtn->setEnabled(false);
     prodBtn->setEnabled(false);
     pauseBtn->setEnabled(true);

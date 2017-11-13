@@ -38,7 +38,6 @@ public:
 protected:
 
 private:
-    QPushButton *defaultButton;
-    QPushButton *constrainedButton;
-
+    QPushButton* defaultButton;
+    QPushButton* constrainedButton;
 };
