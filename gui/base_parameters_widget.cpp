@@ -35,7 +35,6 @@ void BaseParametersWidget::randomiseSystem()
 {
     qDebug() << __PRETTY_FUNCTION__;
     BASE_PARAMETERS_WIDGET_ASSERT_ALL
-    qInfo() << "Randomise button was hit!";
     emit randomise();
 }
 

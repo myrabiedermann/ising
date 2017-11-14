@@ -115,6 +115,11 @@ MainWindow::MainWindow(QWidget *parent) :
             connect( MCwidget, &MCWidget::resetSignal, correlationChart, &ChartWidget::reset );
             connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system, const unsigned long steps)
             {
+                for(const auto& B : system.getSpinsystem().getCorrelation() )
+                {
+                    correlationChart->append(B.value, B.counter);
+                }
+                correlationChart->refresh();
                 // correlationChart->draw(steps, system.getSpinsystem().getMagnetisation());
             });
         }

@@ -459,6 +459,7 @@ histogram<double> Spinsystem::getCorrelation() const
         B.counter /= counter.get_data(B.value); 
     });
 
+    correlation.sort_bins();
     return correlation;
 
 }

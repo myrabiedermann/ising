@@ -53,6 +53,7 @@ struct histogram
 
     inline std::string formatted_string();
     inline void        print_to_file (const std::string&) const;
+    inline void        sort_bins();
     inline bool        contains(const T& val) const;
     inline double meanHeight() const;
     inline auto populated_bins() const { return std::count_if(bins.cbegin(), bins.cend(), [](auto B) { return B.counter > 0;} ); }
@@ -136,12 +137,18 @@ inline auto histogram<T>::get_data(const T& _data)
 
 
 
+template<typename T>
+inline void histogram<T>::sort_bins()
+{
+    std::sort(std::begin(bins), std::end(bins), [](const auto& B1, const auto& B2){ return B1.value < B2.value; });
+}
+
 
 template<typename T>
 inline std::string histogram<T>::formatted_string()
 {
-    // first sort the bins:
-    std::sort(std::begin(bins), std::end(bins), [](const auto& B1, const auto& B2){ return B1.value < B2.value; });
+    // // first sort the bins:
+    // sort_bins();
     std::ostringstream STREAM;
     for( auto& B : bins )
         STREAM << std::setw(10) << std::setprecision(4) << B.value

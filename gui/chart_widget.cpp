@@ -56,12 +56,7 @@ void ChartWidget::refresh()
     // repaint();
     chart->removeSeries(series);
     chart->addSeries( series );
-    // chart->removeAxis(chart->axisX());
-    // chart->removeAxis(chart->axisY());
     chart->createDefaultAxes();
-    // chart->setAxisX(chart->axisX(), series);
-    // chart->setAxisY(chart->axisY(), series);
-    // series->attachAxis(chart->axisX());
     chart->axisX()->setTitleText(xLabel);
     chart->axisY()->setTitleText(yLabel);
 }

@@ -81,6 +81,11 @@ constexpr inline int Spinsystem::num() const
 inline double Spinsystem::getMagnetisation() const
 {
     // return average magnetisation: <M> = 1/N sum( S_i )
+    if( ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size() != 0 ){
+        Logger::getInstance().debug("[spinsystem]", "Magnetisation", ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size());
+        Logger::getInstance().debug(num<SPINTYPE::UP>(), " ", num<SPINTYPE::DOWN>(), spins.size());
+    }
+
     return ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size();
 }
 

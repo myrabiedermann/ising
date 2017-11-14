@@ -383,13 +383,14 @@ void MCWidget::correlateAction()
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
-
+    
     drawRequestTimer->stop();
     // progressTimer->stop();
     
     emit runningSignal(false);
-
+    
     MC.print_correlation();
+    emit drawCorrelationRequest(MC, steps_done.load());
 }
 
 
@@ -475,7 +476,9 @@ void MCWidget::server()
             steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
             
             if (steps_done.load() >= prmsWidget->getStepsProd())
+            {
                 emit pauseBtn->clicked();
+            }
         }
     }
     emit serverReturn();
