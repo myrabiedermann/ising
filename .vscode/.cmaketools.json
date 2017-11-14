@@ -13,84 +13,15 @@
         "name": "Debug",
         "projects": [
           {
-            "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+            "buildDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum/build",
             "name": "ising",
-            "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+            "sourceDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum",
             "targets": [
               {
                 "artifacts": [
-                  "/Users/myra/my-programs/ising_masterpraktikum/build/libenhance.dylib"
+                  "/home/m/m_bied02/programs/ising-masterpraktikum/build/ising"
                 ],
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
-                "fileGroups": [
-                  {
-                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
-                    "defines": [
-                      "enhance_EXPORTS"
-                    ],
-                    "includePath": [
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/enhance_autogen/include"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
-                      }
-                    ],
-                    "isGenerated": true,
-                    "language": "CXX",
-                    "sources": [
-                      "build/enhance_autogen/mocs_compilation.cpp"
-                    ]
-                  },
-                  {
-                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
-                    "defines": [
-                      "enhance_EXPORTS"
-                    ],
-                    "includePath": [
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/enhance_autogen/include"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
-                      },
-                      {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "lib/enhance.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "libenhance.dylib",
-                "linkerLanguage": "CXX",
-                "name": "enhance",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
-                "type": "SHARED_LIBRARY"
-              },
-              {
-                "artifacts": [
-                  "/Users/myra/my-programs/ising_masterpraktikum/build/ising"
-                ],
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "buildDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum/build",
                 "fileGroups": [
                   {
                     "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG   -fPIC -std=gnu++14",
@@ -102,59 +33,43 @@
                     ],
                     "includePath": [
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/ising_autogen/include"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build/ising_autogen/include"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./gui"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./src"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework/Headers"
+                        "path": "/usr/include/qt5"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtGui.framework"
+                        "path": "/usr/include/qt5/QtWidgets"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtGui.framework/Headers"
+                        "path": "/usr/include/qt5/QtGui"
                       },
                       {
                         "isSystem": true,
-                        "path": "/System/Library/Frameworks/OpenGL.framework/Headers"
+                        "path": "/usr/include/qt5/QtCore"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCore.framework"
+                        "path": "/usr/lib64/qt5/mkspecs/linux-g++"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCore.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/./mkspecs/macx-clang"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCharts.framework"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCharts.framework/Headers"
+                        "path": "/usr/include/qt5/QtCharts"
                       }
                     ],
                     "isGenerated": true,
@@ -173,59 +88,43 @@
                     ],
                     "includePath": [
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/build/ising_autogen/include"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build/ising_autogen/include"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./gui"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./gui"
                       },
                       {
-                        "path": "/Users/myra/my-programs/ising_masterpraktikum/./src"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework"
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./src"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtWidgets.framework/Headers"
+                        "path": "/usr/include/qt5"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtGui.framework"
+                        "path": "/usr/include/qt5/QtWidgets"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtGui.framework/Headers"
+                        "path": "/usr/include/qt5/QtGui"
                       },
                       {
                         "isSystem": true,
-                        "path": "/System/Library/Frameworks/OpenGL.framework/Headers"
+                        "path": "/usr/include/qt5/QtCore"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCore.framework"
+                        "path": "/usr/lib64/qt5/mkspecs/linux-g++"
                       },
                       {
                         "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCore.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/./mkspecs/macx-clang"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCharts.framework"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/opt/qt/lib/QtCharts.framework/Headers"
+                        "path": "/usr/include/qt5/QtCharts"
                       }
                     ],
                     "isGenerated": false,
@@ -248,15 +147,85 @@
                   }
                 ],
                 "fullName": "ising",
+                "linkFlags": "-rdynamic",
                 "linkLanguageFlags": "-Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG",
-                "linkLibraries": "-Wl,-rpath,/Users/myra/my-programs/ising_masterpraktikum/build libenhance.dylib /usr/local/opt/qt/lib/QtCharts.framework/QtCharts /usr/local/opt/qt/lib/QtWidgets.framework/QtWidgets /usr/local/opt/qt/lib/QtGui.framework/QtGui /usr/local/opt/qt/lib/QtCore.framework/QtCore",
+                "linkLibraries": "-Wl,-rpath,/home/m/m_bied02/programs/ising-masterpraktikum/build: libenhance.so /usr/lib64/libQt5Charts.so.5.9.1 /usr/lib64/libQt5Widgets.so.5.9.1 /usr/lib64/libQt5Gui.so.5.9.1 /usr/lib64/libQt5Core.so.5.9.1",
                 "linkerLanguage": "CXX",
                 "name": "ising",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "sourceDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum",
                 "type": "EXECUTABLE"
               },
               {
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "artifacts": [
+                  "/home/m/m_bied02/programs/ising-masterpraktikum/build/libenhance.so"
+                ],
+                "buildDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum/build",
+                "fileGroups": [
+                  {
+                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
+                    "defines": [
+                      "enhance_EXPORTS"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build/enhance_autogen/include"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./gui"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./src"
+                      }
+                    ],
+                    "isGenerated": true,
+                    "language": "CXX",
+                    "sources": [
+                      "build/enhance_autogen/mocs_compilation.cpp"
+                    ]
+                  },
+                  {
+                    "compileFlags": " -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize -Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_DEBUG -fPIC   -std=gnu++14",
+                    "defines": [
+                      "enhance_EXPORTS"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/build/enhance_autogen/include"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./gui"
+                      },
+                      {
+                        "path": "/home/m/m_bied02/programs/ising-masterpraktikum/./src"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "lib/enhance.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "libenhance.so",
+                "linkerLanguage": "CXX",
+                "name": "enhance",
+                "sourceDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum",
+                "type": "SHARED_LIBRARY"
+              },
+              {
+                "buildDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum/build",
                 "fileGroups": [
                   {
                     "isGenerated": true,
@@ -268,11 +237,11 @@
                 ],
                 "fullName": "ising_autogen",
                 "name": "ising_autogen",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "sourceDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum",
                 "type": "UTILITY"
               },
               {
-                "buildDirectory": "/Users/myra/my-programs/ising_masterpraktikum/build",
+                "buildDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum/build",
                 "fileGroups": [
                   {
                     "isGenerated": true,
@@ -284,7 +253,7 @@
                 ],
                 "fullName": "enhance_autogen",
                 "name": "enhance_autogen",
-                "sourceDirectory": "/Users/myra/my-programs/ising_masterpraktikum",
+                "sourceDirectory": "/home/m/m_bied02/programs/ising-masterpraktikum",
                 "type": "UTILITY"
               }
             ]
@@ -292,7 +261,7 @@
         ]
       }
     ],
-    "cookie": "0.4754120216816564",
+    "cookie": "0.4245737546757258",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

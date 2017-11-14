@@ -170,14 +170,25 @@ void MCWidget::equilibrateAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
     
-    // simulation_running.store(true);
     setRunning(true);
-    prodBtn->setEnabled(false);
-    pauseBtn->setEnabled(true);
-    saveBtn->setEnabled(false);
-    correlateBtn->setEnabled(false);
-    abortBtn->setEnabled(false);
-    advancedRunBtn->setEnabled(false);
+    if( ! advanced_mode )
+    { 
+        prodBtn->setEnabled(false);
+        pauseBtn->setEnabled(true);
+        saveBtn->setEnabled(false);
+        correlateBtn->setEnabled(false);
+        abortBtn->setEnabled(true);
+        advancedRunBtn->setEnabled(false);
+    }
+    else
+    {
+        prodBtn->setEnabled(false);
+        pauseBtn->setEnabled(false);
+        saveBtn->setEnabled(false);
+        correlateBtn->setEnabled(false);
+        abortBtn->setEnabled(true);
+        advancedRunBtn->setEnabled(false);
+    }
     drawRequestTimer->start(34);
     progressTimer->start(100);
 
@@ -213,13 +224,27 @@ void MCWidget::productionAction()
     
     // simulation_running.store(true);
     setRunning(true);
-    equilBtn->setEnabled(false);
-    prodBtn->setEnabled(false);
-    pauseBtn->setEnabled(true);
-    saveBtn->setEnabled(false);
-    correlateBtn->setEnabled(false);
-    abortBtn->setEnabled(false);
-    advancedRunBtn->setEnabled(false);
+    if( ! advanced_mode )
+    { 
+        equilBtn->setEnabled(false);
+        prodBtn->setEnabled(false);
+        pauseBtn->setEnabled(true);
+        saveBtn->setEnabled(false);
+        correlateBtn->setEnabled(false);
+        abortBtn->setEnabled(true);
+        advancedRunBtn->setEnabled(false);
+    }
+    else
+    {
+        equilBtn->setEnabled(false);
+        prodBtn->setEnabled(false);
+        pauseBtn->setEnabled(false);
+        saveBtn->setEnabled(false);
+        correlateBtn->setEnabled(false);
+        abortBtn->setEnabled(true);
+        advancedRunBtn->setEnabled(false);
+    }
+    
     drawRequestTimer->start(34);
     progressTimer->start(100);
     
@@ -261,7 +286,7 @@ void MCWidget::pauseAction()
     saveBtn->setEnabled(true);
     correlateBtn->setEnabled(true);
     abortBtn->setEnabled(true);
-    advancedRunBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(true);
     
     emit drawRequest(MC, steps_done.load());
     emit finishedSteps(steps_done.load());
@@ -379,39 +404,47 @@ void MCWidget::advancedRunAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
 
-    // simulation_running.store(true);
-    setRunning(true);
-    equilBtn->setEnabled(false);
-    prodBtn->setEnabled(false);
-    pauseBtn->setEnabled(true);
-    saveBtn->setEnabled(false);
-    correlateBtn->setEnabled(false);
-    abortBtn->setEnabled(false);
-    advancedRunBtn->setEnabled(false);
-    drawRequestTimer->start(34);
-    progressTimer->start(100);
+    // setRunning(true);
+    advanced_mode = true;
 
-    unsigned nrsteps = static_cast<unsigned int>( ( prmsWidget->getStopValue() - prmsWidget->getStartValue() ) / prmsWidget->getStepValue() );
-    qInfo() << nrsteps;
-
-    for(unsigned int stepper = 0; stepper <= nrsteps; ++stepper)
+    if( prmsWidget->getStopValue() != prmsWidget->getStartValue() )
     {
-        prmsWidget->setAdvancedValue( prmsWidget->getStartValue() + prmsWidget->getStepValue() * stepper );
+        unsigned int nrsteps = static_cast<unsigned int>( ( prmsWidget->getStopValue() - prmsWidget->getStartValue() ) / prmsWidget->getStepValue() );   
+    
+        for(unsigned int stepper = 0; stepper < nrsteps; ++stepper)
         {
-            QEventLoop pause;
-            connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
-            equilibrateAction();
-            pause.exec();
+            prmsWidget->setAdvancedValue( prmsWidget->getStartValue() + prmsWidget->getStepValue() * stepper );
+            {
+                QEventLoop pause;
+                connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
+                equilibrateAction();
+                pause.exec();
+            }
+            {
+                QEventLoop pause;
+                connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
+                productionAction();
+                pause.exec();
+            }
+            saveAction();
+            makeRecordsNew();
         }
-        {
-            QEventLoop pause;
-            connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
-            productionAction();
-            pause.exec();
-        }
-        saveAction();
-        makeRecordsNew();
     }
+    else
+    {
+        advanced_mode = false;
+        setRunning(false);
+        emit runningSignal(false);
+
+        equilBtn->setEnabled(true);
+        prodBtn->setEnabled(true);
+        pauseBtn->setEnabled(false);
+        saveBtn->setEnabled(false);
+        correlateBtn->setEnabled(false);
+        abortBtn->setEnabled(true);
+        advancedRunBtn->setEnabled(false);
+    }
+
 }
 
 

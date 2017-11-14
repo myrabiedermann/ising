@@ -150,6 +150,7 @@ void Spinsystem::resetSpins()
     }                   // constrained to specific up-spin to down-spin ratio
     else
     {
+        Logger::getInstance().debug("[spinsystem]", "ratio =", parameters->getRatio(), ", results in", static_cast<unsigned int>(parameters->getRatio() * spins.size()), " down spins.");
         for( auto& s: spins ) 
             s.set_type( UP );
         for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * spins.size()); ++i)

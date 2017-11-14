@@ -68,7 +68,7 @@ private:
     QPushButton* equilBtn = new QPushButton("Equilibration Run",this);
     QPushButton* prodBtn = new QPushButton("Production Run",this);
     QPushButton* pauseBtn = new QPushButton("Pause",this);
-    QPushButton* abortBtn = new QPushButton("Reset",this);
+    QPushButton* abortBtn = new QPushButton("Abort",this);
     QPushButton* saveBtn = new QPushButton("Save sample data",this);
     QPushButton* correlateBtn = new QPushButton("Save correlation",this);
     QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
@@ -77,6 +77,7 @@ private:
     QTimer* progressTimer;
     
     std::atomic<bool> equilibration_mode {false};
+    std::atomic<bool> advanced_mode {false};
     std::atomic<bool> simulation_running {false};
     std::atomic<bool> parameters_linked {false};
     
