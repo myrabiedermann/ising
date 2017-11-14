@@ -124,8 +124,9 @@ void MCWidget::setParameters(BaseParametersWidget* widget_ptr)
 
 void MCWidget::makeSystemNew()
 {
-    MC.setup();
     steps_done.store(0);
+    MC.setup();
+    emit resetChartSignal();
     emit drawRequest(MC, steps_done.load());
 }
 
@@ -148,7 +149,7 @@ void MCWidget::makeSystemRandom()
     Q_CHECK_PTR(drawRequestTimer);
 
     steps_done.store(0);
-    MC.randomiseSystem();
+    MC.resetSpins();
     MC.clearRecords();
     emit resetChartSignal();
     emit drawRequest(MC, steps_done.load());
@@ -404,16 +405,15 @@ void MCWidget::advancedRunAction()
     Q_CHECK_PTR(drawRequestTimer);
     Q_CHECK_PTR(progressTimer);
 
-    // setRunning(true);
     advanced_mode = true;
 
     if( prmsWidget->getStopValue() != prmsWidget->getStartValue() )
     {
         unsigned int nrsteps = static_cast<unsigned int>( ( prmsWidget->getStopValue() - prmsWidget->getStartValue() ) / prmsWidget->getStepValue() );   
     
-        for(unsigned int stepper = 0; stepper < nrsteps; ++stepper)
+        for(unsigned int stepper = 0; stepper <= nrsteps; ++stepper)
         {
-            prmsWidget->setAdvancedValue( prmsWidget->getStartValue() + prmsWidget->getStepValue() * stepper );
+            prmsWidget->setAdvancedValue( prmsWidget->getStartValue() + static_cast<double>(prmsWidget->getStepValue() * stepper) );
             {
                 QEventLoop pause;
                 connect(this, &MCWidget::serverReturn, &pause, &QEventLoop::quit);
@@ -430,20 +430,15 @@ void MCWidget::advancedRunAction()
             makeRecordsNew();
         }
     }
-    else
-    {
-        advanced_mode = false;
-        setRunning(false);
-        emit runningSignal(false);
 
-        equilBtn->setEnabled(true);
-        prodBtn->setEnabled(true);
-        pauseBtn->setEnabled(false);
-        saveBtn->setEnabled(false);
-        correlateBtn->setEnabled(false);
-        abortBtn->setEnabled(true);
-        advancedRunBtn->setEnabled(false);
-    }
+    advanced_mode = false;
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(true);
+    advancedRunBtn->setEnabled(false);
 
 }
 

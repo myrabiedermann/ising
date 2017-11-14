@@ -357,5 +357,17 @@ void DefaultParametersWidget::setAdvancedValue(const double& value)
     }
     else throw std::runtime_error("something went wrong in DefaultParametersWidget::setAdvancedValue()");
 }
+
+
+bool DefaultParametersWidget::getWavelengthPattern() const 
+{
+    return false;
+}
+    
+
+int DefaultParametersWidget::getWavelength() const
+{
+    return 0;
+}
                 
                 

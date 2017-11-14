@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
         MCwidget->setParameters(prmsWidget);
         connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, MCwidget, &MCWidget::makeSystemNew );
         connect( prmsWidget, &BaseParametersWidget::valueChanged, MCwidget, &MCWidget::makeRecordsNew );
-        connect( prmsWidget, &BaseParametersWidget::randomise, MCwidget, &MCWidget::makeSystemRandom );
+        connect( prmsWidget, &BaseParametersWidget::randomise, MCwidget, &MCWidget::makeSystemRandom);
     }
     
     // ### hamiltonianChart

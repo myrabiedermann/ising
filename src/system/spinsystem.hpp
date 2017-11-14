@@ -42,6 +42,7 @@ public:
     void setup();
     void resetParameters();
     void resetSpins();
+    void resetSpinsCosinus(const double);
 
     void flip();
     void flip_back();

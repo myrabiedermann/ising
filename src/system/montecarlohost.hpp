@@ -42,7 +42,7 @@ public:
     void setup();
     void setParameters(BaseParametersWidget*);
     void setAcceptance(AcceptanceAdaptor*);
-    void randomiseSystem();
+    void resetSpins();
     void clearRecords();
     
     const Spinsystem& getSpinsystem() const;

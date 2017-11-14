@@ -14,6 +14,9 @@
     Q_CHECK_PTR(startValueSpinBox);  \
     Q_CHECK_PTR(stepValueSpinBox);   \
     Q_CHECK_PTR(stopValueSpinBox);   \
+    Q_CHECK_PTR(wavelengthSpinBox);  \
+    Q_CHECK_PTR(wavelengthCheckBox); \
+    Q_CHECK_PTR(ratioCheckBox); \
     Q_CHECK_PTR(ratioSpinBox);    
 
 
@@ -24,6 +27,11 @@ ConstrainedParametersWidget::ConstrainedParametersWidget(QWidget* parent)
     qDebug() << __PRETTY_FUNCTION__;
 
     ratioSpinBox = new QDoubleSpinBox(this);
+    ratioCheckBox = new QCheckBox(this);
+    wavelengthSpinBox = new QSpinBox(this);
+    wavelengthCheckBox = new QCheckBox(this);
+    wavelengthCheckBox->setAutoExclusive(true);
+    ratioCheckBox->setAutoExclusive(true);
 
     CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
     setup();
@@ -72,6 +80,9 @@ void ConstrainedParametersWidget::setup()
     connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::valueChanged );
     
     connect( ratioSpinBox      , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConstrainedParametersWidget::criticalValueChanged );
+    connect( wavelengthSpinBox , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::randomiseSystem);
+    connect( wavelengthCheckBox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), this, &ConstrainedParametersWidget::randomiseSystem );
+    connect( wavelengthSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::randomiseSystem );
 
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), widthSpinBox, &QSpinBox::setValue );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), heightSpinBox, &QSpinBox::setValue );
@@ -128,6 +139,12 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
     widthSpinBox->setSingleStep(2);
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+    wavelengthSpinBox->setMinimum(1);
+    wavelengthSpinBox->setMaximum( widthSpinBox->maximum()/2 - 1 );
+    wavelengthSpinBox->setSingleStep(1);
+    wavelengthSpinBox->setMinimumWidth(40);
+    wavelengthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    
 
     // the layout
     QFormLayout* formLayout = new QFormLayout();
@@ -138,7 +155,10 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
     formLayout->addRow("height",heightSpinBox);
     formLayout->addRow("interaction strength J",interactionSpinBox);
     formLayout->addRow("temperature T",temperatureSpinBox);
+    formLayout->addRow("initial random pattern", ratioCheckBox);
     formLayout->addRow("ratio B to A [0.1:0.9]",ratioSpinBox);
+    formLayout->addRow("initial cos(ky) pattern", wavelengthCheckBox);
+    formLayout->addRow("wavelength k", wavelengthSpinBox);
 
     // set group layout
     labelBox->setLayout(formLayout);
@@ -292,6 +312,9 @@ void ConstrainedParametersWidget::setReadOnly(bool flag)
     stepValueSpinBox->setReadOnly(flag);
     stopValueSpinBox->setReadOnly(flag);
     ratioSpinBox->setReadOnly(flag);
+    ratioCheckBox->setCheckable(!flag);
+    wavelengthSpinBox->setReadOnly(flag);
+    wavelengthCheckBox->setCheckable(!flag);
 }
 
 
@@ -302,8 +325,8 @@ void ConstrainedParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
 
-    heightSpinBox->setValue(4);
-    widthSpinBox->setValue(4);
+    heightSpinBox->setValue(10);
+    widthSpinBox->setValue(10);
     interactionSpinBox->setValue(1.0);
     temperatureSpinBox->setValue(2.0);
     stepsEquilSpinBox->setValue(10000);
@@ -315,6 +338,9 @@ void ConstrainedParametersWidget::setDefault()
     stepValueSpinBox->setValue(0.1);
     stopValueSpinBox->setValue(0);
     ratioSpinBox->setValue(0.5);
+    ratioCheckBox->setChecked(true);
+    wavelengthSpinBox->setValue(1);
+    wavelengthCheckBox->setChecked(false);
 }
 
 
@@ -357,4 +383,15 @@ void ConstrainedParametersWidget::setAdvancedValue(const double& value)
     else throw std::runtime_error("something went wrong in ConstrainedParametersWidget::setAdvancedValue()");
 }
                 
-                
+bool ConstrainedParametersWidget::getWavelengthPattern() const 
+{
+    Q_CHECK_PTR(wavelengthCheckBox);
+    return wavelengthCheckBox->isChecked();
+}
+    
+int ConstrainedParametersWidget::getWavelength() const
+{
+    Q_CHECK_PTR(wavelengthSpinBox);
+    return wavelengthSpinBox->value();
+}
+         

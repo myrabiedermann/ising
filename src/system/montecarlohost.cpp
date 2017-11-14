@@ -56,13 +56,20 @@ void MonteCarloHost::setup()
 
 
 
-void MonteCarloHost::randomiseSystem()
+void MonteCarloHost::resetSpins()
 {
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
     
-    spinsystem.resetSpins();
+    if( parameters->getWavelengthPattern() )
+    {
+        spinsystem.resetSpinsCosinus(parameters->getWavelength());
+    }
+    else
+    {
+        spinsystem.resetSpins();
+    }
     
     Logger::getInstance().debug("[mc] initial: H =", spinsystem.getHamiltonian());
     Logger::getInstance().debug(spinsystem.c_str());
@@ -106,7 +113,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         if( ! acceptance->valid(energy_old, energy_new, parameters->getTemperature()) )
         {
             spinsystem.flip_back(); 
-            #ifndef MDEBUG
+            #ifndef QT_NO_DEBUG
             Logger::getInstance().debug("[mc]", "random = ", acceptance->latestRandomNumber()," >= ", acceptance->latestConditionValue(), " = exp(-(energy_new-energy_old)/temperature)");
             Logger::getInstance().debug("[mc]", "new H would have been: ", energy_new);
         }
