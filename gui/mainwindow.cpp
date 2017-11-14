@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MCwidget(new MCWidget(this)),
     hamiltonianChart(new ChartWidget(this)),
     averageMagnetisationChart(Q_NULLPTR),
+    correlationChart(Q_NULLPTR),
     ui(new Ui::MainWindow)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -78,9 +79,10 @@ MainWindow::MainWindow(QWidget *parent) :
         });
     }
     
-    // ### averageMagnetisationChart
+    // ### averageMagnetisationChart // correlationChart
     {
-        if( ! prmsWidget->getConstrained() ){
+        if( ! prmsWidget->getConstrained() )
+        {
             averageMagnetisationChart = new ChartWidget(this);
             Q_CHECK_PTR(averageMagnetisationChart);
 
@@ -98,6 +100,24 @@ MainWindow::MainWindow(QWidget *parent) :
                 averageMagnetisationChart->draw(steps, system.getSpinsystem().getMagnetisation());
             });
         }
+        else
+        {
+            correlationChart = new ChartWidget(this);
+            Q_CHECK_PTR(correlationChart);
+
+            correlationChart->setXLabel("distance");
+            correlationChart->setYLabel("correlation");
+            correlationChart->setMinimumHeight(400);
+            correlationChart->setMinimumWidth(600);
+
+            connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, correlationChart, &ChartWidget::reset );
+            connect( MCwidget, &MCWidget::resetChartSignal, correlationChart, &ChartWidget::reset);
+            connect( MCwidget, &MCWidget::resetSignal, correlationChart, &ChartWidget::reset );
+            connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system, const unsigned long steps)
+            {
+                // correlationChart->draw(steps, system.getSpinsystem().getMagnetisation());
+            });
+        }
     }
     
     // ### the layout
@@ -112,7 +132,13 @@ MainWindow::MainWindow(QWidget *parent) :
         // the charts
         chartLayout->addWidget(hamiltonianChart);
         if( ! prmsWidget->getConstrained() )
+        {
             chartLayout->addWidget(averageMagnetisationChart);
+        }
+        else
+        {
+            chartLayout->addWidget(correlationChart);
+        }
         
         // central area from left to right
         CentralAreaLayout->addWidget(prmsWidget);

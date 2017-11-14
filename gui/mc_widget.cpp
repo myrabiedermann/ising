@@ -5,7 +5,8 @@
 MCWidget::MCWidget(QWidget *parent) 
   : QWidget(parent)
   , drawRequestTimer(new QTimer(this))
-  , progressTimer(new QTimer(this))
+  , drawCorrelationRequestTimer(new QTimer(this))
+//   , progressTimer(new QTimer(this))
 {
     MC.setAcceptance(new Metropolis);
     
@@ -54,7 +55,8 @@ MCWidget::MCWidget(QWidget *parent)
     connect(saveBtn,      &QPushButton::clicked, this, &MCWidget::saveAction);
     connect(correlateBtn, &QPushButton::clicked, this, &MCWidget::correlateAction);
     connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
-    connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
+    connect(drawCorrelationRequestTimer, &QTimer::timeout, [&]{ emit drawCorrelationRequest(MC, steps_done.load()); });
+    // connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
     
     // main layout
     QHBoxLayout* mainLayout = new QHBoxLayout;
@@ -169,7 +171,7 @@ void MCWidget::equilibrateAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
     
     setRunning(true);
     if( ! advanced_mode )
@@ -191,7 +193,7 @@ void MCWidget::equilibrateAction()
         advancedRunBtn->setEnabled(false);
     }
     drawRequestTimer->start(34);
-    progressTimer->start(100);
+    // progressTimer->start(100);
 
     if( equilibration_mode.load() == false )
     {
@@ -221,7 +223,7 @@ void MCWidget::productionAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
     
     // simulation_running.store(true);
     setRunning(true);
@@ -247,7 +249,7 @@ void MCWidget::productionAction()
     }
     
     drawRequestTimer->start(34);
-    progressTimer->start(100);
+    // progressTimer->start(100);
     
     if( equilibration_mode.load() == true )
     {
@@ -277,7 +279,7 @@ void MCWidget::pauseAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
     
     // simulation_running.store(false);
     setRunning(false);
@@ -293,7 +295,7 @@ void MCWidget::pauseAction()
     emit finishedSteps(steps_done.load());
     
     drawRequestTimer->stop();
-    progressTimer->stop();
+    // progressTimer->stop();
     
     emit runningSignal(false);
 }
@@ -310,7 +312,7 @@ void MCWidget::abortAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
     
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
@@ -321,7 +323,7 @@ void MCWidget::abortAction()
     advancedRunBtn->setEnabled(true);
     
     drawRequestTimer->stop();
-    progressTimer->stop();
+    // progressTimer->stop();
     
     emit resetSignal();
     makeSystemNew();
@@ -341,7 +343,7 @@ void MCWidget::saveAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
     
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
@@ -352,7 +354,7 @@ void MCWidget::saveAction()
     advancedRunBtn->setEnabled(false);
 
     drawRequestTimer->stop();
-    progressTimer->stop();
+    // progressTimer->stop();
     
     emit runningSignal(false);
 
@@ -372,7 +374,7 @@ void MCWidget::correlateAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
     
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
@@ -383,7 +385,7 @@ void MCWidget::correlateAction()
     advancedRunBtn->setEnabled(false);
 
     drawRequestTimer->stop();
-    progressTimer->stop();
+    // progressTimer->stop();
     
     emit runningSignal(false);
 
@@ -403,7 +405,7 @@ void MCWidget::advancedRunAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    Q_CHECK_PTR(progressTimer);
+    // Q_CHECK_PTR(progressTimer);
 
     advanced_mode = true;
 

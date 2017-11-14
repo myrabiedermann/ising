@@ -56,6 +56,7 @@ signals:
     void resetChartSignal();
     void runningSignal(bool);
     void drawRequest(const MonteCarloHost&, const unsigned long);
+    void drawCorrelationRequest(const MonteCarloHost&, const unsigned long);
     void finishedSteps(const unsigned long);
     void serverReturn();
     
@@ -74,7 +75,8 @@ private:
     QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
     
     QTimer* drawRequestTimer;
-    QTimer* progressTimer;
+    QTimer* drawCorrelationRequestTimer;
+    // QTimer* progressTimer;
     
     std::atomic<bool> equilibration_mode {false};
     std::atomic<bool> advanced_mode {false};

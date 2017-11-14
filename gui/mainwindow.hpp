@@ -50,6 +50,7 @@ private:
     MCWidget* MCwidget;
     ChartWidget* hamiltonianChart;
     ChartWidget* averageMagnetisationChart;
+    ChartWidget* correlationChart;
     
     // QProgressBar* progressBar;
     QPushButton* quitBtn = new QPushButton("Quit",this);

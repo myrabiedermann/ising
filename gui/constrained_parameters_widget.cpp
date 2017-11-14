@@ -57,6 +57,9 @@ void ConstrainedParametersWidget::setup()
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setAlignment(Qt::AlignVCenter);
 
+    // add randomiseBtn
+    randomiseBtn->setFocusPolicy(Qt::NoFocus);
+    connect(randomiseBtn, &QPushButton::clicked, this, &ConstrainedParametersWidget::randomiseSystem);
     
     // add Box with Line Edits
     mainLayout->addWidget(createSystemBox());
@@ -66,11 +69,6 @@ void ConstrainedParametersWidget::setup()
     mainLayout->addWidget(createOutputBox());
     mainLayout->addWidget(createAdvancedOptionsBox());
     setDefault();
-    
-    // add randomiseBtn
-    randomiseBtn->setFocusPolicy(Qt::NoFocus);
-    connect(randomiseBtn, &QPushButton::clicked, this, &ConstrainedParametersWidget::randomiseSystem);
-    mainLayout->addWidget(randomiseBtn);
     
     // https://stackoverflow.com/a/16795664
     connect( interactionSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConstrainedParametersWidget::valueChanged );
