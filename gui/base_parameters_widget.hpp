@@ -45,7 +45,7 @@ public:
     virtual double getMagnetic() const = 0;
     virtual double getRatio() const = 0;
     virtual bool   getWavelengthPattern() const = 0;
-    virtual int    getWavelength() const = 0;
+    virtual double getWavelength() const = 0;
     virtual bool getConstrained() const = 0;
 
     double getStartValue() const;
@@ -89,7 +89,7 @@ protected:
     QDoubleSpinBox* magneticSpinBox {Q_NULLPTR};
     QDoubleSpinBox* ratioSpinBox {Q_NULLPTR};
     QCheckBox*      ratioCheckBox {Q_NULLPTR};
-    QSpinBox*       wavelengthSpinBox {Q_NULLPTR};
+    QDoubleSpinBox* wavelengthSpinBox {Q_NULLPTR};
     QCheckBox*      wavelengthCheckBox {Q_NULLPTR};
 
     QComboBox* advancedComboBox = new QComboBox(this);

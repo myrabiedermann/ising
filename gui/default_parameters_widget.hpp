@@ -39,7 +39,7 @@ public:
     double getMagnetic() const;
     double getRatio() const;
     bool   getWavelengthPattern() const;
-    int    getWavelength() const;
+    double getWavelength() const;
 
     bool getConstrained() const;
     void setAdvancedValue(const double&);
