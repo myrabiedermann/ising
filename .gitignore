@@ -8,3 +8,4 @@ testing/
 .kdev4/ising.kdev4
 ASKSIMON
 toDos
+*.log

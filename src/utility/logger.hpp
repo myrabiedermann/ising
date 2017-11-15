@@ -116,7 +116,7 @@ void Logger::write( Args&& ... args )
 
 
 template<SEPERATOR sep, typename ... Args>
-void Logger::debug( Args&& ... args __attribute__((maybe_unused))) 
+void Logger::debug( __attribute__((unused))  Args&& ... args ) 
 {
     assert(&getInstance());
     assert(logfile.is_open());

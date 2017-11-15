@@ -174,25 +174,22 @@ void MCWidget::equilibrateAction()
     // Q_CHECK_PTR(progressTimer);
     
     setRunning(true);
+    
     if( ! advanced_mode )
     { 
-        prodBtn->setEnabled(false);
         pauseBtn->setEnabled(true);
-        saveBtn->setEnabled(false);
-        correlateBtn->setEnabled(false);
-        abortBtn->setEnabled(true);
-        advancedRunBtn->setEnabled(false);
     }
     else
     {
-        prodBtn->setEnabled(false);
         pauseBtn->setEnabled(false);
-        saveBtn->setEnabled(false);
-        correlateBtn->setEnabled(false);
-        abortBtn->setEnabled(true);
-        advancedRunBtn->setEnabled(false);
     }
-    drawRequestTimer->start(34);
+    
+    prodBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(true);
+    advancedRunBtn->setEnabled(false);
+    drawRequestTimer->start(100);
     // progressTimer->start(100);
 
     if( equilibration_mode.load() == false )
@@ -206,9 +203,9 @@ void MCWidget::equilibrateAction()
     emit runningSignal(true);
     
     QFuture<void> future = QtConcurrent::run([&]
-        {
-            server();
-        });
+    {
+        server();
+    });
 }
     
 
@@ -227,28 +224,24 @@ void MCWidget::productionAction()
     
     // simulation_running.store(true);
     setRunning(true);
+    
     if( ! advanced_mode )
     { 
-        equilBtn->setEnabled(false);
-        prodBtn->setEnabled(false);
         pauseBtn->setEnabled(true);
-        saveBtn->setEnabled(false);
-        correlateBtn->setEnabled(false);
-        abortBtn->setEnabled(true);
-        advancedRunBtn->setEnabled(false);
     }
     else
     {
-        equilBtn->setEnabled(false);
-        prodBtn->setEnabled(false);
         pauseBtn->setEnabled(false);
-        saveBtn->setEnabled(false);
-        correlateBtn->setEnabled(false);
-        abortBtn->setEnabled(true);
-        advancedRunBtn->setEnabled(false);
     }
     
-    drawRequestTimer->start(34);
+    equilBtn->setEnabled(false);
+    prodBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(true);
+    advancedRunBtn->setEnabled(false);
+    
+    drawRequestTimer->start(100);
     // progressTimer->start(100);
     
     if( equilibration_mode.load() == true )
@@ -433,7 +426,7 @@ void MCWidget::advancedRunAction()
             makeRecordsNew();
         }
     }
-
+    
     advanced_mode = false;
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
