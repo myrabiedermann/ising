@@ -113,14 +113,14 @@ MainWindow::MainWindow(QWidget *parent) :
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, correlationChart, &ChartWidget::reset );
             connect( MCwidget, &MCWidget::resetChartSignal, correlationChart, &ChartWidget::reset);
             connect( MCwidget, &MCWidget::resetSignal, correlationChart, &ChartWidget::reset );
-            connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system, const unsigned long steps)
+            connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system)
             {
                 for(const auto& B : system.getSpinsystem().getCorrelation() )
                 {
-                    correlationChart->append(B.position(), B.counter);
+                    if(B.counter != 0)
+                         correlationChart->append(B.position(), B.counter);
                 }
                 correlationChart->refresh();
-                // correlationChart->draw(steps, system.getSpinsystem().getMagnetisation());
             });
         }
     }

@@ -16,7 +16,6 @@
 
 class Spinsystem
 {
-    bool CONSTRAINED {false};
     double Hamiltonian {0};
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
@@ -29,8 +28,6 @@ class Spinsystem
     double Jij(const SPINTYPE, const SPINTYPE) const;
     double Bi(const SPINTYPE) const;
     double distance(const Spin&, const Spin&) const;
-
-    void setSpins();
 
 public:
     Spinsystem()  {};
@@ -47,10 +44,10 @@ public:
     void flip();
     void flip_back();
 
-    Histogram<double> getCorrelation() const { Histogram<double> temp(0,1,10); return temp;};
-    inline double getMagnetisation() const;
-    inline double getMagnetisationSquared() const;
-    inline double getSusceptibility() const;
+    Histogram<double> getCorrelation() const;
+    double getMagnetisation() const;
+    double getMagnetisationSquared() const;
+    double getSusceptibility() const;
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
@@ -78,27 +75,3 @@ constexpr inline int Spinsystem::num() const
 }
 
 
-inline double Spinsystem::getMagnetisation() const
-{
-    // return average magnetisation: <M> = 1/N sum( S_i )
-    if( ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size() != 0 ){
-        Logger::getInstance().debug("[spinsystem]", "Magnetisation", ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size());
-        Logger::getInstance().debug(num<SPINTYPE::UP>(), " ", num<SPINTYPE::DOWN>(), spins.size());
-    }
-
-    return ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size();
-}
-
-
-inline double Spinsystem::getMagnetisationSquared() const
-{
-    // return average magnetisation squared: <M^2> = 1/N sum( S_i*S_i )
-    return ( (double) num<SPINTYPE::UP>() + num<SPINTYPE::DOWN>() ) / spins.size();
-}
-
-
-inline double Spinsystem::getSusceptibility() const
-{
-    // return susceptibility: chi = dM/dB = ( <M^2> - <M>^2 ) / ( k_b * T )
-    return ( getMagnetisationSquared() - getMagnetisation()*getMagnetisation() ) / parameters->getTemperature();
-}

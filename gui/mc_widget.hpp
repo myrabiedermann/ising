@@ -56,7 +56,7 @@ signals:
     void resetChartSignal();
     void runningSignal(bool);
     void drawRequest(const MonteCarloHost&, const unsigned long);
-    void drawCorrelationRequest(const MonteCarloHost&, const unsigned long);
+    void drawCorrelationRequest(const MonteCarloHost&);
     void finishedSteps(const unsigned long);
     void serverReturn();
     
@@ -71,12 +71,11 @@ private:
     QPushButton* pauseBtn = new QPushButton("Pause",this);
     QPushButton* abortBtn = new QPushButton("Abort",this);
     QPushButton* saveBtn = new QPushButton("Save sample data",this);
-    QPushButton* correlateBtn = new QPushButton("Save correlation",this);
+    QPushButton* correlateBtn = new QPushButton("Compute correlation",this);
     QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
     
     QTimer* drawRequestTimer;
     QTimer* drawCorrelationRequestTimer;
-    // QTimer* progressTimer;
     
     std::atomic<bool> equilibration_mode {false};
     std::atomic<bool> advanced_mode {false};

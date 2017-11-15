@@ -55,7 +55,7 @@ MCWidget::MCWidget(QWidget *parent)
     connect(saveBtn,      &QPushButton::clicked, this, &MCWidget::saveAction);
     connect(correlateBtn, &QPushButton::clicked, this, &MCWidget::correlateAction);
     connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
-    connect(drawCorrelationRequestTimer, &QTimer::timeout, [&]{ emit drawCorrelationRequest(MC, steps_done.load()); });
+    connect(drawCorrelationRequestTimer, &QTimer::timeout, [&]{ emit drawCorrelationRequest(MC); });
     // connect(progressTimer,    &QTimer::timeout, [&]{ emit finishedSteps(steps_done.load()); });
     
     // main layout
@@ -367,7 +367,6 @@ void MCWidget::correlateAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    // Q_CHECK_PTR(progressTimer);
     
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
@@ -377,13 +376,10 @@ void MCWidget::correlateAction()
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
     
-    drawRequestTimer->stop();
-    // progressTimer->stop();
+    // drawRequestTimer->stop();
     
-    emit runningSignal(false);
-    
-    MC.print_correlation();
-    emit drawCorrelationRequest(MC, steps_done.load());
+    MC.print_correlation(); 
+    emit drawCorrelationRequest(MC);
 }
 
 
