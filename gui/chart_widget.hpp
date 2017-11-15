@@ -45,4 +45,10 @@ private:
     QtCharts::QLineSeries* series;
     QString xLabel {};
     QString yLabel {};
+    
+    bool first_range_setup = true;
+    float xMin { 0.0 };
+    float xMax { 0.0 };
+    float yMin { 0.0 };
+    float yMax { 0.0 };
 };

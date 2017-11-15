@@ -17,7 +17,11 @@ ChartWidget::ChartWidget(QWidget *parent)
     chart->createDefaultAxes();
     // chart->setTitle("DEFAULT TEXT");
     
+    chart->axisX()->setTitleText(xLabel);
+    chart->axisY()->setTitleText(yLabel);
+    
     setChart(chart);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setRenderHint(QPainter::Antialiasing);
     
@@ -37,6 +41,20 @@ void ChartWidget::append(qreal x, qreal y)
     qDebug() << __PRETTY_FUNCTION__ <<  x <<  "  " <<  y;
     Q_CHECK_PTR(series);
     series->append(x, y);
+    
+    if( first_range_setup ) 
+    {
+        xMin = xMax = x;
+        yMin = yMax = y;
+        first_range_setup = false;
+    }
+    else
+    {
+        if( x < xMin ) xMin = x;
+        if( x > xMax ) xMax = x;
+        if( y < yMin ) yMin = y;
+        if( y > yMax ) yMax = y;
+    }
 }
 
 
@@ -53,12 +71,9 @@ void ChartWidget::draw(qreal x, qreal y)
 void ChartWidget::refresh()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    // repaint();
-    chart->removeSeries(series);
-    chart->addSeries( series );
-    chart->createDefaultAxes();
-    chart->axisX()->setTitleText(xLabel);
-    chart->axisY()->setTitleText(yLabel);
+    chart->axisX()->setRange(xMin,xMax);
+    chart->axisY()->setRange(yMin,yMax);
+    repaint();
 }
 
 
@@ -94,7 +109,7 @@ void ChartWidget::reset()
     qDebug() << __PRETTY_FUNCTION__;
     Q_CHECK_PTR(chart);
     series->clear();
-    // chart->axes().clear();
+    first_range_setup = true;
 }
 
 
