@@ -47,7 +47,7 @@ public:
     void flip();
     void flip_back();
 
-    histogram<double> getCorrelation() const;
+    Histogram<double> getCorrelation() const { Histogram<double> temp(0,1,10); return temp;};
     inline double getMagnetisation() const;
     inline double getMagnetisationSquared() const;
     inline double getSusceptibility() const;

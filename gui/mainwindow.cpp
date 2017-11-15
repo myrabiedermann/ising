@@ -117,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent) :
             {
                 for(const auto& B : system.getSpinsystem().getCorrelation() )
                 {
-                    correlationChart->append(B.value, B.counter);
+                    correlationChart->append(B.position(), B.counter);
                 }
                 correlationChart->refresh();
                 // correlationChart->draw(steps, system.getSpinsystem().getMagnetisation());

@@ -419,47 +419,47 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
 /***************************************************************************/
 
-histogram<double> Spinsystem::getCorrelation() const
-{
-    // compute correlations between spins
+// histogram<double> Spinsystem::getCorrelation() const
+// {
+//     // compute correlations between spins
 
-    Logger::getInstance().debug("[spinsystem]", "computing correlation <Si Sj>:");
-    histogram<double> correlation;
+//     Logger::getInstance().debug("[spinsystem]", "computing correlation <Si Sj>:");
+//     histogram<double> correlation;
 
-    auto counter = correlation;
-    double dist;
+//     auto counter = correlation;
+//     double dist;
 
-    for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
-    {
-        for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
-        {
-            dist = distance(*s1, *s2);
-            if( s1->get_type() == s2->get_type() )
-            {
-                if( ! correlation.contains(dist) )
-                {
-                    correlation.add_bin(dist);
-                    counter.add_bin(dist);
-                }
-                correlation.add_data( dist );
-                Logger::getInstance().debug("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", " 1 ");
-            }
-            else 
-            {
-                Logger::getInstance().debug("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", "   ");
-            }
-            counter.add_data( dist );
-            Logger::getInstance().debug("[spinsystem]", "    distance ", dist);
-        }
-    }
+//     for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
+//     {
+//         for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
+//         {
+//             dist = distance(*s1, *s2);
+//             if( s1->get_type() == s2->get_type() )
+//             {
+//                 if( ! correlation.contains(dist) )
+//                 {
+//                     correlation.add_bin(dist);
+//                     counter.add_bin(dist);
+//                 }
+//                 correlation.add_data( dist );
+//                 Logger::getInstance().debug("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", " 1 ");
+//             }
+//             else 
+//             {
+//                 Logger::getInstance().debug("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", "   ");
+//             }
+//             counter.add_data( dist );
+//             Logger::getInstance().debug("[spinsystem]", "    distance ", dist);
+//         }
+//     }
 
-    // normalisation:
-    std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
-    { 
-        B.counter /= counter.get_data(B.value); 
-    });
+//     // normalisation:
+//     std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
+//     { 
+//         B.counter /= counter.get_data(B.value); 
+//     });
 
-    correlation.sort_bins();
-    return correlation;
+//     correlation.sort_bins();
+//     return correlation;
 
-}
+// }
