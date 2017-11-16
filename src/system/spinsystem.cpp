@@ -34,7 +34,7 @@ void Spinsystem::setup()
     lastFlipped.clear();
 
     // some safety checks:
-    if( parameters->getConstrained() && (parameters->getWidth()*parameters->getHeight()) % 2 != 0 )
+    if( parameters->getConstrained() && (getWidth()*getHeight()) % 2 != 0 )
     {
         throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
     }
@@ -43,8 +43,8 @@ void Spinsystem::setup()
         throw std::logic_error("[spinsystem] constrained system cannot have a magnetic field");
     }
 
-    auto width  = parameters->getWidth();
-    auto height = parameters->getHeight();
+    auto width  = getWidth();
+    auto height = getHeight();
     auto totalnumber = width * height;
 
     // create spinarray:

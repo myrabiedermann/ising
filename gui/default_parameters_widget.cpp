@@ -365,7 +365,7 @@ bool DefaultParametersWidget::getWavelengthPattern() const
 }
     
 
-double DefaultParametersWidget::getWavelength() const
+int DefaultParametersWidget::getWavelength() const
 {
     return 0;
 }

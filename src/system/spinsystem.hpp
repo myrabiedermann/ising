@@ -22,7 +22,6 @@ class Spinsystem
     BaseParametersWidget* parameters = Q_NULLPTR;
 
     void computeHamiltonian();
-    // double calcHamiltonian();
     double local_energy_interaction(const Spin&) const;
     double local_energy_magnetic(const Spin&) const;
     double Jij(const SPINTYPE, const SPINTYPE) const;
