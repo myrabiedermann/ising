@@ -31,6 +31,7 @@ class MonteCarloHost
     std::vector<double>  energiesSquared {};
     std::vector<double>  magnetisations {};
     std::vector<double>  magnetisationsSquared {};
+    std::vector<std::vector<double>> amplitudes {};
     
 protected:
     
@@ -50,7 +51,8 @@ public:
     
     void run(const unsigned long&, const bool EQUILMODE = false);
     
-    void print_correlation();
-    void print_data();
-    void print_averages();
+    void print_correlation() const;
+    void print_data() const;
+    void print_averages() const;
+    void print_amplitudes() const;
 };

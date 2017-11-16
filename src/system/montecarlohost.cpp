@@ -133,13 +133,14 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         energiesSquared.push_back(spinsystem.getHamiltonian()*spinsystem.getHamiltonian());
         magnetisations.push_back(spinsystem.getMagnetisation());
         magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
-        // susceptibilities.push_back(spinsystem.getSusceptibility());
+        if( parameters->getConstrained() ) 
+            amplitudes.push_back(spinsystem.computeAmplitudes());
     }
 }
 
 
 
-void MonteCarloHost::print_data()
+void MonteCarloHost::print_data() const
 {
     // save to file:  step  J  temperature  B  H  M  chi
 
@@ -169,9 +170,9 @@ void MonteCarloHost::print_data()
     {
         FILE << std::setw(14) << std::fixed << std::setprecision(0)<< (i+1)*parameters->getPrintFreq()
              << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getInteraction()
-             << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getTemperature()
+             << std::setw(8) << std::fixed << std::setprecision(2)<< parameters->getTemperature()
              << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getMagnetic()
-             << std::setw(14) << std::fixed << std::setprecision(6) << energies[i]
+             << std::setw(14) << std::fixed << std::setprecision(2) << energies[i]
              << std::setw(14) << std::fixed << std::setprecision(6) << magnetisations[i];
         FILE << '\n';
     }
@@ -181,7 +182,7 @@ void MonteCarloHost::print_data()
 
 
 
-void MonteCarloHost::print_correlation()
+void MonteCarloHost::print_correlation() const
 {
     // compute correlations of actual state and save to file
 
@@ -200,7 +201,7 @@ void MonteCarloHost::print_correlation()
 
 
 
-void MonteCarloHost::print_averages()
+void MonteCarloHost::print_averages() const
 {
     // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>
 
@@ -249,6 +250,40 @@ void MonteCarloHost::print_averages()
          << std::setw(14) << std::fixed << std::setprecision(8) << (averageEnergiesSquared - averageEnergies*averageEnergies) / denominator
          << std::setw(14) << energies.size() 
          << '\n';
+    
+    FILE.close();
+}
+
+
+
+void MonteCarloHost::print_amplitudes() const
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    
+    Q_CHECK_PTR(parameters);
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".amplitudes");
+
+    std::ofstream FILE;
+    FILE.open(filekey);
+    
+    // print header line
+    FILE << std::setw(4) << "# k"
+    << std::setw(10) << "MC steps:";
+
+    for(unsigned int i=0; i<amplitudes.size(); ++i) FILE << std::setw(8) << i*parameters->getPrintFreq();
+    FILE << '\n';
+    
+    for( unsigned int j=0; j<amplitudes.front().size(); ++j )
+    {
+        FILE << std::setw(14) << std::fixed << j; 
+        for(unsigned int i=0; i<amplitudes.size(); ++i)
+        {
+            FILE << std::setw(8) << std::setprecision(2) << amplitudes[i][j];
+        }
+        FILE << '\n';
+    }
     
     FILE.close();
 }

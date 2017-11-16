@@ -22,7 +22,7 @@ class Spinsystem
     BaseParametersWidget* parameters = Q_NULLPTR;
 
     void computeHamiltonian();
-    double calcHamiltonian();
+    // double calcHamiltonian();
     double local_energy_interaction(const Spin&) const;
     double local_energy_magnetic(const Spin&) const;
     double Jij(const SPINTYPE, const SPINTYPE) const;
@@ -46,6 +46,8 @@ public:
 
     Histogram<double> getCorrelation() const;
     double getMagnetisation() const;
+
+    std::vector<double> computeAmplitudes();
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }

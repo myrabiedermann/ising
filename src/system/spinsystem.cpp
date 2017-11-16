@@ -172,27 +172,20 @@ void Spinsystem::resetSpinsCosinus(const double k)
 
     int random;
     if( ! parameters->getConstrained() ) 
-    {
         throw std::logic_error("[spinsystem] resetting spins according to cos not implemented for !CONSTRAINED");
-    }            
-    else
+     
     {
         for( auto& s: spins ) 
             s.set_type( UP );
-        // Logger::getInstance().debug("set all spins to UP");
-        // Logger::getInstance().debug(this->str());
         for(unsigned int i = 0; i<parameters->getWidth(); ++i)
         {
-            // Logger::getInstance().debug("i =", i);
             double ratio = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
             unsigned int nrDownSpins = std::round(ratio*parameters->getWidth());
-            // unsigned downspins = static_cast<unsigned int>(ratio*parameters->getWidth());
-            // Logger::getInstance().debug("ratio =", ratio, "results in ", downspins, "DOWN spins", "vs", zahl);
             for(unsigned int j=0; j<nrDownSpins; ++j)
             {
                 do
                 {
-                    random = enhance::random_int(i*parameters->getWidth(), (i+1)*parameters->getWidth()-1);
+                    random = enhance::random_int(i*parameters->getWidth(), (i+1)*parameters->getWidth() - 1);
                 }
                 while( spins[random].get_type() == DOWN );
                 spins[random].set_type(DOWN);
@@ -208,6 +201,49 @@ void Spinsystem::resetSpinsCosinus(const double k)
     computeHamiltonian();
     Logger::getInstance().debug("[spinsystem]",  "initial H =", Hamiltonian);
 
+}
+
+/***************************************************************************/
+
+std::vector<double> Spinsystem::computeAmplitudes()
+{
+    // compute amplitudes A(k) = sum( cos(k*i) * Si ), where Si = sum( S(i,j) )    (-->Fourier transformation)
+
+    if( ! parameters->getConstrained() ) 
+        throw std::logic_error("[spinsystem] computation of Amplitudes not implemented for !CONSTRAINED");
+
+    std::vector<double> amplitudes;
+
+    Logger::getInstance().debug("[spinsystem]", "computing amplitudes");
+    Logger::getInstance().debug( str() );
+
+    std::vector<int> rowSummedSpins;
+    for(unsigned int i= 0; i<parameters->getWidth(); ++i)
+    {
+        rowSummedSpins.push_back(0);
+        for(unsigned int j = i*parameters->getWidth(); j < (i+1)*parameters->getWidth(); ++j)
+        {
+            rowSummedSpins.back() += ( spins[j].get_type() == SPINTYPE::UP ? 1 : -1 );
+            Logger::getInstance().debug("[spinsystem], spin ", spins[j].get_ID(), " ", spins[j].get_type() == UP ? 1 : -1);
+        }
+        Logger::getInstance().debug("[spinsystem]", "row ", i , " sum ", rowSummedSpins.back());
+    }
+
+    for( unsigned int k = 1; k<= parameters->getWidth()/2-1; ++k )
+    {
+        amplitudes.push_back(0);
+        Logger::getInstance().debug("[spinsystem]", "k = ", k);
+        for(unsigned int i = 0; i<parameters->getWidth(); ++i)
+        {
+            double cosFactor = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
+            
+            Logger::getInstance().debug("[spinsystem]", "cos(ki) =", cosFactor);
+            amplitudes.back() += cosFactor * rowSummedSpins[i];
+        }
+        Logger::getInstance().debug(" amplitude: ", amplitudes.back());
+    }
+
+    return amplitudes;
 }
 
 /***************************************************************************/
@@ -243,17 +279,17 @@ void Spinsystem::computeHamiltonian()
     });
 }
 
-double Spinsystem::calcHamiltonian()
-{
-    // calculate Hamiltonian of the system
+// double Spinsystem::calcHamiltonian()
+// {
+//     // calculate Hamiltonian of the system
 
-    double energy = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
-    {
-        return i + local_energy_interaction(S) / 2 + local_energy_magnetic(S);
-    });
+//     double energy = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
+//     {
+//         return i + local_energy_interaction(S) / 2 + local_energy_magnetic(S);
+//     });
 
-    return energy;
-}
+//     return energy;
+// }
 
 /***************************************************************************/
 
