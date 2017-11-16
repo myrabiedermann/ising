@@ -82,8 +82,9 @@ void MonteCarloHost::clearRecords()
     qDebug() << __PRETTY_FUNCTION__;
 
     energies.clear();
+    energiesSquared.clear();
     magnetisations.clear();
-    susceptibilities.clear();
+    magnetisationsSquared.clear();
 
     spinsystem.resetParameters();
     
@@ -129,8 +130,10 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     if( !EQUILMODE )
     {
         energies.push_back(spinsystem.getHamiltonian());
+        energiesSquared.push_back(spinsystem.getHamiltonian()*spinsystem.getHamiltonian());
         magnetisations.push_back(spinsystem.getMagnetisation());
-        susceptibilities.push_back(spinsystem.getSusceptibility());
+        magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
+        // susceptibilities.push_back(spinsystem.getSusceptibility());
     }
 }
 
@@ -157,11 +160,11 @@ void MonteCarloHost::print_data()
     << std::setw(8) << "B"
     << std::setw(14) << "H"
     << std::setw(14) << "M"
-    << std::setw(14) << "chi"
     << '\n';
     
     assert(energies.size() == magnetisations.size());
-    assert(energies.size() == susceptibilities.size());
+    assert(energies.size() == energiesSquared.size());
+    assert(magnetisations.size() == magnetisationsSquared.size());
     for(unsigned int i=0; i<energies.size(); ++i)
     {
         FILE << std::setw(14) << std::fixed << std::setprecision(0)<< (i+1)*parameters->getPrintFreq()
@@ -169,9 +172,7 @@ void MonteCarloHost::print_data()
              << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getTemperature()
              << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getMagnetic()
              << std::setw(14) << std::fixed << std::setprecision(6) << energies[i]
-             << std::setw(14) << std::fixed << std::setprecision(6) << magnetisations[i]
-             << std::setw(14) << std::fixed << std::setprecision(6) << susceptibilities[i];
-        
+             << std::setw(14) << std::fixed << std::setprecision(6) << magnetisations[i];
         FILE << '\n';
     }
     
@@ -219,8 +220,11 @@ void MonteCarloHost::print_averages()
              << std::setw(8) << "T"
              << std::setw(8) << "B"
              << std::setw(14) << "<H>"
+             << std::setw(14) << "<H^2>"
              << std::setw(14) << "<M>"
+             << std::setw(14) << "<M^2>"
              << std::setw(14) << "<chi>"
+             << std::setw(14) << "<Cv>"
              << std::setw(14) << "# of samples"
              << '\n';
     }
@@ -228,14 +232,22 @@ void MonteCarloHost::print_averages()
     {
         FILE.open(filekey, std::ios::app);
     }
+    double averageEnergies = std::accumulate(std::begin(energies), std::end(energies), 0.0) / energies.size();
+    double averageEnergiesSquared = std::accumulate(std::begin(energiesSquared), std::end(energiesSquared), 0.0) / energiesSquared.size();
+    double averageMagnetisations = std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0) / magnetisations.size();
+    double averageMagnetisationsSquared = std::accumulate(std::begin(magnetisationsSquared), std::end(magnetisationsSquared), 0.0) / magnetisationsSquared.size();
+    double denominator = std::pow(parameters->getTemperature(),2) * std::pow(parameters->getWidth()*parameters->getHeight(),2);
     
     FILE << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getInteraction()
          << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getTemperature()
          << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getMagnetic()
-         << std::setw(14) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(energies), std::end(energies), 0.0) / energies.size()
-         << std::setw(14) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0) / magnetisations.size()
-         << std::setw(14) << std::fixed << std::setprecision(6) << std::accumulate(std::begin(susceptibilities), std::end(susceptibilities), 0.0) / susceptibilities.size()
-         << std::setw(14) << ( energies.size() == magnetisations.size() and energies.size() == susceptibilities.size() ? energies.size() : -1 )
+         << std::setw(14) << std::fixed << std::setprecision(2) << averageEnergies
+         << std::setw(14) << std::fixed << std::setprecision(2) << averageEnergiesSquared
+         << std::setw(14) << std::fixed << std::setprecision(6) << averageMagnetisations
+         << std::setw(14) << std::fixed << std::setprecision(6) << averageMagnetisationsSquared
+         << std::setw(14) << std::fixed << std::setprecision(6) << (averageMagnetisationsSquared - averageMagnetisations*averageMagnetisations) / parameters->getTemperature()
+         << std::setw(14) << std::fixed << std::setprecision(8) << (averageEnergiesSquared - averageEnergies*averageEnergies) / denominator
+         << std::setw(14) << energies.size() 
          << '\n';
     
     FILE.close();

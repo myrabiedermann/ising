@@ -473,18 +473,4 @@ double Spinsystem::getMagnetisation() const
     return ( (double) num<SPINTYPE::UP>() - num<SPINTYPE::DOWN>() ) / spins.size();
 }
 
-/***************************************************************************/
 
-double Spinsystem::getMagnetisationSquared() const
-{
-    // return average magnetisation squared: <M^2> = 1/N sum( S_i*S_i )
-    return ( (double) num<SPINTYPE::UP>() + num<SPINTYPE::DOWN>() ) / spins.size();
-}
-
-/***************************************************************************/
-
-double Spinsystem::getSusceptibility() const
-{
-    // return susceptibility: chi = dM/dB = ( <M^2> - <M>^2 ) / ( k_b * T )
-    return ( getMagnetisationSquared() - getMagnetisation()*getMagnetisation() ) / parameters->getTemperature();
-}

@@ -46,8 +46,6 @@ public:
 
     Histogram<double> getCorrelation() const;
     double getMagnetisation() const;
-    double getMagnetisationSquared() const;
-    double getSusceptibility() const;
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
