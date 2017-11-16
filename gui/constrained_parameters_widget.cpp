@@ -28,7 +28,7 @@ ConstrainedParametersWidget::ConstrainedParametersWidget(QWidget* parent)
 
     ratioSpinBox = new QDoubleSpinBox(this);
     ratioCheckBox = new QCheckBox(this);
-    wavelengthSpinBox = new QDoubleSpinBox(this);
+    wavelengthSpinBox = new QSpinBox(this);
     wavelengthCheckBox = new QCheckBox(this);
 
     wavelengthCheckBox->setAutoExclusive(true);
@@ -80,7 +80,7 @@ void ConstrainedParametersWidget::setup()
     
     connect( ratioSpinBox      , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConstrainedParametersWidget::criticalValueChanged );
     connect( ratioCheckBox     , static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), this, &ConstrainedParametersWidget::randomiseSystem );
-    connect( wavelengthSpinBox , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConstrainedParametersWidget::randomiseSystem);
+    connect( wavelengthSpinBox , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::randomiseSystem);
     connect( wavelengthCheckBox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), this, &ConstrainedParametersWidget::randomiseSystem );
 
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), widthSpinBox, &QSpinBox::setValue );
@@ -139,8 +139,8 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     wavelengthSpinBox->setMinimum(0);
-    wavelengthSpinBox->setMaximum( widthSpinBox->maximum()/2 - 1 );
-    wavelengthSpinBox->setSingleStep(0.1);
+    wavelengthSpinBox->setMaximum(10);
+    wavelengthSpinBox->setSingleStep(1);
     wavelengthSpinBox->setMinimumWidth(40);
     wavelengthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
@@ -392,7 +392,7 @@ bool ConstrainedParametersWidget::getWavelengthPattern() const
 }
     
 
-double ConstrainedParametersWidget::getWavelength() const
+int ConstrainedParametersWidget::getWavelength() const
 {
     Q_CHECK_PTR(wavelengthSpinBox);
     return wavelengthSpinBox->value();
