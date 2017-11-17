@@ -207,7 +207,7 @@ void Spinsystem::resetSpinsCosinus(const double k)
 
 std::vector<double> Spinsystem::computeAmplitudes()
 {
-    // compute amplitudes A(k) = sum( cos(k*i) * Si ), where Si = sum( S(i,j) )    (-->Fourier transformation)
+    // compute amplitudes A(k) = sum( cos(2PI/width*k*i) * Si ), where Si = sum( S(i,j) )    (-->Fourier transformation)
 
     if( ! parameters->getConstrained() ) 
         throw std::logic_error("[spinsystem] computation of Amplitudes not implemented for !CONSTRAINED");
@@ -233,13 +233,17 @@ std::vector<double> Spinsystem::computeAmplitudes()
     {
         amplitudes.push_back(0);
         Logger::getInstance().debug("[spinsystem]", "k = ", k);
+        double cosSum = 0;
+        double sinSum = 0;
         for(unsigned int i = 0; i<parameters->getWidth(); ++i)
         {
-            double cosFactor = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
-            
-            Logger::getInstance().debug("[spinsystem]", "cos(ki) =", cosFactor);
-            amplitudes.back() += cosFactor * rowSummedSpins[i];
+            double cos = std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
+            double sin = std::sin(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
+            cosSum += cos*rowSummedSpins[i];
+            sinSum += sin*rowSummedSpins[i];
+            Logger::getInstance().debug("[spinsystem]", "cos(ki) =", cos, "sin(ki) =", sin);
         }
+        amplitudes.back() += std::sqrt( cosSum*cosSum + sinSum*sinSum );
         Logger::getInstance().debug(" amplitude: ", amplitudes.back());
     }
 
