@@ -134,7 +134,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         magnetisations.push_back(spinsystem.getMagnetisation());
         magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
         if( parameters->getConstrained() ) 
-            amplitudes.push_back(spinsystem.computeAmplitudes());
+            amplitudes.push_back(spinsystem.computeStructureFunction());
     }
 }
 
@@ -182,7 +182,7 @@ void MonteCarloHost::print_data() const
 
 
 
-void MonteCarloHost::print_correlation() const
+void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
 {
     // compute correlations of actual state and save to file
 
@@ -195,7 +195,7 @@ void MonteCarloHost::print_correlation() const
 
     std::ofstream FILE(filekey);
     FILE << "# correlation <Si Sj>(r)\n";
-    FILE << spinsystem.getCorrelation().formatted_string();
+    FILE << correlation.formatted_string();
     FILE.close();
 }
 

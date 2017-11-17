@@ -115,12 +115,13 @@ MainWindow::MainWindow(QWidget *parent) :
             connect( MCwidget, &MCWidget::resetSignal, correlationChart, &ChartWidget::reset );
             connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system)
             {
-                for(const auto& B : system.getSpinsystem().getCorrelation() )
+                Histogram<double> correlation = system.getSpinsystem().getCorrelation();
+                for(const auto& B : correlation )
                 {
-                    if(B.counter != 0)
-                         correlationChart->append(B.position(), B.counter);
+                    correlationChart->append(B.position(), B.counter);
                 }
                 correlationChart->refresh();
+                system.print_correlation(correlation);
             });
         }
     }

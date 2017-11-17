@@ -11,7 +11,9 @@ int main(int argc, char *argv[])
     Logger::getInstance().write_new_line( "[GENERAL]" , "ISING LOG FILE");
 
     enhance::seed = std::time(nullptr);
-    // enhance::seed = 123456789;
+    #ifndef NDEBUG
+    enhance::seed = 123456789;
+    #endif
     enhance::rand_engine.seed(enhance::seed);
     Logger::getInstance().write_new_line("[GENERAL]", "seed for random number generator:", enhance::seed) ;
 

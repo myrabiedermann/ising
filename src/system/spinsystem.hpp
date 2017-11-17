@@ -16,15 +16,14 @@
 
 class Spinsystem
 {
+    BaseParametersWidget* parameters = Q_NULLPTR;
     double Hamiltonian {0};
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
-    BaseParametersWidget* parameters = Q_NULLPTR;
 
     void computeHamiltonian();
     double local_energy_interaction(const Spin&) const;
     double local_energy_magnetic(const Spin&) const;
-    double Jij(const SPINTYPE, const SPINTYPE) const;
     double Bi(const SPINTYPE) const;
     double distance(const Spin&, const Spin&) const;
 
@@ -44,17 +43,17 @@ public:
     void flip_back();
 
     Histogram<double> getCorrelation() const;
-    double getMagnetisation() const;
+    double      getMagnetisation() const;
+    inline auto getHamiltonian() const { return Hamiltonian; }
 
-    std::vector<double> computeAmplitudes();
+    std::vector<double> computeStructureFunction() const;
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
 
     inline const decltype(spins)& getSpins() const { return spins; };
-    inline auto getHamiltonian() const { return Hamiltonian; }
     
-    template<SPINTYPE T> constexpr int num() const;
+    // template<SPINTYPE T> constexpr int num() const;
 
     void print(std::ostream & ) const;
     std::string str() const;
@@ -63,14 +62,14 @@ public:
 
 
 
-template<SPINTYPE T>
-constexpr inline int Spinsystem::num() const
-{
-    // return number of spins of type T
-    return std::accumulate(std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
-    {
-        return S.get_type() == T ? i+1 : i;
-    });
-}
+// template<SPINTYPE T>
+// constexpr inline int Spinsystem::num() const
+// {
+//     // return number of spins of type T
+//     return std::accumulate(std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
+//     {
+//         return S.get_type() == T ? i+1 : i;
+//     });
+// }
 
 

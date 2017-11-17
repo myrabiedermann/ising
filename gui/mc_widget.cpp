@@ -379,7 +379,7 @@ void MCWidget::correlateAction()
     
     // drawRequestTimer->stop();
     
-    MC.print_correlation(); 
+    // MC.print_correlation(); 
     emit drawCorrelationRequest(MC);
 }
 
