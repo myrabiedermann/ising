@@ -69,6 +69,7 @@ struct Histogram
     inline auto maximum()        const { return max; }
     inline auto reset(const double& i = 0) { std::for_each(bins.begin(), bins.end(), [&i](auto& B) { B.counter = i;} ); }
     inline auto clear() { bins.clear(); min = 0; max = 0; }
+    inline void shift(const T& _shift) { std::for_each(std::begin(bins), std::end(bins), [&_shift](auto& B) { B.counter -= _shift; }); }
     // inline auto normalise(const double& v) { std::for_each(bins.begin(), bins.end(), [&v](auto& B) { B.counter /= v; }); }
     
     inline auto begin()          const   { return bins.begin(); }

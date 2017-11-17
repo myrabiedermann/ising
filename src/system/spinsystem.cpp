@@ -387,13 +387,13 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
 Histogram<double> Spinsystem::getCorrelation() const
 {
-    // compute correlations between spins
+    // compute correlations between spins: G(r) = <S(0)S(r)> - <S>^2
 
     Histogram<double> correlation {0.01};
     Logger::getInstance().debug("[spinsystem]", "computing correlation <Si Sj>:");
 
+    // first: <S(0)S(r)>:
     auto counter = correlation;
-    
     for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
     {
         for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
@@ -405,13 +405,15 @@ Histogram<double> Spinsystem::getCorrelation() const
             Logger::getInstance().debug("[spinsystem]", "    distance ", dist);
         }
     }
-
     // normalisation:
     std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
     { 
         if(B.counter != 0)
             B.counter /= counter.get_data(B.position()); 
     });
+
+    // then:  - <S>:
+    correlation.shift( getMagnetisation() );
 
     correlation.sort_bins();
     return correlation;
@@ -421,7 +423,7 @@ Histogram<double> Spinsystem::getCorrelation() const
 
 std::vector<double> Spinsystem::computeStructureFunction() const
 {
-    // compute amplitudes A(k) = sum( cos(2PI/width*k*i) * Si ), where Si = sum( S(i,j) )    (-->Fourier transformation)
+    // compute Fourier transformation A(k) = sum( cos(2PI/width*k*r) * corr(r) ), wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
 
     if( ! parameters->getConstrained() ) 
         throw std::logic_error("[spinsystem] computation of Amplitudes not implemented for !CONSTRAINED");
