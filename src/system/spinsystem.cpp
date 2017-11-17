@@ -283,35 +283,23 @@ void Spinsystem::computeHamiltonian()
     });
 }
 
-// double Spinsystem::calcHamiltonian()
-// {
-//     // calculate Hamiltonian of the system
-
-//     double energy = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
-//     {
-//         return i + local_energy_interaction(S) / 2 + local_energy_magnetic(S);
-//     });
-
-//     return energy;
-// }
-
 /***************************************************************************/
 
 double Spinsystem::Jij(const SPINTYPE _spin1, const SPINTYPE _spin2) const
 {
     // return correct J for this pair of spins depending on CONSTRAINED
     
-    if( ! parameters->getConstrained() ) 
+    // if( ! parameters->getConstrained() ) 
         return parameters->getInteraction();
-    else                
-        return _spin1 != _spin2 ? parameters->getInteraction() : 0;
+    // else                
+        // return _spin1 != _spin2 ? parameters->getInteraction() : 0;
 }
 
 /***************************************************************************/
 
 double Spinsystem::Bi(const SPINTYPE _spintype) const
 {
-    // return correct J for this pair of spins depending on CONSTRAINED
+    // return correct B for this spin 
     
     if( ! parameters->getConstrained() ) 
         return parameters->getMagnetic() * (_spintype == SPINTYPE::UP ? 1 : -1) ;
