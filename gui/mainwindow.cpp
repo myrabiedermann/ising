@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
                 }
                 correlationChart->refresh();
                 system.print_correlation(correlation);
+                system.getSpinsystem().computeStructureFunction(correlation);
             });
         }
     }

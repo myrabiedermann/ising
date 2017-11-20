@@ -28,9 +28,9 @@ class MonteCarloHost
     Spinsystem         spinsystem {};
 
     std::vector<double>  energies {};
-    std::vector<double>  energiesSquared {};
+    // std::vector<double>  energiesSquared {};
     std::vector<double>  magnetisations {};
-    std::vector<double>  magnetisationsSquared {};
+    // std::vector<double>  magnetisationsSquared {};
     std::vector<std::vector<double>> amplitudes {};
     
 protected:

@@ -367,13 +367,7 @@ void MCWidget::correlateAction()
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
     
-<<<<<<< HEAD
-    // drawRequestTimer->stop();
-    
     // MC.print_correlation(); 
-=======
-    MC.print_correlation(); 
->>>>>>> 8bbca2d21846afb97cb59e09abda87d712791ddc
     emit drawCorrelationRequest(MC);
 }
 
@@ -414,6 +408,7 @@ void MCWidget::advancedRunAction()
             }
             saveAction();
             makeRecordsNew();
+            // makeSystemRandom();
         }
     }
     

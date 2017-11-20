@@ -46,7 +46,7 @@ public:
     double      getMagnetisation() const;
     inline auto getHamiltonian() const { return Hamiltonian; }
 
-    std::vector<double> computeStructureFunction() const;
+    std::vector<double> computeStructureFunction(const Histogram<double>) const;
 
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }

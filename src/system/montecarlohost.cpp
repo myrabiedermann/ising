@@ -82,9 +82,9 @@ void MonteCarloHost::clearRecords()
     qDebug() << __PRETTY_FUNCTION__;
 
     energies.clear();
-    energiesSquared.clear();
+    // energiesSquared.clear();
     magnetisations.clear();
-    magnetisationsSquared.clear();
+    // magnetisationsSquared.clear();
 
     spinsystem.resetParameters();
     
@@ -130,11 +130,11 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     if( !EQUILMODE )
     {
         energies.push_back(spinsystem.getHamiltonian());
-        energiesSquared.push_back(spinsystem.getHamiltonian()*spinsystem.getHamiltonian());
+        // energiesSquared.push_back(spinsystem.getHamiltonian()*spinsystem.getHamiltonian());
         magnetisations.push_back(spinsystem.getMagnetisation());
-        magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
-        if( parameters->getConstrained() ) 
-            amplitudes.push_back(spinsystem.computeStructureFunction());
+        // magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
+        // if( parameters->getConstrained() ) 
+            // amplitudes.push_back(spinsystem.computeStructureFunction());
     }
 }
 
@@ -164,8 +164,8 @@ void MonteCarloHost::print_data() const
     << '\n';
     
     assert(energies.size() == magnetisations.size());
-    assert(energies.size() == energiesSquared.size());
-    assert(magnetisations.size() == magnetisationsSquared.size());
+    // assert(energies.size() == energiesSquared.size());
+    // assert(magnetisations.size() == magnetisationsSquared.size());
     for(unsigned int i=0; i<energies.size(); ++i)
     {
         FILE << std::setw(14) << std::fixed << std::setprecision(0)<< (i+1)*parameters->getPrintFreq()
@@ -222,8 +222,8 @@ void MonteCarloHost::print_averages() const
              << std::setw(8) << "B"
              << std::setw(14) << "<H>"
              << std::setw(14) << "<M>"
-             << std::setw(14) << "<chi>"
-             << std::setw(14) << "<Cv>"
+             << std::setw(18) << "<chi>"
+             << std::setw(18) << "<Cv>"
              << std::setw(14) << "# of samples"
              << '\n';
     }
@@ -232,9 +232,9 @@ void MonteCarloHost::print_averages() const
         FILE.open(filekey, std::ios::app);
     }
     double averageEnergies = std::accumulate(std::begin(energies), std::end(energies), 0.0) / energies.size();
-    double averageEnergiesSquared = std::accumulate(std::begin(energiesSquared), std::end(energiesSquared), 0.0) / energiesSquared.size();
+    double averageEnergiesSquared = std::accumulate(std::begin(energies), std::end(energies), 0.0, [](auto lhs, auto rhs){ return lhs + rhs*rhs; }) / energies.size();
     double averageMagnetisations = std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0) / magnetisations.size();
-    double averageMagnetisationsSquared = std::accumulate(std::begin(magnetisationsSquared), std::end(magnetisationsSquared), 0.0) / magnetisationsSquared.size();
+    double averageMagnetisationsSquared = std::accumulate(std::begin(magnetisations), std::end(magnetisations), 0.0, [](auto lhs, auto rhs){ return lhs + rhs*rhs; }) / magnetisations.size();
     double denominator = std::pow(parameters->getTemperature(),2) * std::pow(parameters->getWidth()*parameters->getHeight(),2);
     
     FILE << std::setw(8) << std::fixed << std::setprecision(2) << parameters->getInteraction()
@@ -242,8 +242,8 @@ void MonteCarloHost::print_averages() const
          << std::setw(8) << std::fixed << std::setprecision(2) << parameters->getMagnetic()
          << std::setw(14) << std::fixed << std::setprecision(2) << averageEnergies
          << std::setw(14) << std::fixed << std::setprecision(6) << averageMagnetisations
-         << std::setw(14) << std::fixed << std::setprecision(6) << (averageMagnetisationsSquared - averageMagnetisations*averageMagnetisations) / parameters->getTemperature()
-         << std::setw(14) << std::fixed << std::setprecision(8) << (averageEnergiesSquared - averageEnergies*averageEnergies) / denominator
+         << std::setw(18) << std::fixed << std::setprecision(10) << (averageMagnetisationsSquared - averageMagnetisations*averageMagnetisations) / parameters->getTemperature()
+         << std::setw(18) << std::fixed << std::setprecision(10) << (averageEnergiesSquared - averageEnergies*averageEnergies) / denominator
          << std::setw(14) << energies.size() 
          << '\n';
     

@@ -421,49 +421,71 @@ Histogram<double> Spinsystem::getCorrelation() const
 
 /***************************************************************************/
 
-std::vector<double> Spinsystem::computeStructureFunction() const
+std::vector<double> Spinsystem::computeStructureFunction(const Histogram<double> correlation) const
 {
     // compute Fourier transformation A(k) = sum( cos(2PI/width*k*r) * corr(r) ), wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
 
     if( ! parameters->getConstrained() ) 
         throw std::logic_error("[spinsystem] computation of Amplitudes not implemented for !CONSTRAINED");
 
-    std::vector<double> amplitudes;
+    // std::vector<double> amplitudes;
 
     Logger::getInstance().debug("[spinsystem]", "computing amplitudes");
     Logger::getInstance().debug( str() );
 
-    std::vector<int> rowSummedSpins;
-    for(unsigned int i= 0; i<parameters->getWidth(); ++i)
-    {
-        rowSummedSpins.push_back(0);
-        for(unsigned int j = i*parameters->getWidth(); j < (i+1)*parameters->getWidth(); ++j)
-        {
-            rowSummedSpins.back() += ( spins[j].get_type() == SPINTYPE::UP ? 1 : -1 );
-            Logger::getInstance().debug("[spinsystem], spin ", spins[j].get_ID(), " ", spins[j].get_type() == UP ? 1 : -1);
-        }
-        Logger::getInstance().debug("[spinsystem]", "row ", i , " sum ", rowSummedSpins.back());
-    }
+    // std::vector<int> rowSummedSpins;
+    // for(unsigned int i= 0; i<parameters->getWidth(); ++i)
+    // {
+    //     rowSummedSpins.push_back(0);
+    //     for(unsigned int j = i*parameters->getWidth(); j < (i+1)*parameters->getWidth(); ++j)
+    //     {
+    //         rowSummedSpins.back() += ( spins[j].get_type() == SPINTYPE::UP ? 1 : -1 );
+    //         Logger::getInstance().debug("[spinsystem], spin ", spins[j].get_ID(), " ", spins[j].get_type() == UP ? 1 : -1);
+    //     }
+    //     Logger::getInstance().debug("[spinsystem]", "row ", i , " sum ", rowSummedSpins.back());
+    // }
 
-    for( unsigned int k = 1; k<= parameters->getWidth()/2-1; ++k )
-    {
-        amplitudes.push_back(0);
-        Logger::getInstance().debug("[spinsystem]", "k = ", k);
-        double cosSum = 0;
-        double sinSum = 0;
-        for(unsigned int i = 0; i<parameters->getWidth(); ++i)
-        {
-            double cos = std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
-            double sin = std::sin(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
-            cosSum += cos*rowSummedSpins[i];
-            sinSum += sin*rowSummedSpins[i];
-            Logger::getInstance().debug("[spinsystem]", "cos(ki) =", cos, "sin(ki) =", sin);
-        }
-        amplitudes.back() += std::sqrt( cosSum*cosSum + sinSum*sinSum );
-        Logger::getInstance().debug(" amplitude: ", amplitudes.back());
-    }
+    // for( unsigned int k = 1; k<= parameters->getWidth()/2-1; ++k )
+    // {
+    //     amplitudes.push_back(0);
+    //     Logger::getInstance().debug("[spinsystem]", "k = ", k);
+    //     double cosSum = 0;
+    //     double sinSum = 0;
+    //     for(unsigned int i = 0; i<parameters->getWidth(); ++i)
+    //     {
+    //         double cos = std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
+    //         double sin = std::sin(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
+    //         cosSum += cos*rowSummedSpins[i];
+    //         sinSum += sin*rowSummedSpins[i];
+    //         Logger::getInstance().debug("[spinsystem]", "cos(ki) =", cos, "sin(ki) =", sin);
+    //     }
+    //     amplitudes.back() += std::sqrt( cosSum*cosSum + sinSum*sinSum );
+    //     Logger::getInstance().debug(" amplitude: ", amplitudes.back());
+    // }
 
-    return amplitudes;
+    std::vector<double> structureFunction;
+
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".structureFunktion");
+    std::ofstream FILE(filekey);
+    FILE << "#k    S(k)\n";
+
+    for(double k=0; k< 1; k+=0.02)
+    {
+        // Logger::getInstance().write_new_line("k =", k);
+        structureFunction.push_back(0);
+        for(auto& B: correlation)
+        {
+            structureFunction.back() += std::cos( k*B.position() ) * B.counter * 2 * M_PI * B.position();
+            // structureFunction.back() += std::cos( static_cast<double>(k)*(2*M_PI/parameters->getWidth())*B.position() ) * B.counter;
+        }
+        // Logger::getInstance().write(" S(k) = ", structureFunction.back());
+        FILE << k << "   " << structureFunction.back() << "\n";
+    }
+    FILE.close();
+
+    return structureFunction;
 }
 
 /***************************************************************************/
