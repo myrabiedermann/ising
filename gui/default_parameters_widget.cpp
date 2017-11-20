@@ -110,8 +110,8 @@ QGroupBox* DefaultParametersWidget::createSystemBox()
     magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     temperatureSpinBox->setMinimum(0.1);
-    temperatureSpinBox->setMaximum(10);
-    temperatureSpinBox->setDecimals(1);
+    temperatureSpinBox->setMaximum(20);
+    temperatureSpinBox->setDecimals(2);
     temperatureSpinBox->setSingleStep(0.1);
     temperatureSpinBox->setMinimumWidth(40);
     temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -234,9 +234,9 @@ QGroupBox* DefaultParametersWidget::createAdvancedOptionsBox()
     stopValueSpinBox->setMinimum(-10);
     stopValueSpinBox->setMaximum(10);
 
-    stepValueSpinBox->setDecimals(1);
+    stepValueSpinBox->setDecimals(2);
     stepValueSpinBox->setSingleStep(0.1);
-    stepValueSpinBox->setMinimum(0.1);
+    stepValueSpinBox->setMinimum(0.01);
     stepValueSpinBox->setMaximum(1);
 
     startValueSpinBox->setMinimumWidth(50);

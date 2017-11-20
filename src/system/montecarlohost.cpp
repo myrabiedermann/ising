@@ -142,7 +142,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 
 void MonteCarloHost::print_data() const
 {
-    // save to file:  step  J  temperature  B  H  M  chi
+    // save to file:  step  J  temperature  B  H  M  
 
     qDebug() << __PRETTY_FUNCTION__;
     
@@ -169,9 +169,9 @@ void MonteCarloHost::print_data() const
     for(unsigned int i=0; i<energies.size(); ++i)
     {
         FILE << std::setw(14) << std::fixed << std::setprecision(0)<< (i+1)*parameters->getPrintFreq()
-             << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getInteraction()
+             << std::setw(8) << std::fixed << std::setprecision(2)<< parameters->getInteraction()
              << std::setw(8) << std::fixed << std::setprecision(2)<< parameters->getTemperature()
-             << std::setw(8) << std::fixed << std::setprecision(1)<< parameters->getMagnetic()
+             << std::setw(8) << std::fixed << std::setprecision(2)<< parameters->getMagnetic()
              << std::setw(14) << std::fixed << std::setprecision(2) << energies[i]
              << std::setw(14) << std::fixed << std::setprecision(6) << magnetisations[i];
         FILE << '\n';
@@ -203,7 +203,7 @@ void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
 
 void MonteCarloHost::print_averages() const
 {
-    // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>
+    // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>  <heat capacity>
 
     qDebug() << __PRETTY_FUNCTION__;
 
@@ -221,9 +221,7 @@ void MonteCarloHost::print_averages() const
              << std::setw(8) << "T"
              << std::setw(8) << "B"
              << std::setw(14) << "<H>"
-             << std::setw(14) << "<H^2>"
              << std::setw(14) << "<M>"
-             << std::setw(14) << "<M^2>"
              << std::setw(14) << "<chi>"
              << std::setw(14) << "<Cv>"
              << std::setw(14) << "# of samples"
@@ -239,13 +237,11 @@ void MonteCarloHost::print_averages() const
     double averageMagnetisationsSquared = std::accumulate(std::begin(magnetisationsSquared), std::end(magnetisationsSquared), 0.0) / magnetisationsSquared.size();
     double denominator = std::pow(parameters->getTemperature(),2) * std::pow(parameters->getWidth()*parameters->getHeight(),2);
     
-    FILE << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getInteraction()
-         << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getTemperature()
-         << std::setw(8) << std::fixed << std::setprecision(1) << parameters->getMagnetic()
+    FILE << std::setw(8) << std::fixed << std::setprecision(2) << parameters->getInteraction()
+         << std::setw(8) << std::fixed << std::setprecision(2) << parameters->getTemperature()
+         << std::setw(8) << std::fixed << std::setprecision(2) << parameters->getMagnetic()
          << std::setw(14) << std::fixed << std::setprecision(2) << averageEnergies
-         << std::setw(14) << std::fixed << std::setprecision(2) << averageEnergiesSquared
          << std::setw(14) << std::fixed << std::setprecision(6) << averageMagnetisations
-         << std::setw(14) << std::fixed << std::setprecision(6) << averageMagnetisationsSquared
          << std::setw(14) << std::fixed << std::setprecision(6) << (averageMagnetisationsSquared - averageMagnetisations*averageMagnetisations) / parameters->getTemperature()
          << std::setw(14) << std::fixed << std::setprecision(8) << (averageEnergiesSquared - averageEnergies*averageEnergies) / denominator
          << std::setw(14) << energies.size() 
