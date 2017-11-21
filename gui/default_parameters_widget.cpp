@@ -236,7 +236,7 @@ QGroupBox* DefaultParametersWidget::createAdvancedOptionsBox()
 
     stepValueSpinBox->setDecimals(2);
     stepValueSpinBox->setSingleStep(0.1);
-    stepValueSpinBox->setMinimum(0.01);
+    stepValueSpinBox->setMinimum(-1);
     stepValueSpinBox->setMaximum(1);
 
     startValueSpinBox->setMinimumWidth(50);
