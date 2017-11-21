@@ -23,16 +23,15 @@
 
 class MonteCarloHost
 {
-    BaseParametersWidget*  parameters = Q_NULLPTR;
-    AcceptanceAdaptor* acceptance = nullptr;
-    Spinsystem         spinsystem {};
+    BaseParametersWidget* parameters = Q_NULLPTR;
+    Spinsystem            spinsystem {};
 
     std::vector<double>  energies {};
-    // std::vector<double>  energiesSquared {};
     std::vector<double>  magnetisations {};
-    // std::vector<double>  magnetisationsSquared {};
     std::vector<std::vector<double>> amplitudes {};
     
+    bool acceptance(const double, const double, const double);
+
 protected:
     
 public:
@@ -41,9 +40,8 @@ public:
     void operator=(const MonteCarloHost&) = delete;
     ~MonteCarloHost();
     
-    void setup();
     void setParameters(BaseParametersWidget*);
-    void setAcceptance(AcceptanceAdaptor*);
+    void setup();
     void resetSpins();
     void clearRecords();
     

@@ -6,10 +6,7 @@ MCWidget::MCWidget(QWidget *parent)
   : QWidget(parent)
   , drawRequestTimer(new QTimer(this))
   , drawCorrelationRequestTimer(new QTimer(this))
-//   , progressTimer(new QTimer(this))
 {
-    MC.setAcceptance(new Metropolis);
-    
     qDebug() << __PRETTY_FUNCTION__;
     
     equilBtn->setCheckable(false);
@@ -188,7 +185,6 @@ void MCWidget::equilibrateAction()
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
     drawRequestTimer->start(100);
-    // progressTimer->start(100);
 
     if( equilibration_mode.load() == false )
     {
@@ -297,7 +293,6 @@ void MCWidget::abortAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    // Q_CHECK_PTR(progressTimer);
     
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
@@ -327,7 +322,6 @@ void MCWidget::saveAction()
     Q_CHECK_PTR(abortBtn);
     Q_CHECK_PTR(advancedRunBtn);
     Q_CHECK_PTR(drawRequestTimer);
-    // Q_CHECK_PTR(progressTimer);
     
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);

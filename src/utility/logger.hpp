@@ -63,8 +63,9 @@ struct Logger
     
     template<SEPERATOR sep = SEPERATOR::WHITESPACE, typename ... Args>
     void debug( Args&& ... args ); 
-    
-    // std::_Put_time<char> wallTime();
+
+    template<SEPERATOR sep = SEPERATOR::WHITESPACE, typename ... Args>
+    void debug_new_line( Args&& ... args ); 
     
     
 private:
@@ -95,7 +96,6 @@ void Logger::write_new_line( Args&& ... args )
     assert(logfile.is_open());
     std::lock_guard<std::mutex> lock(mutex);
     logfile << SYMBOL::get<SEPERATOR::NEWLINE>();
-    // logfile << wallTime();
     write_args<sep>(args...);
     logfile.flush();
 }
@@ -116,21 +116,25 @@ void Logger::write( Args&& ... args )
 
 
 template<SEPERATOR sep, typename ... Args>
-void Logger::debug( __attribute__((unused))  Args&& ... args ) 
+void Logger::debug_new_line( __attribute__((unused))  Args&& ... args ) 
 {
-    assert(&getInstance());
-    assert(logfile.is_open());
     #ifndef NDEBUG
-    std::lock_guard<std::mutex> lock(mutex);
-    logfile << SYMBOL::get<SEPERATOR::NEWLINE>();
-    // logfile << wallTime();
-    write_args<sep>(args...);
-    logfile.flush();
+        write_new_line(std::forward<Args>(args)...);
     #else
-    return;
+        return;
     #endif
 }
 
+
+template<SEPERATOR sep, typename ... Args>
+void Logger::debug( __attribute__((unused))  Args&& ... args ) 
+{
+    #ifndef NDEBUG
+        write(std::forward<Args>(args)...);
+    #else
+        return;
+    #endif
+}
 
 
 template <SEPERATOR sep, typename... Args>

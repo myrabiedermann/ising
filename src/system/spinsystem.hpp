@@ -21,10 +21,9 @@ class Spinsystem
     std::vector<Spin>  spins {};
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
 
-    void computeHamiltonian();
+    void   computeHamiltonian();
     double local_energy_interaction(const Spin&) const;
     double local_energy_magnetic(const Spin&) const;
-    double Bi(const SPINTYPE) const;
     double distance(const Spin&, const Spin&) const;
 
 public:
@@ -53,23 +52,9 @@ public:
 
     inline const decltype(spins)& getSpins() const { return spins; };
     
-    // template<SPINTYPE T> constexpr int num() const;
-
     void print(std::ostream & ) const;
     std::string str() const;
-    const char* c_str() const;
 };
 
-
-
-// template<SPINTYPE T>
-// constexpr inline int Spinsystem::num() const
-// {
-//     // return number of spins of type T
-//     return std::accumulate(std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
-//     {
-//         return S.get_type() == T ? i+1 : i;
-//     });
-// }
 
 

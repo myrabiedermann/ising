@@ -12,17 +12,15 @@ MonteCarloHost::MonteCarloHost()
 MonteCarloHost::~MonteCarloHost()
 {
     qDebug() << __PRETTY_FUNCTION__;
-
-    delete acceptance;
 }
 
 
 
-void MonteCarloHost::setAcceptance(AcceptanceAdaptor* acceptanceAdaptorDerived)
+const Spinsystem& MonteCarloHost::getSpinsystem() const
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    acceptance = acceptanceAdaptorDerived;
+    return spinsystem;
 }
 
 
@@ -48,10 +46,6 @@ void MonteCarloHost::setup()
     spinsystem.setup();
     
     clearRecords();
-    
-    Logger::getInstance().debug("[mc]", "initial: H = ", spinsystem.getHamiltonian());
-    Logger::getInstance().debug(spinsystem.c_str());
-
 }
 
 
@@ -70,9 +64,6 @@ void MonteCarloHost::resetSpins()
     {
         spinsystem.resetSpins();
     }
-    
-    Logger::getInstance().debug("[mc] initial: H =", spinsystem.getHamiltonian());
-    Logger::getInstance().debug(spinsystem.c_str());
 }
 
 
@@ -82,12 +73,25 @@ void MonteCarloHost::clearRecords()
     qDebug() << __PRETTY_FUNCTION__;
 
     energies.clear();
-    // energiesSquared.clear();
     magnetisations.clear();
-    // magnetisationsSquared.clear();
 
     spinsystem.resetParameters();
     
+}
+
+
+bool MonteCarloHost::acceptance(const double Eold, const double Enew, const double temperature)
+{
+    // check acceptance via Metropolis criterion
+
+    #ifndef NDEBUG
+        double random = enhance::random_double(0.0, 1.0);
+        double condition = std::exp(-(Enew-Eold)/temperature);
+        Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
+        return random < condition ? true : false;
+    #endif
+
+    return enhance::random_double(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
 }
 
 
@@ -97,7 +101,6 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
-    assert(acceptance);
     
     double energy_old;
     double energy_new;
@@ -111,18 +114,16 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         energy_new = spinsystem.getHamiltonian();
         
         // check metropolis criterion:
-        if( ! acceptance->valid(energy_old, energy_new, parameters->getTemperature()) )
+        if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
         {
             spinsystem.flip_back(); 
-            #ifndef QT_NO_DEBUG
-            Logger::getInstance().debug("[mc]", "random = ", acceptance->latestRandomNumber()," >= ", acceptance->latestConditionValue(), " = exp(-(energy_new-energy_old)/temperature)");
-            Logger::getInstance().debug("[mc]", "new H would have been: ", energy_new);
+            #ifndef NDEBUG
+            Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
         }
         else
         {
-            Logger::getInstance().debug("[mc]", acceptance->latestRandomNumber(), " < ", acceptance->latestConditionValue());
-            Logger::getInstance().debug("[mc]", "new H: ", energy_new);
-            Logger::getInstance().debug(spinsystem.c_str());
+            Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
+            Logger::getInstance().debug_new_line(spinsystem.str());
             #endif
         }
     }
@@ -130,7 +131,6 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     if( !EQUILMODE )
     {
         energies.push_back(spinsystem.getHamiltonian());
-        // energiesSquared.push_back(spinsystem.getHamiltonian()*spinsystem.getHamiltonian());
         magnetisations.push_back(spinsystem.getMagnetisation());
         // magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
         // if( parameters->getConstrained() ) 
@@ -142,7 +142,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 
 void MonteCarloHost::print_data() const
 {
-    // save to file:  step  J  temperature  B  H  M  
+    // save to file:  step  J  T  B  H  M  
 
     qDebug() << __PRETTY_FUNCTION__;
     
@@ -164,8 +164,6 @@ void MonteCarloHost::print_data() const
     << '\n';
     
     assert(energies.size() == magnetisations.size());
-    // assert(energies.size() == energiesSquared.size());
-    // assert(magnetisations.size() == magnetisationsSquared.size());
     for(unsigned int i=0; i<energies.size(); ++i)
     {
         FILE << std::setw(14) << std::fixed << std::setprecision(0)<< (i+1)*parameters->getPrintFreq()
@@ -286,10 +284,4 @@ void MonteCarloHost::print_amplitudes() const
 
 
 
-const Spinsystem& MonteCarloHost::getSpinsystem() const
-{
-    qDebug() << __PRETTY_FUNCTION__;
-
-    return spinsystem;
-}
 
