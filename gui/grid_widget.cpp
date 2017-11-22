@@ -96,8 +96,8 @@ QBrush GridWidget::getSpinColor(const Spin& spin)
 {
     switch (spin.getType())
     {
-        case SPINTYPE::UP : return QBrush(Qt::blue);
-        case SPINTYPE::DOWN : return QBrush(Qt::gray);
+        case +1 : return QBrush(Qt::blue);
+        case -1 : return QBrush(Qt::gray);
         default : return QBrush(Qt::black);
     }
 }
@@ -121,7 +121,8 @@ void GridWidget::draw_test()
             width_of_rectangular, 
             height_of_rectangular, 
             QPen(Qt::transparent), 
-                getSpinColor( Spin(0, SPINTYPE(rand()%2*2)) 
+                // getSpinColor( Spin(0, SPINTYPE(rand()%2*2)) 
+                getSpinColor( Spin(0, rand()%2 == 1 ? 1 : -1) 
         ));
     }
 }
