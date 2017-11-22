@@ -9,7 +9,7 @@
 #include <iterator>
 
 
-enum SPINTYPE{UP=2,DOWN=0};   // define possible Spin types
+enum SPINTYPE{UP=+1,DOWN=-1};   // define possible Spin types
 
 
 class Spin
@@ -23,13 +23,13 @@ class Spin
 
 public:
     Spin(const unsigned int, SPINTYPE);
-    inline auto get_ID()   const { return ID; }
-    inline auto get_type() const { return type; }
+    inline auto getID()   const { return ID; }
+    inline auto getType() const { return type; }
 
-    inline void set_type(SPINTYPE _t) { type = _t; }
-    inline void set_neighbours(const neighbours_vec& _N) { neighbours = _N; }
+    inline void setType(SPINTYPE _t) { type = _t; }
+    inline void setNeighbours(const neighbours_vec& _N) { neighbours = _N; }
     
-    inline auto& get_neighbours() { return neighbours; }
+    inline auto& getNeighbours() { return neighbours; }
 
     inline void flip() { type = ( type == UP ? DOWN : UP ); }
 
@@ -59,7 +59,7 @@ constexpr inline int Spin::num() const
     // return sum over neighbours of type T
     return std::accumulate(std::begin(neighbours), std::end(neighbours), 0, [](int i, const selftype& N)
                 {
-                    return N.get_type() == T ? i+1 : i;
+                    return N.getType() == T ? i+1 : i;
                 });
 }
 

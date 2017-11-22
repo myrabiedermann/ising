@@ -146,6 +146,8 @@ inline void Histogram<T>::add_data(const T& _data,  const double& _increment)
         bins.back().min = _data - bin_width/2;
         bins.back().max = _data + bin_width/2;
         bins.back().counter = _increment;
+        if( bins.back().min < min ) min = bins.back().min;
+        if( bins.back().max > max ) max = bins.back().max;
     }  
 }
 

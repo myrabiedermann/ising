@@ -94,7 +94,7 @@ void GridWidget::drawRectangle(unsigned short x, unsigned short y, unsigned shor
 
 QBrush GridWidget::getSpinColor(const Spin& spin)
 {
-    switch (spin.get_type())
+    switch (spin.getType())
     {
         case SPINTYPE::UP : return QBrush(Qt::blue);
         case SPINTYPE::DOWN : return QBrush(Qt::gray);

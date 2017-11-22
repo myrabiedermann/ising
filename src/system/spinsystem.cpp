@@ -56,7 +56,7 @@ void Spinsystem::setup()
     {
         std::vector<std::reference_wrapper<Spin> > Nrefs;
         unsigned int Nid;
-        const unsigned int id = s.get_ID();
+        const unsigned int id = s.getID();
 
         {
             // up
@@ -90,13 +90,13 @@ void Spinsystem::setup()
                  Nrefs.push_back( std::ref(spins[Nid]) );
         }
 
-        s.set_neighbours(Nrefs);
+        s.setNeighbours(Nrefs);
     }
     // debugging:
     for(auto& s: spins)
     {
-        Logger::getInstance().debug_new_line("[spinsystem]",  "spin", s.get_ID(), "has neighbours :");
-        std::for_each( s.begin(), s.end(), [](const auto& N){ Logger::getInstance().debug( N.get().get_ID()," "); } );
+        Logger::getInstance().debug_new_line("[spinsystem]",  "spin", s.getID(), "has neighbours :");
+        std::for_each( s.begin(), s.end(), [](auto& N){ Logger::getInstance().debug( N.get().getID()," "); } );
     }
     
     // set spins:
@@ -127,22 +127,22 @@ void Spinsystem::resetSpins()
         for( auto& s: spins )
         {
             random = enhance::random_int(0,1);
-            s.set_type( random == 1 ? UP : DOWN );
+            s.setType( random == 1 ? UP : DOWN );
         }
     }      
     else  // constrained to specific up-spin to down-spin ratio
     {
         Logger::getInstance().debug_new_line("[spinsystem]", "ratio =", parameters->getRatio(), ", results in", static_cast<unsigned int>(parameters->getRatio() * spins.size()), " down spins.");
         for( auto& s: spins ) 
-            s.set_type( UP );
+            s.setType( UP );
         for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * spins.size()); ++i)
         {
             do
             {
                 random = enhance::random_int(0, spins.size()-1);
             }
-            while( spins[random].get_type() == DOWN );
-            spins[random].set_type(DOWN);
+            while( spins[random].getType() == DOWN );
+            spins[random].setType(DOWN);
         }
     }
 
@@ -172,7 +172,7 @@ void Spinsystem::resetSpinsCosinus(const double k)
      
     {
         for( auto& s: spins ) 
-            s.set_type( UP );
+            s.setType( UP );
         for(unsigned int i = 0; i<parameters->getWidth(); ++i)
         {
             double ratio = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
@@ -183,8 +183,8 @@ void Spinsystem::resetSpinsCosinus(const double k)
                 {
                     random = enhance::random_int(i*parameters->getWidth(), (i+1)*parameters->getWidth() - 1);
                 }
-                while( spins[random].get_type() == DOWN );
-                spins[random].set_type(DOWN);
+                while( spins[random].getType() == DOWN );
+                spins[random].setType(DOWN);
             }
         }
     }
@@ -216,7 +216,7 @@ double Spinsystem::local_energy_magnetic(const Spin& _spin) const
 {
     // calculate magnetic contribution to local energy for given spin
     
-    return - parameters->getMagnetic() * (_spin.get_type() == SPINTYPE::UP ? 1 : -1);
+    return - parameters->getMagnetic() * (_spin.getType() == SPINTYPE::UP ? 1 : -1);
 }
 
 
@@ -261,11 +261,11 @@ void Spinsystem::flip()
         } while( randomspin->num_opposite() == 0 );
         
         // find random neighbour
-        auto randomneighbour = enhance::random_iterator(randomspin->get_neighbours());
+        auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
         do
         {
-            randomneighbour = enhance::random_iterator(randomspin->get_neighbours());
-        } while( randomneighbour->get().get_type() == randomspin->get_type() );
+            randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
+        } while( randomneighbour->get().getType() == randomspin->getType() );
         
         // flip spins
         lastFlipped.emplace_back(*randomspin);
@@ -282,7 +282,7 @@ void Spinsystem::flip()
 
 #ifndef NDEBUG
     Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
-    for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().get_ID());
+    for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
 #endif
 }
 
@@ -315,7 +315,7 @@ void Spinsystem::flip_back()
     }
 
     Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
-    for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().get_ID());
+    for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
 
 }
 
@@ -326,8 +326,8 @@ void Spinsystem::print(std::ostream & stream) const
     // print spinarray to stream
     for(const auto& s: spins)
     {
-        stream << ( s.get_type() == DOWN ? "-" : "+" )
-        << ( (static_cast<unsigned int>(s.get_ID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
+        stream << ( s.getType() == DOWN ? "-" : "+" )
+        << ( (static_cast<unsigned int>(s.getID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
     }
 }
 
@@ -348,10 +348,10 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
     // compute distance between spins _spin1 and _spin2
     int a, b, c, d, x, y;
 
-    a = _spin1.get_ID() % getWidth();
-    b = _spin1.get_ID() / getWidth();
-    c = _spin2.get_ID() % getWidth();
-    d = _spin2.get_ID() / getWidth();
+    a = _spin1.getID() % getWidth();
+    b = _spin1.getID() / getWidth();
+    c = _spin2.getID() % getWidth();
+    d = _spin2.getID() / getWidth();
 
 
     x = (std::abs(c - a) <= static_cast<int>(getWidth()/2) ? std::abs(c - a) : std::abs(c - a) - getWidth());
@@ -376,9 +376,9 @@ Histogram<double> Spinsystem::getCorrelation() const
         for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
         {
             double dist = distance(*s1, *s2);
-            correlation.add_data( dist, s1->get_type() == s2->get_type() ? 1 : -1);
+            correlation.add_data( dist, s1->getType() == s2->getType() ? 1 : -1);
             counter.add_data( dist );
-            Logger::getInstance().debug_new_line("[spinsystem]", "correlating ", s1->get_ID(), " with ", s2->get_ID()," : ", s1->get_type() == s2->get_type() ? 1 : -1);
+            Logger::getInstance().debug_new_line("[spinsystem]", "correlating ", s1->getID(), " with ", s2->getID()," : ", s1->getType() == s2->getType() ? 1 : -1);
             Logger::getInstance().debug("   distance ", dist);
         }
     }
@@ -472,11 +472,11 @@ double Spinsystem::getMagnetisation() const
 
     int numUp = std::accumulate( std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
     {
-        return S.get_type() == SPINTYPE::UP ? i+1 : i;
+        return S.getType() == SPINTYPE::UP ? i+1 : i;
     });
     int numDown = std::accumulate( std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
     {
-        return S.get_type() == SPINTYPE::DOWN ? i+1 : i;
+        return S.getType() == SPINTYPE::DOWN ? i+1 : i;
     });
 
     return ((double) numUp - numDown ) / spins.size(); 
