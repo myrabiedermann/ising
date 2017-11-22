@@ -26,6 +26,8 @@ void Spinsystem::resetParameters()
 
 void Spinsystem::setup()
 {
+    // setup of the spinsystem: add all spins, add corresponding neighbours to each spin, et all spintypes randomly
+
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
@@ -38,20 +40,21 @@ void Spinsystem::setup()
     {
         throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
     }
-    if( parameters->getConstrained() && parameters->getMagnetic() != 0 )
-    {
-        throw std::logic_error("[spinsystem] constrained system cannot have a magnetic field");
-    }
+    // if( parameters->getConstrained() && parameters->getMagnetic() != 0 )
+    // {
+        // throw std::logic_error("[spinsystem] constrained system cannot have a magnetic field");
+    // }
 
     auto width  = getWidth();
     auto height = getHeight();
     auto totalnumber = width * height;
 
-    // create spinarray:
+    // create spins:
     for(unsigned int i=0; i<totalnumber; ++i)
         spins.emplace_back(i, +1);
 
     // set neighbours:
+    Logger::getInstance().debug_new_line("[spinsystem]", "setting neighbours ...");
     for(auto& s: spins)
     {
         std::vector<std::reference_wrapper<Spin> > Nrefs;
@@ -91,11 +94,7 @@ void Spinsystem::setup()
         }
 
         s.setNeighbours(Nrefs);
-    }
-    // debugging:
-    for(auto& s: spins)
-    {
-        Logger::getInstance().debug_new_line("[spinsystem]",  "spin", s.getID(), "has neighbours :");
+        Logger::getInstance().debug_new_line("            ",  "spin", s.getID(), "has neighbours :");
         std::for_each( std::begin(s.getNeighbours()), std::end(s.getNeighbours()), [](auto& N){ Logger::getInstance().debug( N.get().getID()," "); } );
     }
     
@@ -170,22 +169,20 @@ void Spinsystem::resetSpinsCosinus(const double k)
     if( ! parameters->getConstrained() ) 
         throw std::logic_error("[spinsystem] resetting spins according to cos not implemented for !CONSTRAINED");
      
+    for( auto& s: spins ) 
+        s.setType( +1 );
+    for(unsigned int i = 0; i<parameters->getWidth(); ++i)
     {
-        for( auto& s: spins ) 
-            s.setType( +1 );
-        for(unsigned int i = 0; i<parameters->getWidth(); ++i)
+        double ratio = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
+        unsigned int nrDownSpins = std::round(ratio*parameters->getWidth());
+        for(unsigned int j=0; j<nrDownSpins; ++j)
         {
-            double ratio = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
-            unsigned int nrDownSpins = std::round(ratio*parameters->getWidth());
-            for(unsigned int j=0; j<nrDownSpins; ++j)
+            do
             {
-                do
-                {
-                    random = enhance::random_int(i*parameters->getWidth(), (i+1)*parameters->getWidth() - 1);
-                }
-                while( spins[random].getType() == -1 );
-                spins[random].setType(-1);
+                random = enhance::random_int(i*parameters->getWidth(), (i+1)*parameters->getWidth() - 1);
             }
+            while( spins[random].getType() == -1 );
+            spins[random].setType(-1);
         }
     }
 
@@ -204,9 +201,6 @@ void Spinsystem::resetSpinsCosinus(const double k)
 double Spinsystem::local_energy_interaction(const Spin& _spin) const
 {
     // calculate interaction contribution to local energy for given spin
-    
-    // double energy = - parameters->getInteraction() * _spin.num_signed<SPINTYPE::UP>()
-                    // - parameters->getInteraction() * _spin.num_signed<SPINTYPE::DOWN>();
 
     return - parameters->getInteraction() * _spin.sumNeighbours();
 }
@@ -216,8 +210,7 @@ double Spinsystem::local_energy_interaction(const Spin& _spin) const
 double Spinsystem::local_energy_magnetic(const Spin& _spin) const
 {
     // calculate magnetic contribution to local energy for given spin
-    
-    // return - parameters->getMagnetic() * (_spin.getType() == SPINTYPE::UP ? 1 : -1);
+
     return - parameters->getMagnetic() * _spin.getType();
 }
 
@@ -227,19 +220,22 @@ void Spinsystem::computeHamiltonian()
 {
     // calculate Hamiltonian of the system
 
-    Hamiltonian = std::accumulate(std::cbegin(spins), std::cend(spins), static_cast<double>(0), [&](double i, const Spin& S)
+    Hamiltonian = 0;
+    for(const auto& S : spins)
     {
-        return i + local_energy_interaction(S) / 2 + local_energy_magnetic(S);
-    });
+        Hamiltonian += local_energy_interaction(S) / 2 + local_energy_magnetic(S);
+    }
 }
 
 
 
 void Spinsystem::flip()
 {
+    // perform one move and save flipped spins in lastFlipped
+
     lastFlipped.clear();
-    double localEnergy_before = 0.f;
-    double localEnergy_after = 0.f;
+    double localEnergy_before = 0;
+    double localEnergy_after = 0;
 
     if( ! parameters->getConstrained() )
     {
@@ -282,39 +278,37 @@ void Spinsystem::flip()
         
     }
 
-#ifndef NDEBUG
     Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
     for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
-#endif
 }
 
 
 
 void Spinsystem::flip_back()
 {
+    // flip all spins in lastFlipped
+
     if( lastFlipped.size() == 0 )
         throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
-    else
+    
+    double localEnergy_before = 0;
+    double localEnergy_after = 0;
+
+    for( const auto& s: lastFlipped ) 
     {
-        double localEnergy_before = 0;
-        double localEnergy_after = 0;
-
-        for( const auto& s: lastFlipped ) 
-        {
-            localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-        }
-        for( const auto& s: lastFlipped ) 
-        {
-            s.get().flip();
-        }
-        for( const auto& s: lastFlipped ) 
-        {
-            localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-        }
-
-        // update Hamiltonian
-        Hamiltonian += localEnergy_after - localEnergy_before;
+        localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
     }
+    for( const auto& s: lastFlipped ) 
+    {
+        s.get().flip();
+    }
+    for( const auto& s: lastFlipped ) 
+    {
+        localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+    }
+
+    // update Hamiltonian
+    Hamiltonian += localEnergy_after - localEnergy_before;
 
     Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
     for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
@@ -323,9 +317,24 @@ void Spinsystem::flip_back()
 
 
 
+double Spinsystem::getMagnetisation() const
+{
+    // compute magnetisation M = <S_i>
+
+    int sum = 0;
+    for( const auto& S: spins)
+    {
+        sum += S.getType();
+    }
+    return static_cast<double>(sum) / spins.size();
+}
+
+
+
 void Spinsystem::print(std::ostream & stream) const
 {
-    // print spinarray to stream
+    // print spins to stream
+
     for(const auto& s: spins)
     {
         stream << ( s.getType() == -1 ? "-" : "+" )
@@ -337,6 +346,8 @@ void Spinsystem::print(std::ostream & stream) const
 
 std::string Spinsystem::str() const
 {
+    // return string of spinsystem
+
     std::stringstream sstream;
     sstream << *this;
     
@@ -348,6 +359,7 @@ std::string Spinsystem::str() const
 double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 {
     // compute distance between spins _spin1 and _spin2
+
     int a, b, c, d, x, y;
 
     a = _spin1.getID() % getWidth();
@@ -366,33 +378,44 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
 Histogram<double> Spinsystem::getCorrelation() const
 {
-    // compute correlations between spins: G(r) = <S(0)S(r)> - <S>^2
+    // compute correlation between spins: G(r) = <S(0)S(r)> - <S>^2
 
     Histogram<double> correlation {0.01};
+    Histogram<double> counter {0.01};
     Logger::getInstance().debug_new_line("[spinsystem]", "computing correlation <Si Sj>:");
 
     // first: <S(0)S(r)>:
-    auto counter = correlation;
+    // auto counter = correlation;
     for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
     {
-        for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
+        // for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
+        for( auto s2 = std::begin(spins); s2 != std::end(spins); s2 += 1)
         {
-            double dist = distance(*s1, *s2);
-            correlation.add_data( dist, s1->getType() == s2->getType() ? 1 : -1);
-            counter.add_data( dist );
-            Logger::getInstance().debug_new_line("[spinsystem]", "correlating ", s1->getID(), " with ", s2->getID()," : ", s1->getType() == s2->getType() ? 1 : -1);
-            Logger::getInstance().debug("   distance ", dist);
+            if( s1 != s2 )
+            {
+                double dist = distance(*s1, *s2);
+                if( dist < (double) parameters->getWidth()/2 )
+                {
+                    correlation.add_data( dist, s1->getType() == s2->getType() ? 1 : -1);
+                    counter.add_data( dist );
+                    Logger::getInstance().debug_new_line("            ", "correlating ", s1->getID(), " with ", s2->getID()," : ", s1->getType() == s2->getType() ? 1 : -1);
+                    Logger::getInstance().debug("   distance ", dist);
+                }
+            }
         }
     }
+    Logger::getInstance().write_new_line("counter:");
+    Logger::getInstance().write_new_line(counter.formatted_string());
+    Logger::getInstance().write_new_line("correlation:");
+
     // normalisation:
     std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
     { 
-        if(B.counter != 0)
-            B.counter /= counter.get_data(B.position()); 
+        B.counter /= counter.get_data(B.position()); 
     });
 
-    // then:  - <S>:
-    correlation.shift( getMagnetisation() );
+    // then:  - <S>^2:
+    correlation.shift( getMagnetisation()*getMagnetisation() );
 
     correlation.sort_bins();
     return correlation;
@@ -402,45 +425,12 @@ Histogram<double> Spinsystem::getCorrelation() const
 
 std::vector<double> Spinsystem::computeStructureFunction(const Histogram<double> correlation) const
 {
-    // compute Fourier transformation A(k) = sum( cos(2PI/width*k*r) * corr(r) ), wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
-
-    if( ! parameters->getConstrained() ) 
-        throw std::logic_error("[spinsystem] computation of Amplitudes not implemented for !CONSTRAINED");
+    // compute Fourier transformation A(k) = integal cos(2PI/width*k*r) G(r) dr, wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
 
     // std::vector<double> amplitudes;
 
     Logger::getInstance().debug_new_line("[spinsystem]", "computing amplitudes");
     Logger::getInstance().debug_new_line( str() );
-
-    // std::vector<int> rowSummedSpins;
-    // for(unsigned int i= 0; i<parameters->getWidth(); ++i)
-    // {
-    //     rowSummedSpins.push_back(0);
-    //     for(unsigned int j = i*parameters->getWidth(); j < (i+1)*parameters->getWidth(); ++j)
-    //     {
-    //         rowSummedSpins.back() += ( spins[j].get_type() == SPINTYPE::UP ? 1 : -1 );
-    //         Logger::getInstance().debug("[spinsystem], spin ", spins[j].get_ID(), " ", spins[j].get_type() == UP ? 1 : -1);
-    //     }
-    //     Logger::getInstance().debug("[spinsystem]", "row ", i , " sum ", rowSummedSpins.back());
-    // }
-
-    // for( unsigned int k = 1; k<= parameters->getWidth()/2-1; ++k )
-    // {
-    //     amplitudes.push_back(0);
-    //     Logger::getInstance().debug("[spinsystem]", "k = ", k);
-    //     double cosSum = 0;
-    //     double sinSum = 0;
-    //     for(unsigned int i = 0; i<parameters->getWidth(); ++i)
-    //     {
-    //         double cos = std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
-    //         double sin = std::sin(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5));
-    //         cosSum += cos*rowSummedSpins[i];
-    //         sinSum += sin*rowSummedSpins[i];
-    //         Logger::getInstance().debug("[spinsystem]", "cos(ki) =", cos, "sin(ki) =", sin);
-    //     }
-    //     amplitudes.back() += std::sqrt( cosSum*cosSum + sinSum*sinSum );
-    //     Logger::getInstance().debug(" amplitude: ", amplitudes.back());
-    // }
 
     std::vector<double> structureFunction;
 
@@ -456,7 +446,8 @@ std::vector<double> Spinsystem::computeStructureFunction(const Histogram<double>
         structureFunction.push_back(0);
         for(auto& B: correlation)
         {
-            structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter;
+            // if(B.position() <= (double)parameters->getWidth()/2)
+                structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter;
             // structureFunction.back() += std::cos( static_cast<double>(k)*(2*M_PI/parameters->getWidth())*B.position() ) * B.counter;
         }
         // Logger::getInstance().write(" S(k) = ", structureFunction.back());
@@ -468,20 +459,5 @@ std::vector<double> Spinsystem::computeStructureFunction(const Histogram<double>
 }
 
 
-
-double Spinsystem::getMagnetisation() const
-{
-
-    int numUp = std::accumulate( std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
-    {
-        return S.getType() == +1 ? i+1 : i;
-    });
-    int numDown = std::accumulate( std::begin(spins), std::end(spins), 0, [](int i, const Spin& S)
-    {
-        return S.getType() == -1 ? i+1 : i;
-    });
-
-    return ((double) numUp - numDown ) / spins.size(); 
-}
 
 

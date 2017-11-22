@@ -2,16 +2,14 @@
 
 #include "lib/enhance.hpp"
 #include "spin.hpp"
-#include "histogram.hpp"
+#include "utility/histogram.hpp"
+#include "utility/logger.hpp"
 #include "gui/default_parameters_widget.hpp"
 #include <cassert>
-#include <numeric>
 #include <ostream>
 #include <string>
 #include <sstream>
-#include <functional>
 
-#include "utility/logger.hpp"
 
 
 class Spinsystem
@@ -42,16 +40,14 @@ public:
     void flip_back();
 
     Histogram<double> getCorrelation() const;
-    double      getMagnetisation() const;
-    inline auto getHamiltonian() const { return Hamiltonian; }
+    double            getMagnetisation() const;
+    inline auto       getHamiltonian() const { return Hamiltonian; }
+    inline unsigned long getWidth()  const { return parameters->getWidth(); }
+    inline unsigned long getHeight() const { return parameters->getHeight(); }
+    inline const auto& getSpins() const { return spins; };
 
     std::vector<double> computeStructureFunction(const Histogram<double>) const;
 
-    inline unsigned long getWidth()  const { return parameters->getWidth(); }
-    inline unsigned long getHeight() const { return parameters->getHeight(); }
-
-    inline const decltype(spins)& getSpins() const { return spins; };
-    
     void print(std::ostream & ) const;
     std::string str() const;
 };

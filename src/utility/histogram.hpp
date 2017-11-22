@@ -93,13 +93,7 @@ inline Histogram<T>::Histogram(const T& width)
  : min(0)
  , max(0)
  , bin_width(width)
-{
-    // for( unsigned int i=0; i<bins.size(); ++i)
-    // {
-        //  bins[i].min = _min + bin_width*i;
-        //  bins[i].max = _min + bin_width*i + bin_width;
-    // }
-}
+{}
 
 
 
@@ -177,9 +171,8 @@ inline std::string Histogram<T>::formatted_string()
     std::ostringstream STREAM;
     for( auto& B : bins )
     {
-        if( B.counter != 0 )
-            STREAM << std::setw(10) << std::setprecision(4) << B.position()
-                   << std::setw(20) << std::setprecision(4) << B.counter << '\n';
+        STREAM << std::setw(10) << std::setprecision(4) << B.position()
+               << std::setw(20) << std::setprecision(4) << B.counter << '\n';
     }
     return STREAM.str();
 }

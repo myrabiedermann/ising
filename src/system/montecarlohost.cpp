@@ -117,14 +117,14 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
         {
             spinsystem.flip_back(); 
-            #ifndef NDEBUG
+        #ifndef NDEBUG
             Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
         }
         else
         {
             Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
             Logger::getInstance().debug_new_line(spinsystem.str());
-            #endif
+        #endif
         }
     }
     
@@ -132,9 +132,6 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     {
         energies.push_back(spinsystem.getHamiltonian());
         magnetisations.push_back(spinsystem.getMagnetisation());
-        // magnetisationsSquared.push_back(spinsystem.getMagnetisation()*spinsystem.getMagnetisation());
-        // if( parameters->getConstrained() ) 
-            // amplitudes.push_back(spinsystem.computeStructureFunction());
     }
 }
 
@@ -250,37 +247,37 @@ void MonteCarloHost::print_averages() const
 
 
 
-void MonteCarloHost::print_amplitudes() const
-{
-    qDebug() << __PRETTY_FUNCTION__;
+// void MonteCarloHost::print_amplitudes() const
+// {
+//     qDebug() << __PRETTY_FUNCTION__;
     
-    Q_CHECK_PTR(parameters);
-    std::string filekeystring = parameters->getFileKey();
-    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
-    filekey.append(".amplitudes");
+//     Q_CHECK_PTR(parameters);
+//     std::string filekeystring = parameters->getFileKey();
+//     std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+//     filekey.append(".amplitudes");
 
-    std::ofstream FILE;
-    FILE.open(filekey);
+//     std::ofstream FILE;
+//     FILE.open(filekey);
     
-    // print header line
-    FILE << std::setw(4) << "# k"
-    << std::setw(10) << "MC steps:";
+//     // print header line
+//     FILE << std::setw(4) << "# k"
+//     << std::setw(10) << "MC steps:";
 
-    for(unsigned int i=0; i<amplitudes.size(); ++i) FILE << std::setw(8) << i*parameters->getPrintFreq();
-    FILE << '\n';
+//     for(unsigned int i=0; i<amplitudes.size(); ++i) FILE << std::setw(8) << i*parameters->getPrintFreq();
+//     FILE << '\n';
     
-    for( unsigned int j=0; j<amplitudes.front().size(); ++j )
-    {
-        FILE << std::setw(14) << std::fixed << j; 
-        for(unsigned int i=0; i<amplitudes.size(); ++i)
-        {
-            FILE << std::setw(8) << std::setprecision(2) << amplitudes[i][j];
-        }
-        FILE << '\n';
-    }
+//     for( unsigned int j=0; j<amplitudes.front().size(); ++j )
+//     {
+//         FILE << std::setw(14) << std::fixed << j; 
+//         for(unsigned int i=0; i<amplitudes.size(); ++i)
+//         {
+//             FILE << std::setw(8) << std::setprecision(2) << amplitudes[i][j];
+//         }
+//         FILE << '\n';
+//     }
     
-    FILE.close();
-}
+//     FILE.close();
+// }
 
 
 

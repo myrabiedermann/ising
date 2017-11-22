@@ -337,7 +337,7 @@ void MCWidget::saveAction()
 
     MC.print_data();
     MC.print_averages();
-    if( prmsWidget->getConstrained() ) MC.print_amplitudes();
+    // if( prmsWidget->getConstrained() ) MC.print_amplitudes();
 }
 
 
