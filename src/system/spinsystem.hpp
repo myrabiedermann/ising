@@ -39,13 +39,13 @@ public:
     void flip();
     void flip_back();
 
-    Histogram<double> getCorrelation() const;
     double            getMagnetisation() const;
     inline auto       getHamiltonian() const { return Hamiltonian; }
     inline unsigned long getWidth()  const { return parameters->getWidth(); }
     inline unsigned long getHeight() const { return parameters->getHeight(); }
     inline const auto& getSpins() const { return spins; };
 
+    Histogram<double>   computeCorrelation() const;
     std::vector<double> computeStructureFunction(const Histogram<double>) const;
 
     void print(std::ostream & ) const;

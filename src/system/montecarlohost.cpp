@@ -142,6 +142,7 @@ void MonteCarloHost::print_data() const
     // save to file:  step  J  T  B  H  M  
 
     qDebug() << __PRETTY_FUNCTION__;
+    Logger::getInstance().write_new_line("[mc]", "saving data ...");
     
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -177,30 +178,12 @@ void MonteCarloHost::print_data() const
 
 
 
-void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
-{
-    // compute correlations of actual state and save to file
-
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(parameters);
-    std::string filekeystring = parameters->getFileKey();
-    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
-    filekey.append(".correlation");
-
-    std::ofstream FILE(filekey);
-    FILE << "# correlation <Si Sj>(r)\n";
-    FILE << correlation.formatted_string();
-    FILE.close();
-}
-
-
-
 void MonteCarloHost::print_averages() const
 {
     // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>  <heat capacity>
 
     qDebug() << __PRETTY_FUNCTION__;
+    Logger::getInstance().write_new_line("[mc]", "saving averaged data ...");
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -246,6 +229,49 @@ void MonteCarloHost::print_averages() const
 }
 
 
+
+void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
+{
+    // save correlation of current state in file  
+
+    qDebug() << __PRETTY_FUNCTION__;
+    Logger::getInstance().write_new_line("[mc]", "saving correlation function G(r) ...");
+
+    Q_CHECK_PTR(parameters);
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".correlation");
+
+    std::ofstream FILE(filekey);
+    FILE << "# correlation G(r) = <S(0) S(r)> - <S>^2\n";
+    FILE << correlation.formatted_string();
+    FILE.close();
+}
+
+
+
+void MonteCarloHost::print_structureFunction(std::vector<double>& structureFunction) const
+{
+    // save structure Function of current state in file
+
+    qDebug() << __PRETTY_FUNCTION__;
+    Logger::getInstance().write_new_line("[mc]", "saving structure function S(k) ...");
+
+    Q_CHECK_PTR(parameters);
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".structureFunction");
+
+    std::ofstream FILE(filekey);
+    FILE << "# structure function S(k) = FT( G(r) )\n";
+    // FILE << correlation.formatted_string();
+    for( unsigned int j=0; j<structureFunction.size(); ++j )
+    {
+        FILE << std::setw(8) << std::setprecision(3) << 0.5*j;
+        FILE << std::setw(10) << std::setprecision(4) << structureFunction[j] << '\n';
+    }
+    FILE.close();
+}
 
 // void MonteCarloHost::print_amplitudes() const
 // {

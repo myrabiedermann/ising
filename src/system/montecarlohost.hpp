@@ -27,7 +27,6 @@ class MonteCarloHost
 
     std::vector<double>  energies {};
     std::vector<double>  magnetisations {};
-    // std::vector<std::vector<double>> amplitudes {};
     
     bool acceptance(const double, const double, const double);
 
@@ -48,8 +47,8 @@ public:
     
     void run(const unsigned long&, const bool EQUILMODE = false);
     
-    void print_correlation(Histogram<double>&) const;
     void print_data() const;
     void print_averages() const;
-    // void print_amplitudes() const;
+    void print_correlation(Histogram<double>&) const;
+    void print_structureFunction(std::vector<double>&) const;
 };

@@ -19,7 +19,7 @@ void Spinsystem::resetParameters()
     Q_CHECK_PTR(parameters);
 
     computeHamiltonian();
-    Logger::getInstance().debug_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
+    Logger::getInstance().write_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
 }
 
 
@@ -40,10 +40,6 @@ void Spinsystem::setup()
     {
         throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
     }
-    // if( parameters->getConstrained() && parameters->getMagnetic() != 0 )
-    // {
-        // throw std::logic_error("[spinsystem] constrained system cannot have a magnetic field");
-    // }
 
     auto width  = getWidth();
     auto height = getHeight();
@@ -54,7 +50,7 @@ void Spinsystem::setup()
         spins.emplace_back(i, +1);
 
     // set neighbours:
-    Logger::getInstance().debug_new_line("[spinsystem]", "setting neighbours ...");
+    Logger::getInstance().write_new_line("[spinsystem]", "system setup: setting neighbours for", getWidth(), "*", getHeight(), "system");
     for(auto& s: spins)
     {
         std::vector<std::reference_wrapper<Spin> > Nrefs;
@@ -131,7 +127,7 @@ void Spinsystem::resetSpins()
     }      
     else  // constrained to specific up-spin to down-spin ratio
     {
-        Logger::getInstance().debug_new_line("[spinsystem]", "ratio =", parameters->getRatio(), ", results in", static_cast<unsigned int>(parameters->getRatio() * spins.size()), " down spins.");
+        Logger::getInstance().write_new_line("[spinsystem]", "ratio =", parameters->getRatio(), ", results in", static_cast<unsigned int>(parameters->getRatio() * spins.size()), " down spins.");
         for( auto& s: spins ) 
             s.setType( +1 );
         for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * spins.size()); ++i)
@@ -150,7 +146,7 @@ void Spinsystem::resetSpins()
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    Logger::getInstance().debug_new_line("[spinsystem]", " resetting spins randomly... new initial H =", Hamiltonian);
+    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins randomly... new initial H =", Hamiltonian);
     Logger::getInstance().debug_new_line(str());
 
 }
@@ -168,13 +164,15 @@ void Spinsystem::resetSpinsCosinus(const double k)
     int random;
     if( ! parameters->getConstrained() ) 
         throw std::logic_error("[spinsystem] resetting spins according to cos not implemented for !CONSTRAINED");
-     
+    
+    unsigned int totNrDownSpins = 0;
     for( auto& s: spins ) 
         s.setType( +1 );
     for(unsigned int i = 0; i<parameters->getWidth(); ++i)
     {
         double ratio = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
         unsigned int nrDownSpins = std::round(ratio*parameters->getWidth());
+        totNrDownSpins += nrDownSpins;
         for(unsigned int j=0; j<nrDownSpins; ++j)
         {
             do
@@ -191,7 +189,8 @@ void Spinsystem::resetSpinsCosinus(const double k)
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    Logger::getInstance().debug_new_line("[spinsystem]", "resetting spins with cos pattern ... new initial H =", Hamiltonian);
+    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins with cos(", parameters->getWavelength(),"y ) pattern ... new initial H =", Hamiltonian);
+    Logger::getInstance().write_new_line("[spinsystem]", "# of down spins:", totNrDownSpins);
     Logger::getInstance().debug_new_line(str());
 
 }
@@ -322,7 +321,7 @@ double Spinsystem::getMagnetisation() const
     // compute magnetisation M = <S_i>
 
     int sum = 0;
-    for( const auto& S: spins)
+    for( const auto& S: spins )
     {
         sum += S.getType();
     }
@@ -335,7 +334,7 @@ void Spinsystem::print(std::ostream & stream) const
 {
     // print spins to stream
 
-    for(const auto& s: spins)
+    for( const auto& s: spins )
     {
         stream << ( s.getType() == -1 ? "-" : "+" )
         << ( (static_cast<unsigned int>(s.getID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
@@ -367,7 +366,6 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
     c = _spin2.getID() % getWidth();
     d = _spin2.getID() / getWidth();
 
-
     x = (std::abs(c - a) <= static_cast<int>(getWidth()/2) ? std::abs(c - a) : std::abs(c - a) - getWidth());
     y = (std::abs(d - b) <= static_cast<int>(getHeight()/2) ? std::abs(d - b) : std::abs(d - b) - getHeight());
 
@@ -376,16 +374,16 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
 
 
-Histogram<double> Spinsystem::getCorrelation() const
+Histogram<double> Spinsystem::computeCorrelation() const
 {
     // compute correlation between spins: G(r) = <S(0)S(r)> - <S>^2
 
-    Histogram<double> correlation {0.1};
-    Histogram<double> counter {0.1};
-    Logger::getInstance().debug_new_line("[spinsystem]", "computing correlation <Si Sj>:");
+    double binWidth = 0.1;
+    Histogram<double> correlation {binWidth};
+    Histogram<double> counter {binWidth};
+    Logger::getInstance().write_new_line("[spinsystem]", "computing correlation <Si Sj>");
 
     // first: <S(0)S(r)>:
-    // auto counter = correlation;
     for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
     {
         // for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
@@ -394,7 +392,7 @@ Histogram<double> Spinsystem::getCorrelation() const
             if( s1 != s2 )
             {
                 double dist = distance(*s1, *s2);
-                if( dist < (double) parameters->getWidth()/2 )
+                if( dist < (double) parameters->getWidth()/2 + binWidth/2 )
                 {
                     correlation.add_data( dist, s1->getType() == s2->getType() ? 1 : -1);
                     counter.add_data( dist );
@@ -404,7 +402,6 @@ Histogram<double> Spinsystem::getCorrelation() const
             }
         }
     }
-
     // normalisation:
     std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
     { 
@@ -422,23 +419,13 @@ Histogram<double> Spinsystem::getCorrelation() const
 
 std::vector<double> Spinsystem::computeStructureFunction(Histogram<double> correlation) const
 {
-    // compute Fourier transformation A(k) = integral cos(2PI/width*k*r) G(r) dr, wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
+    // compute Fourier transformation S(k) = integral cos(2PI/width*k*r) G(r) dr, with r = distance between spins
 
-    // std::vector<double> amplitudes;
-
-    Logger::getInstance().debug_new_line("[spinsystem]", "computing amplitudes");
-    Logger::getInstance().debug_new_line( str() );
+    Logger::getInstance().write_new_line("[spinsystem]", "computing structure function S(k)");
 
     std::vector<double> structureFunction;
 
-    std::string filekeystring = parameters->getFileKey();
-    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
-    filekey.append(".structureFunktion");
-    std::ofstream FILE(filekey);
-    FILE << "#k    S(k)\n";
-
     // computation of delta r's:
-    correlation.sort_bins();
     Histogram<double> deltaR {correlation};
     double previous = 0;
     double next = 0;
@@ -478,9 +465,7 @@ std::vector<double> Spinsystem::computeStructureFunction(Histogram<double> corre
             structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position());
         }
         // Logger::getInstance().write(" S(k) = ", structureFunction.back());
-        FILE << k << "   " << structureFunction.back() << "\n";
     }
-    FILE.close();
 
     return structureFunction;
 }

@@ -115,14 +115,15 @@ MainWindow::MainWindow(QWidget *parent) :
             connect( MCwidget, &MCWidget::resetSignal, correlationChart, &ChartWidget::reset );
             connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system)
             {
-                Histogram<double> correlation = system.getSpinsystem().getCorrelation();
+                Histogram<double> correlation = system.getSpinsystem().computeCorrelation();
                 for(const auto& B : correlation )
                 {
                     correlationChart->append(B.position(), B.counter);
                 }
                 correlationChart->refresh();
                 system.print_correlation(correlation);
-                system.getSpinsystem().computeStructureFunction(correlation);
+                auto Sk = system.getSpinsystem().computeStructureFunction(correlation);
+                system.print_structureFunction( Sk );
             });
         }
     }
