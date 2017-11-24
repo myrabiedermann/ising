@@ -380,8 +380,8 @@ Histogram<double> Spinsystem::getCorrelation() const
 {
     // compute correlation between spins: G(r) = <S(0)S(r)> - <S>^2
 
-    Histogram<double> correlation {0.01};
-    Histogram<double> counter {0.01};
+    Histogram<double> correlation {0.1};
+    Histogram<double> counter {0.1};
     Logger::getInstance().debug_new_line("[spinsystem]", "computing correlation <Si Sj>:");
 
     // first: <S(0)S(r)>:
@@ -404,9 +404,6 @@ Histogram<double> Spinsystem::getCorrelation() const
             }
         }
     }
-    Logger::getInstance().write_new_line("counter:");
-    Logger::getInstance().write_new_line(counter.formatted_string());
-    Logger::getInstance().write_new_line("correlation:");
 
     // normalisation:
     std::for_each(std::begin(correlation), std::end(correlation), [&](auto& B)
@@ -423,9 +420,9 @@ Histogram<double> Spinsystem::getCorrelation() const
 
 
 
-std::vector<double> Spinsystem::computeStructureFunction(const Histogram<double> correlation) const
+std::vector<double> Spinsystem::computeStructureFunction(Histogram<double> correlation) const
 {
-    // compute Fourier transformation A(k) = integal cos(2PI/width*k*r) G(r) dr, wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
+    // compute Fourier transformation A(k) = integral cos(2PI/width*k*r) G(r) dr, wobei r = vector(x,y) mit x,y: Abstände zwischen Spins in x/y Richtung
 
     // std::vector<double> amplitudes;
 
@@ -440,15 +437,45 @@ std::vector<double> Spinsystem::computeStructureFunction(const Histogram<double>
     std::ofstream FILE(filekey);
     FILE << "#k    S(k)\n";
 
-    for(double k=0; k< 1; k+=0.02)
+    // computation of delta r's:
+    correlation.sort_bins();
+    Histogram<double> deltaR {correlation};
+    double previous = 0;
+    double next = 0;
+    auto it = std::begin(deltaR);
+    for( ; it != std::end(deltaR) - 1; it ++)
+    {
+        double current = it->position();
+        it ++;
+        next = it->position();
+        it --;
+        double left = (current - previous)/2 + previous;
+        double right = (next - current)/2 + current;
+        it->counter = right - left;
+        // Logger::getInstance().write_new_line("previous = ", previous, "current = ", current, "next = ", next);
+        // Logger::getInstance().write_new_line(it->position(), "min = ", left, "max = ", right, "deltaR = ", it->counter);
+        previous = current;
+        // Logger::getInstance().write_new_line();
+    }
+    // it ++;
+    it->counter = it->position() - previous;
+
+    // Logger::getInstance().write_new_line("correlation:");
+    // Logger::getInstance().write_new_line(correlation.formatted_string());
+    // Logger::getInstance().write_new_line("deltaR:");
+    // Logger::getInstance().write_new_line(deltaR.formatted_string());
+
+    // computation of structure factor:
+    for(double k=0; k<parameters->getWidth()/2; k+=0.5)
     {
         // Logger::getInstance().write_new_line("k =", k);
         structureFunction.push_back(0);
+        // structureFunction.back() += 0.5;    // initial point where corr(0) = 1
         for(auto& B: correlation)
         {
-            // if(B.position() <= (double)parameters->getWidth()/2)
-                structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter;
-            // structureFunction.back() += std::cos( static_cast<double>(k)*(2*M_PI/parameters->getWidth())*B.position() ) * B.counter;
+            // positionLeft = (B.position() - lastPosition)*0.5 + lastPosition;
+
+            structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position());
         }
         // Logger::getInstance().write(" S(k) = ", structureFunction.back());
         FILE << k << "   " << structureFunction.back() << "\n";
