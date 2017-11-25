@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    
     ui->setupUi(this);
     
     // ask user for systemType
@@ -68,7 +67,6 @@ MainWindow::MainWindow(QWidget *parent) :
     
     // ### upper chart: hamiltonianChart
     {
-        // hamiltonianChart->setTitle("Hamiltonian");
         hamiltonianChart->setXLabel("MC steps");
         hamiltonianChart->setYLabel("Hamiltonian");
         hamiltonianChart->setMinimumHeight(400);
@@ -90,7 +88,6 @@ MainWindow::MainWindow(QWidget *parent) :
             averageMagnetisationChart = new ChartWidget(this);
             Q_CHECK_PTR(averageMagnetisationChart);
 
-            // averageMagnetisationChart->setTitle("average magnetisation per spin");
             averageMagnetisationChart->setXLabel("MC steps");
             averageMagnetisationChart->setYLabel("Magnetisation per spin");
             averageMagnetisationChart->setMinimumHeight(400);
