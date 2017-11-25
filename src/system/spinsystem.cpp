@@ -1,207 +1,12 @@
 #include "spinsystem.hpp"
 
 
-void Spinsystem::setParameters(BaseParametersWidget* prms)
-{
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(prms);
-    parameters = prms;
-    Q_CHECK_PTR(parameters);
-}
-
-
-
-void Spinsystem::resetParameters()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(parameters);
-
-    computeHamiltonian();
-    Logger::getInstance().write_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
-}
-
-
-
-void Spinsystem::setup()
-{
-    // setup of the spinsystem: add all spins, add corresponding neighbours to each spin, et all spintypes randomly
-
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(parameters);
-
-    spins.clear();
-    lastFlipped.clear();
-
-    // some safety checks:
-    if( parameters->getConstrained() && (getWidth()*getHeight()) % 2 != 0 )
-    {
-        throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
-    }
-
-    auto width  = getWidth();
-    auto height = getHeight();
-    auto totalnumber = width * height;
-
-    // create spins:
-    for(unsigned int i=0; i<totalnumber; ++i)
-        spins.emplace_back(i, +1);
-
-    // set neighbours:
-    Logger::getInstance().write_new_line("[spinsystem]", "system setup: setting neighbours for", getWidth(), "*", getHeight(), "system");
-    for(auto& s: spins)
-    {
-        std::vector<std::reference_wrapper<Spin> > Nrefs;
-        unsigned int Nid;
-        const unsigned int id = s.getID();
-
-        {
-            // up
-            Nid = ((long)id - static_cast<long>(width)) < 0 ? id - width + totalnumber : id - width;
-            assert( Nid < spins.size() );
-            if( Nid != id )
-                Nrefs.push_back( std::ref(spins[Nid]) );
-        }
-
-        {
-            // right
-            Nid = (id + 1) % width == 0  ? id + 1 - width : id + 1;
-            assert( Nid < spins.size() );
-            if( Nid != id )
-                Nrefs.push_back( std::ref(spins[Nid]) );
-        }
-
-        {
-            // below
-            Nid = id + width >= totalnumber ? id + width - totalnumber : id + width;
-            assert( Nid < spins.size() );
-            if( Nid != id )
-                 Nrefs.push_back( std::ref(spins[Nid]) );
-        }
-
-        {
-            // left
-            Nid = id % width == 0  ? id - 1 + width : id - 1;
-            assert( Nid < spins.size() );
-            if( Nid != id )
-                 Nrefs.push_back( std::ref(spins[Nid]) );
-        }
-
-        s.setNeighbours(Nrefs);
-        Logger::getInstance().debug_new_line("            ",  "spin", s.getID(), "has neighbours :");
-        std::for_each( std::begin(s.getNeighbours()), std::end(s.getNeighbours()), [](auto& N){ Logger::getInstance().debug( N.get().getID()," "); } );
-    }
-    
-    // set spins:
-    if(parameters->getWavelengthPattern())
-    {
-        resetSpinsCosinus(parameters->getWavelength());
-    }
-    else
-    {
-        resetSpins();
-    }
-
-}
-
-
-
-void Spinsystem::resetSpins() 
-{
-    // randomly set types of all spins new
-
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(parameters);
-
-    int random;
-    if( ! parameters->getConstrained() ) // initialise spins randomly
-    {
-        for( auto& s: spins )
-        {
-            random = enhance::random_int(0,1);
-            s.setType( random == 1 ? +1 : -1 );
-        }
-    }      
-    else  // constrained to specific up-spin to down-spin ratio
-    {
-        Logger::getInstance().write_new_line("[spinsystem]", "ratio =", parameters->getRatio(), ", results in", static_cast<unsigned int>(parameters->getRatio() * spins.size()), " down spins.");
-        for( auto& s: spins ) 
-            s.setType( +1 );
-        for(unsigned int i=0; i<static_cast<unsigned int>(parameters->getRatio() * spins.size()); ++i)
-        {
-            do
-            {
-                random = enhance::random_int(0, spins.size()-1);
-            }
-            while( spins[random].getType() == -1 );
-            spins[random].setType(-1);
-        }
-    }
-
-    // clear / reset all vectors: 
-    lastFlipped.clear();
-    
-    // calculate initial Hamiltonian:
-    computeHamiltonian();
-    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins randomly... new initial H =", Hamiltonian);
-    Logger::getInstance().debug_new_line(str());
-
-}
-
-
-
-void Spinsystem::resetSpinsCosinus(const double k) 
-{
-    // set types of all spins new according to c(x) =  cos(kx) 
-
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(parameters);
-
-    int random;
-    if( ! parameters->getConstrained() ) 
-        throw std::logic_error("[spinsystem] resetting spins according to cos not implemented for !CONSTRAINED");
-    
-    unsigned int totNrDownSpins = 0;
-    for( auto& s: spins ) 
-        s.setType( +1 );
-    for(unsigned int i = 0; i<parameters->getWidth(); ++i)
-    {
-        double ratio = (std::cos(k*(2*M_PI/parameters->getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
-        unsigned int nrDownSpins = std::round(ratio*parameters->getWidth());
-        totNrDownSpins += nrDownSpins;
-        for(unsigned int j=0; j<nrDownSpins; ++j)
-        {
-            do
-            {
-                random = enhance::random_int(i*parameters->getWidth(), (i+1)*parameters->getWidth() - 1);
-            }
-            while( spins[random].getType() == -1 );
-            spins[random].setType(-1);
-        }
-    }
-
-    // clear / reset all vectors: 
-    lastFlipped.clear();
-    
-    // calculate initial Hamiltonian:
-    computeHamiltonian();
-    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins with cos(", parameters->getWavelength(),"y ) pattern ... new initial H =", Hamiltonian);
-    Logger::getInstance().write_new_line("[spinsystem]", "# of down spins:", totNrDownSpins);
-    Logger::getInstance().debug_new_line(str());
-
-}
-
-
 
 double Spinsystem::local_energy_interaction(const Spin& _spin) const
 {
     // calculate interaction contribution to local energy for given spin
 
-    return - parameters->getInteraction() * _spin.sumNeighbours();
+    return - getInteraction() * _spin.sumNeighbours();
 }
 
 
@@ -210,7 +15,7 @@ double Spinsystem::local_energy_magnetic(const Spin& _spin) const
 {
     // calculate magnetic contribution to local energy for given spin
 
-    return - parameters->getMagnetic() * _spin.getType();
+    return - getMagnetic() * _spin.getType();
 }
 
 
@@ -236,7 +41,7 @@ void Spinsystem::flip()
     double localEnergy_before = 0;
     double localEnergy_after = 0;
 
-    if( ! parameters->getConstrained() )
+    if( ! getConstrained() )
     {
         // find random spin
         auto randomspin = enhance::random_iterator(spins);
@@ -330,6 +135,194 @@ double Spinsystem::getMagnetisation() const
 
 
 
+void Spinsystem::setParameters(BaseParametersWidget* prms)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    Q_CHECK_PTR(prms);
+    parameters = prms;
+    Q_CHECK_PTR(parameters);
+}
+
+
+
+void Spinsystem::resetParameters()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    computeHamiltonian();
+    Logger::getInstance().write_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
+}
+
+
+
+void Spinsystem::setup()
+{
+    // setup of the spinsystem: add all spins, add corresponding neighbours to each spin, et all spintypes randomly
+
+    qDebug() << __PRETTY_FUNCTION__;
+
+    spins.clear();
+    lastFlipped.clear();
+
+    // some safety checks:
+    if( getConstrained() && (getWidth()*getHeight()) % 2 != 0 )
+    {
+        throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
+    }
+
+    auto width  = getWidth();
+    auto height = getHeight();
+    auto totalnumber = width * height;
+
+    // create spins:
+    for(unsigned int i=0; i<totalnumber; ++i)
+        spins.emplace_back(i, +1);
+
+    // set neighbours:
+    Logger::getInstance().write_new_line("[spinsystem]", "system setup: setting neighbours for", getWidth(), "*", getHeight(), "system");
+    for(auto& s: spins)
+    {
+        std::vector<std::reference_wrapper<Spin> > Nrefs;
+        unsigned int Nid;
+        const unsigned int id = s.getID();
+
+        {
+            // up
+            Nid = ((long)id - static_cast<long>(width)) < 0 ? id - width + totalnumber : id - width;
+            assert( Nid < spins.size() );
+            if( Nid != id )
+                Nrefs.push_back( std::ref(spins[Nid]) );
+        }
+
+        {
+            // right
+            Nid = (id + 1) % width == 0  ? id + 1 - width : id + 1;
+            assert( Nid < spins.size() );
+            if( Nid != id )
+                Nrefs.push_back( std::ref(spins[Nid]) );
+        }
+
+        {
+            // below
+            Nid = id + width >= totalnumber ? id + width - totalnumber : id + width;
+            assert( Nid < spins.size() );
+            if( Nid != id )
+                 Nrefs.push_back( std::ref(spins[Nid]) );
+        }
+
+        {
+            // left
+            Nid = id % width == 0  ? id - 1 + width : id - 1;
+            assert( Nid < spins.size() );
+            if( Nid != id )
+                 Nrefs.push_back( std::ref(spins[Nid]) );
+        }
+
+        s.setNeighbours(Nrefs);
+        Logger::getInstance().debug_new_line("            ",  "spin", s.getID(), "has neighbours :");
+        std::for_each( std::begin(s.getNeighbours()), std::end(s.getNeighbours()), [](auto& N){ Logger::getInstance().debug( N.get().getID()," "); } );
+    }
+    
+    // set spins:
+    if( getWavelengthPattern() )
+    {
+        resetSpinsCosinus( getWavelength());
+    }
+    else
+    {
+        resetSpins();
+    }
+
+}
+
+
+
+void Spinsystem::resetSpins() 
+{
+    // randomly set types of all spins new
+
+    qDebug() << __PRETTY_FUNCTION__;
+
+    int random;
+    if( ! getConstrained() ) // initialise spins randomly
+    {
+        for( auto& s: spins )
+        {
+            random = enhance::random_int(0,1);
+            s.setType( random == 1 ? +1 : -1 );
+        }
+    }      
+    else  // constrained to specific up-spin to down-spin ratio
+    {
+        Logger::getInstance().write_new_line("[spinsystem]", "ratio =", getRatio(), ", results in", static_cast<unsigned int>(getRatio() * spins.size()), " down spins.");
+        for( auto& s: spins ) 
+            s.setType( +1 );
+        for(unsigned int i=0; i<static_cast<unsigned int>( getRatio() * spins.size()); ++i)
+        {
+            do
+            {
+                random = enhance::random_int(0, spins.size()-1);
+            }
+            while( spins[random].getType() == -1 );
+            spins[random].setType(-1);
+        }
+    }
+
+    // clear / reset all vectors: 
+    lastFlipped.clear();
+    
+    // calculate initial Hamiltonian:
+    computeHamiltonian();
+    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins randomly... new initial H =", Hamiltonian);
+    Logger::getInstance().debug_new_line(str());
+
+}
+
+
+
+void Spinsystem::resetSpinsCosinus(const double k) 
+{
+    // set types of all spins new according to c(x) =  cos(kx) 
+
+    qDebug() << __PRETTY_FUNCTION__;
+
+    int random;
+    if( ! getConstrained() ) 
+        throw std::logic_error("[spinsystem] resetting spins according to cos not implemented for !CONSTRAINED");
+    
+    unsigned int totNrDownSpins = 0;
+    for( auto& s: spins ) 
+        s.setType( +1 );
+    for(unsigned int i = 0; i<getWidth(); ++i)
+    {
+        double ratio = (std::cos(k*(2*M_PI/getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
+        unsigned int nrDownSpins = std::round(ratio*getWidth());
+        totNrDownSpins += nrDownSpins;
+        for(unsigned int j=0; j<nrDownSpins; ++j)
+        {
+            do
+            {
+                random = enhance::random_int(i*getWidth(), (i+1)*getWidth() - 1);
+            }
+            while( spins[random].getType() == -1 );
+            spins[random].setType(-1);
+        }
+    }
+
+    // clear / reset all vectors: 
+    lastFlipped.clear();
+    
+    // calculate initial Hamiltonian:
+    computeHamiltonian();
+    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins with cos(", getWavelength(),"y ) pattern ... new initial H =", Hamiltonian);
+    Logger::getInstance().write_new_line("[spinsystem]", "# of down spins:", totNrDownSpins);
+    Logger::getInstance().debug_new_line(str());
+
+}
+
+
+
 void Spinsystem::print(std::ostream & stream) const
 {
     // print spins to stream
@@ -337,7 +330,7 @@ void Spinsystem::print(std::ostream & stream) const
     for( const auto& s: spins )
     {
         stream << ( s.getType() == -1 ? "-" : "+" )
-        << ( (static_cast<unsigned int>(s.getID() + 1)) % parameters->getWidth() == 0 ? '\n' : ' ');
+        << ( (static_cast<unsigned int>(s.getID() + 1)) % getWidth() == 0 ? '\n' : ' ');
     }
 }
 
@@ -442,17 +435,14 @@ Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correla
     it->counter = it->position() - previous;
 
     // computation of structure factor:
-    // std::vector<double> structureFunction;
     Histogram<double> structureFunction {0.5};
-    for(double k=0; k<parameters->getWidth()/2; k+=0.5)
+    for(double k=0; k<getWidth()/2; k+=0.5)
     {
-        // structureFunction.push_back(0);
         structureFunction.add_data(k, 0);
         // structureFunction.back() += 0.5;    // initial point where corr(0) = 1
         for(auto& B: correlation)
         {
-            // structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position());
-            structureFunction.add_data(k, std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position()) );
+            structureFunction.add_data(k, std::cos( k*B.position()*2*M_PI/getWidth() ) * B.counter * deltaR.get_data(B.position()) );
         }
     }
 

@@ -27,6 +27,7 @@ void Spin::setNeighbours(const std::vector<std::reference_wrapper<Spin>>& _neigh
 
 void Spin::flip()
 { 
+    // flip this spin
     type = ( type == -1 ? 1: -1 ); 
 }
 
@@ -35,6 +36,7 @@ void Spin::flip()
 int Spin::sumOppositeNeighbours() const
 {
     // return number of neighbours of opposite type
+    
     int sum = 0;
     for(auto& N: neighbours)
     {

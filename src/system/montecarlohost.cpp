@@ -2,6 +2,63 @@
 
 
 
+bool MonteCarloHost::acceptance(const double Eold, const double Enew, const double temperature)
+{
+    // check acceptance via Metropolis criterion
+
+    #ifndef NDEBUG
+        double random = enhance::random_double(0.0, 1.0);
+        double condition = std::exp(-(Enew-Eold)/temperature);
+        Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
+        return random < condition ? true : false;
+    #endif
+
+    return enhance::random_double(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
+}
+
+
+
+void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    Q_CHECK_PTR(parameters);
+    
+    double energy_old;
+    double energy_new;
+    
+    
+    for(unsigned int t=0; t<steps; ++t)   
+    {
+        // flip spin:
+        energy_old = spinsystem.getHamiltonian();
+        spinsystem.flip();
+        energy_new = spinsystem.getHamiltonian();
+        
+        // check metropolis criterion:
+        if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
+        {
+            spinsystem.flip_back(); 
+        #ifndef NDEBUG
+            Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
+        }
+        else
+        {
+            Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
+            Logger::getInstance().debug_new_line(spinsystem.str());
+        #endif
+        }
+    }
+    
+    if( !EQUILMODE )
+    {
+        energies.push_back(spinsystem.getHamiltonian());
+        magnetisations.push_back(spinsystem.getMagnetisation());
+    }
+}
+
+
+
 MonteCarloHost::MonteCarloHost()
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -77,62 +134,6 @@ void MonteCarloHost::clearRecords()
 
     spinsystem.resetParameters();
     
-}
-
-
-bool MonteCarloHost::acceptance(const double Eold, const double Enew, const double temperature)
-{
-    // check acceptance via Metropolis criterion
-
-    #ifndef NDEBUG
-        double random = enhance::random_double(0.0, 1.0);
-        double condition = std::exp(-(Enew-Eold)/temperature);
-        Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
-        return random < condition ? true : false;
-    #endif
-
-    return enhance::random_double(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
-}
-
-
-
-void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
-{
-    qDebug() << __PRETTY_FUNCTION__;
-
-    Q_CHECK_PTR(parameters);
-    
-    double energy_old;
-    double energy_new;
-    
-    
-    for(unsigned int t=0; t<steps; ++t)   
-    {
-        // flip spin:
-        energy_old = spinsystem.getHamiltonian();
-        spinsystem.flip();
-        energy_new = spinsystem.getHamiltonian();
-        
-        // check metropolis criterion:
-        if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
-        {
-            spinsystem.flip_back(); 
-        #ifndef NDEBUG
-            Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
-        }
-        else
-        {
-            Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
-            Logger::getInstance().debug_new_line(spinsystem.str());
-        #endif
-        }
-    }
-    
-    if( !EQUILMODE )
-    {
-        energies.push_back(spinsystem.getHamiltonian());
-        magnetisations.push_back(spinsystem.getMagnetisation());
-    }
 }
 
 
@@ -265,11 +266,6 @@ void MonteCarloHost::print_structureFunction(Histogram<double>& structureFunctio
     std::ofstream FILE(filekey);
     FILE << "# structure function S(k) = FT( G(r) )\n";
     FILE << structureFunction.formatted_string();
-    // for( unsigned int j=0; j<structureFunction.size(); ++j )
-    // {
-    //     FILE << std::setw(8) << std::setprecision(3) << 0.5*j;
-    //     FILE << std::setw(10) << std::setprecision(4) << structureFunction[j] << '\n';
-    // }
     FILE.close();
 }
 

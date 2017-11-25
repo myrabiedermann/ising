@@ -1,9 +1,5 @@
 #pragma once
 
-/*
- * class Spin
- */
-
 #include <vector>
 #include <functional>
 
