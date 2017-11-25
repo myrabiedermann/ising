@@ -384,19 +384,19 @@ Histogram<double> Spinsystem::computeCorrelation() const
     Logger::getInstance().write_new_line("[spinsystem]", "computing correlation <Si Sj>");
 
     // first: <S(0)S(r)>:
-    for( auto s1 = std::begin(spins); s1 != std::end(spins); s1 += 1)
+    double maxDist = ( getWidth() >= getHeight() ? (double) getWidth() : (double) getHeight() )/2  + binWidth/2;
+    for( auto& s1 : spins )
     {
-        // for( auto s2 = s1 + 1; s2 != std::end(spins); s2 += 1)
-        for( auto s2 = std::begin(spins); s2 != std::end(spins); s2 += 1)
+        for( auto& s2 : spins )
         {
-            if( s1 != s2 )
+            if( s1.getID() != s2.getID() )
             {
-                double dist = distance(*s1, *s2);
-                if( dist < (double) parameters->getWidth()/2 + binWidth/2 )
+                double dist = distance( s1,  s2);
+                if( dist < maxDist )
                 {
-                    correlation.add_data( dist, s1->getType() == s2->getType() ? 1 : -1);
+                    correlation.add_data( dist, s1.getType() == s2.getType() ? 1 : -1);
                     counter.add_data( dist );
-                    Logger::getInstance().debug_new_line("            ", "correlating ", s1->getID(), " with ", s2->getID()," : ", s1->getType() == s2->getType() ? 1 : -1);
+                    Logger::getInstance().debug_new_line("            ", "correlating ", s1.getID(), " with ", s2.getID()," : ", s1.getType() == s2.getType() ? 1 : -1);
                     Logger::getInstance().debug("   distance ", dist);
                 }
             }
@@ -417,13 +417,11 @@ Histogram<double> Spinsystem::computeCorrelation() const
 
 
 
-std::vector<double> Spinsystem::computeStructureFunction(Histogram<double> correlation) const
+Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correlation) const
 {
     // compute Fourier transformation S(k) = integral cos(2PI/width*k*r) G(r) dr, with r = distance between spins
 
     Logger::getInstance().write_new_line("[spinsystem]", "computing structure function S(k)");
-
-    std::vector<double> structureFunction;
 
     // computation of delta r's:
     Histogram<double> deltaR {correlation};
@@ -439,32 +437,23 @@ std::vector<double> Spinsystem::computeStructureFunction(Histogram<double> corre
         double left = (current - previous)/2 + previous;
         double right = (next - current)/2 + current;
         it->counter = right - left;
-        // Logger::getInstance().write_new_line("previous = ", previous, "current = ", current, "next = ", next);
-        // Logger::getInstance().write_new_line(it->position(), "min = ", left, "max = ", right, "deltaR = ", it->counter);
         previous = current;
-        // Logger::getInstance().write_new_line();
     }
-    // it ++;
     it->counter = it->position() - previous;
 
-    // Logger::getInstance().write_new_line("correlation:");
-    // Logger::getInstance().write_new_line(correlation.formatted_string());
-    // Logger::getInstance().write_new_line("deltaR:");
-    // Logger::getInstance().write_new_line(deltaR.formatted_string());
-
     // computation of structure factor:
+    // std::vector<double> structureFunction;
+    Histogram<double> structureFunction {0.5};
     for(double k=0; k<parameters->getWidth()/2; k+=0.5)
     {
-        // Logger::getInstance().write_new_line("k =", k);
-        structureFunction.push_back(0);
+        // structureFunction.push_back(0);
+        structureFunction.add_data(k, 0);
         // structureFunction.back() += 0.5;    // initial point where corr(0) = 1
         for(auto& B: correlation)
         {
-            // positionLeft = (B.position() - lastPosition)*0.5 + lastPosition;
-
-            structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position());
+            // structureFunction.back() += std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position());
+            structureFunction.add_data(k, std::cos( k*B.position()*2*M_PI/parameters->getWidth() ) * B.counter * deltaR.get_data(B.position()) );
         }
-        // Logger::getInstance().write(" S(k) = ", structureFunction.back());
     }
 
     return structureFunction;

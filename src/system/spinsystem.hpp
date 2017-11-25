@@ -46,8 +46,8 @@ public:
     inline unsigned long getHeight() const { return parameters->getHeight(); }
     inline const auto& getSpins() const { return spins; };
 
-    Histogram<double>   computeCorrelation() const;
-    std::vector<double> computeStructureFunction(const Histogram<double>) const;
+    Histogram<double> computeCorrelation() const;
+    Histogram<double> computeStructureFunction(const Histogram<double>) const;
 
     void print(std::ostream & ) const;
     std::string str() const;

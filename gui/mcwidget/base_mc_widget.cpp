@@ -8,8 +8,7 @@
     Q_CHECK_PTR(abortBtn);  \
     Q_CHECK_PTR(saveBtn);   \
     Q_CHECK_PTR(correlateBtn);  \
-    Q_CHECK_PTR(drawRequestTimer);\
-    // Q_CHECK_PTR(drawCorrelationRequestTimer);
+    Q_CHECK_PTR(drawRequestTimer);
 
 
 
@@ -146,14 +145,14 @@ void BaseMCWidget::productionAction()
     
     setRunning(true);
     
-    // if( ! advanced_mode )
-    // { 
+    if( ! advanced_mode )
+    { 
         pauseBtn->setEnabled(true);
-    // }
-    // else
-    // {
-        // pauseBtn->setEnabled(false);
-    // }
+    }
+    else
+    {
+        pauseBtn->setEnabled(false);
+    }
     
     equilBtn->setEnabled(false);
     prodBtn->setEnabled(false);
@@ -227,13 +226,6 @@ void BaseMCWidget::saveAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
     BASE_MC_WIDGET_ASSERT_ALL;
-    
-    // equilBtn->setEnabled(true);
-    // prodBtn->setEnabled(true);
-    // pauseBtn->setEnabled(false);
-    // saveBtn->setEnabled(false);
-    // correlateBtn->setEnabled(true);
-    // abortBtn->setEnabled(true);
 
     MC.print_data();
     MC.print_averages();

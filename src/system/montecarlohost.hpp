@@ -50,5 +50,5 @@ public:
     void print_data() const;
     void print_averages() const;
     void print_correlation(Histogram<double>&) const;
-    void print_structureFunction(std::vector<double>&) const;
+    void print_structureFunction(Histogram<double>&) const;
 };

@@ -250,7 +250,7 @@ void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
 
 
 
-void MonteCarloHost::print_structureFunction(std::vector<double>& structureFunction) const
+void MonteCarloHost::print_structureFunction(Histogram<double>& structureFunction) const
 {
     // save structure Function of current state in file
 
@@ -264,46 +264,15 @@ void MonteCarloHost::print_structureFunction(std::vector<double>& structureFunct
 
     std::ofstream FILE(filekey);
     FILE << "# structure function S(k) = FT( G(r) )\n";
-    // FILE << correlation.formatted_string();
-    for( unsigned int j=0; j<structureFunction.size(); ++j )
-    {
-        FILE << std::setw(8) << std::setprecision(3) << 0.5*j;
-        FILE << std::setw(10) << std::setprecision(4) << structureFunction[j] << '\n';
-    }
+    FILE << structureFunction.formatted_string();
+    // for( unsigned int j=0; j<structureFunction.size(); ++j )
+    // {
+    //     FILE << std::setw(8) << std::setprecision(3) << 0.5*j;
+    //     FILE << std::setw(10) << std::setprecision(4) << structureFunction[j] << '\n';
+    // }
     FILE.close();
 }
 
-// void MonteCarloHost::print_amplitudes() const
-// {
-//     qDebug() << __PRETTY_FUNCTION__;
-    
-//     Q_CHECK_PTR(parameters);
-//     std::string filekeystring = parameters->getFileKey();
-//     std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
-//     filekey.append(".amplitudes");
-
-//     std::ofstream FILE;
-//     FILE.open(filekey);
-    
-//     // print header line
-//     FILE << std::setw(4) << "# k"
-//     << std::setw(10) << "MC steps:";
-
-//     for(unsigned int i=0; i<amplitudes.size(); ++i) FILE << std::setw(8) << i*parameters->getPrintFreq();
-//     FILE << '\n';
-    
-//     for( unsigned int j=0; j<amplitudes.front().size(); ++j )
-//     {
-//         FILE << std::setw(14) << std::fixed << j; 
-//         for(unsigned int i=0; i<amplitudes.size(); ++i)
-//         {
-//             FILE << std::setw(8) << std::setprecision(2) << amplitudes[i][j];
-//         }
-//         FILE << '\n';
-//     }
-    
-//     FILE.close();
-// }
 
 
 

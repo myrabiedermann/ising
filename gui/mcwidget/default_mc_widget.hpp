@@ -23,6 +23,7 @@ public:
     ~DefaultMCWidget();
     
     void advancedRunAction() override;
+    void abortAction() override;
 
 public slots:
     

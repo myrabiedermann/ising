@@ -90,6 +90,30 @@ void DefaultMCWidget::setup()
 
 
 
+void DefaultMCWidget::abortAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    
+    DEFAULT_MC_WIDGET_ASSERT_ALL;
+    
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(true);
+    abortBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(true);
+    
+    drawRequestTimer->stop();
+    
+    emit runningSignal(false);
+    emit resetSignal();
+    makeSystemNew();
+    emit drawRequest(MC, steps_done.load());
+}
+
+
+
 void DefaultMCWidget::advancedRunAction()
 {
     qDebug() << __PRETTY_FUNCTION__;

@@ -28,12 +28,14 @@ class BaseMCWidget : public QWidget
     Q_OBJECT
     
 public:
+    ~BaseMCWidget();
+    
     bool getRunning();
     
     void equilibrateAction();
     void productionAction();
     void pauseAction();
-    void abortAction();
+    virtual void abortAction();
     void saveAction();
     void correlateAction();
     virtual void advancedRunAction() {};
@@ -60,7 +62,6 @@ protected:
     BaseMCWidget(const BaseMCWidget&) = delete;
     void operator=(const BaseMCWidget&) = delete;
 
-    ~BaseMCWidget();
     
     void server();
     virtual void setup() = 0;
