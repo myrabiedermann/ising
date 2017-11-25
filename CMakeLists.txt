@@ -35,6 +35,7 @@ file(GLOB ising_SRC
   src/*.cpp
   src/*/*.cpp
   gui/*.cpp
+  gui/*/*.cpp
 )
 
 # Create code from a list of Qt designer ui files.

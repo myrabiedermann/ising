@@ -9,10 +9,11 @@
 
 
 #include "message_box.hpp"
-#include "default_parameters_widget.hpp"
-#include "constrained_parameters_widget.hpp"
+#include "parameters/default_parameters_widget.hpp"
+#include "parameters/constrained_parameters_widget.hpp"
+#include "mcwidget/default_mc_widget.hpp"
+#include "mcwidget/constrained_mc_widget.hpp"
 #include "grid_widget.hpp"
-#include "mc_widget.hpp"
 #include "chart_widget.hpp"
 #include <QMainWindow>
 #include <QtWidgets>
@@ -47,7 +48,7 @@ protected:
 private:
     GridWidget* gridWidget;
     BaseParametersWidget* prmsWidget;
-    MCWidget* MCwidget;
+    BaseMCWidget* MCwidget;
     ChartWidget* hamiltonianChart;
     ChartWidget* averageMagnetisationChart;
     ChartWidget* correlationChart;

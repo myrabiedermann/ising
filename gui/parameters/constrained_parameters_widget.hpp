@@ -25,23 +25,26 @@
 
 
 
-class DefaultParametersWidget : public BaseParametersWidget
+class ConstrainedParametersWidget : public BaseParametersWidget
 {
     Q_OBJECT
     
 public:
-    explicit DefaultParametersWidget(QWidget *parent = Q_NULLPTR);
-    DefaultParametersWidget(const DefaultParametersWidget&) = delete;
-    void operator=(const DefaultParametersWidget&) = delete;
+    explicit ConstrainedParametersWidget(QWidget *parent = Q_NULLPTR);
+    ConstrainedParametersWidget(const ConstrainedParametersWidget&) = delete;
+    void operator=(const ConstrainedParametersWidget&) = delete;
     
-    ~DefaultParametersWidget();
+    ~ConstrainedParametersWidget();
 
     double getMagnetic() const;
     double getRatio() const;
     bool   getWavelengthPattern() const;
     int    getWavelength() const;
+    bool   getConstrained() const;
+    double getStartValue() const;
+    double getStopValue() const;
+    double getStepValue() const;
 
-    bool getConstrained() const;
     void setAdvancedValue(const double&);
     
 public slots:

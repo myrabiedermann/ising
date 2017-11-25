@@ -7,7 +7,8 @@
 #endif
 
 
-#include "default_parameters_widget.hpp"
+#include "parameters/default_parameters_widget.hpp"
+#include "parameters/constrained_parameters_widget.hpp"
 #include "system/montecarlohost.hpp"
 #include <QWidget>
 #include <QPushButton>
@@ -22,17 +23,11 @@
 #include <atomic>
 
 
-class MCWidget : public QWidget
+class BaseMCWidget : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit MCWidget(QWidget* parent = Q_NULLPTR);
-    MCWidget(const MCWidget&) = delete;
-    void operator=(const MCWidget&) = delete;
-    
-    ~MCWidget();
-    
     bool getRunning();
     
     void equilibrateAction();
@@ -41,7 +36,7 @@ public:
     void abortAction();
     void saveAction();
     void correlateAction();
-    void advancedRunAction();
+    virtual void advancedRunAction() {};
 
     void setParameters(BaseParametersWidget*);
     
@@ -61,9 +56,14 @@ signals:
     void serverReturn();
     
 protected:
+    explicit BaseMCWidget(QWidget* parent = Q_NULLPTR);
+    BaseMCWidget(const BaseMCWidget&) = delete;
+    void operator=(const BaseMCWidget&) = delete;
+
+    ~BaseMCWidget();
     
-private:
     void server();
+    virtual void setup() = 0;
     
     BaseParametersWidget* prmsWidget = Q_NULLPTR;
     QPushButton* equilBtn = new QPushButton("Equilibration Run",this);
@@ -72,7 +72,6 @@ private:
     QPushButton* abortBtn = new QPushButton("Abort",this);
     QPushButton* saveBtn = new QPushButton("Save sample data",this);
     QPushButton* correlateBtn = new QPushButton("Compute correlation",this);
-    QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
     
     QTimer* drawRequestTimer;
     QTimer* drawCorrelationRequestTimer;
@@ -85,5 +84,8 @@ private:
     MonteCarloHost MC {};
     
     std::atomic<unsigned long> steps_done {0};
+
+private: 
+
 };
 

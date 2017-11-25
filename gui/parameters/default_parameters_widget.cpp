@@ -369,5 +369,24 @@ int DefaultParametersWidget::getWavelength() const
 {
     return 0;
 }
+
+
+double DefaultParametersWidget::getStartValue() const 
+{
+    Q_CHECK_PTR(startValueSpinBox);
+    return startValueSpinBox->value();
+}
+
+double DefaultParametersWidget::getStopValue() const 
+{
+    Q_CHECK_PTR(stopValueSpinBox);
+    return stopValueSpinBox->value();
+}
+
+double DefaultParametersWidget::getStepValue() const 
+{
+    Q_CHECK_PTR(stepValueSpinBox);
+    return stepValueSpinBox->value();
+}
                 
                 

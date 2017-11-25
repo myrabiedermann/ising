@@ -7,11 +7,11 @@
 #endif
 
 
-#include "gui/default_parameters_widget.hpp"
+#include "gui/parameters/base_parameters_widget.hpp"
 #include "spinsystem.hpp"
 #include "utility/histogram.hpp"
-#include "lib/enhance.hpp"
 #include "utility/logger.hpp"
+#include "lib/enhance.hpp"
 #include <QDebug>
 #include <cassert>
 #include <cmath>

@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     gridWidget(new GridWidget(this)),
     prmsWidget(Q_NULLPTR),
-    MCwidget(new MCWidget(this)),
+    MCwidget(Q_NULLPTR),
     hamiltonianChart(new ChartWidget(this)),
     averageMagnetisationChart(Q_NULLPTR),
     correlationChart(Q_NULLPTR),
@@ -24,9 +24,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // create layout according to systemType
     switch( msgBox.getType() )
     {
-        case SYSTEMTYPE::Default :      prmsWidget = new DefaultParametersWidget(this); break;
+        case SYSTEMTYPE::Default :      prmsWidget = new DefaultParametersWidget(this); 
+                                        MCwidget = new DefaultMCWidget(this);
+                                        break;
         
-        case SYSTEMTYPE::Constrained :  prmsWidget = new ConstrainedParametersWidget(this); break; 
+        case SYSTEMTYPE::Constrained :  prmsWidget = new ConstrainedParametersWidget(this);
+                                        MCwidget = new ConstrainedMCWidget(this);
+                                        break; 
 
         default :                       throw std::logic_error("nope");
     }
@@ -40,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
         gridWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         gridWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         
-        connect( MCwidget, &MCWidget::drawRequest, [&](const MonteCarloHost& system)
+        connect( MCwidget, &BaseMCWidget::drawRequest, [&](const MonteCarloHost& system)
         {
             gridWidget->draw(system); 
             gridWidget->refresh(); 
@@ -50,16 +54,16 @@ MainWindow::MainWindow(QWidget *parent) :
     // ### ParametersWidget
     {
         prmsWidget->setMinimumWidth(300);
-        connect( MCwidget, &MCWidget::runningSignal, prmsWidget, &BaseParametersWidget::setReadOnly );
-        connect( MCwidget, &MCWidget::resetSignal, prmsWidget, &BaseParametersWidget::setDefault );
+        connect( MCwidget, &BaseMCWidget::runningSignal, prmsWidget, &BaseParametersWidget::setReadOnly );
+        connect( MCwidget, &BaseMCWidget::resetSignal, prmsWidget, &BaseParametersWidget::setDefault );
     }
     
     // ### MCWidget
     {
         MCwidget->setParameters(prmsWidget);
-        connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, MCwidget, &MCWidget::makeSystemNew );
-        connect( prmsWidget, &BaseParametersWidget::valueChanged, MCwidget, &MCWidget::makeRecordsNew );
-        connect( prmsWidget, &BaseParametersWidget::randomise, MCwidget, &MCWidget::makeSystemRandom);
+        connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, MCwidget, &BaseMCWidget::makeSystemNew );
+        connect( prmsWidget, &BaseParametersWidget::valueChanged, MCwidget, &BaseMCWidget::makeRecordsNew );
+        connect( prmsWidget, &BaseParametersWidget::randomise, MCwidget, &BaseMCWidget::makeSystemRandom);
     }
     
     // ### hamiltonianChart
@@ -71,9 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
         hamiltonianChart->setMinimumWidth(600);
         
         connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, hamiltonianChart, &ChartWidget::reset );
-        connect( MCwidget, &MCWidget::resetChartSignal, hamiltonianChart, &ChartWidget::reset);
-        connect( MCwidget, &MCWidget::resetSignal, hamiltonianChart, &ChartWidget::reset );
-        connect( MCwidget, &MCWidget::drawRequest, [&](const MonteCarloHost& system, const unsigned long steps)
+        connect( MCwidget, &BaseMCWidget::resetChartSignal, hamiltonianChart, &ChartWidget::reset);
+        connect( MCwidget, &BaseMCWidget::resetSignal, hamiltonianChart, &ChartWidget::reset );
+        connect( MCwidget, &BaseMCWidget::drawRequest, [&](const MonteCarloHost& system, const unsigned long steps)
         {
             hamiltonianChart->draw(steps, system.getSpinsystem().getHamiltonian());
         });
@@ -93,9 +97,9 @@ MainWindow::MainWindow(QWidget *parent) :
             averageMagnetisationChart->setMinimumWidth(600);
             
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, averageMagnetisationChart, &ChartWidget::reset );
-            connect( MCwidget, &MCWidget::resetChartSignal, averageMagnetisationChart, &ChartWidget::reset);
-            connect( MCwidget, &MCWidget::resetSignal, averageMagnetisationChart, &ChartWidget::reset );
-            connect( MCwidget, &MCWidget::drawRequest, [&](const MonteCarloHost& system, const unsigned long steps)
+            connect( MCwidget, &BaseMCWidget::resetChartSignal, averageMagnetisationChart, &ChartWidget::reset);
+            connect( MCwidget, &BaseMCWidget::resetSignal, averageMagnetisationChart, &ChartWidget::reset );
+            connect( MCwidget, &BaseMCWidget::drawRequest, [&](const MonteCarloHost& system, const unsigned long steps)
             {
                 averageMagnetisationChart->draw(steps, system.getSpinsystem().getMagnetisation());
             });
@@ -111,9 +115,9 @@ MainWindow::MainWindow(QWidget *parent) :
             correlationChart->setMinimumWidth(600);
 
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, correlationChart, &ChartWidget::reset );
-            connect( MCwidget, &MCWidget::resetChartSignal, correlationChart, &ChartWidget::reset);
-            connect( MCwidget, &MCWidget::resetSignal, correlationChart, &ChartWidget::reset );
-            connect( MCwidget, &MCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system)
+            connect( MCwidget, &BaseMCWidget::resetChartSignal, correlationChart, &ChartWidget::reset);
+            connect( MCwidget, &BaseMCWidget::resetSignal, correlationChart, &ChartWidget::reset );
+            connect( MCwidget, &BaseMCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system)
             {
                 Histogram<double> correlation = system.getSpinsystem().computeCorrelation();
                 for(const auto& B : correlation )

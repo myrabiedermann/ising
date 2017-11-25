@@ -9,11 +9,7 @@
     Q_CHECK_PTR(stepsProdSpinBox);   \
     Q_CHECK_PTR(printFreqSpinBox);   \
     Q_CHECK_PTR(randomiseBtn);       \
-    Q_CHECK_PTR(filenameLineEdit);   \
-    Q_CHECK_PTR(advancedComboBox);   \
-    Q_CHECK_PTR(startValueSpinBox);  \
-    Q_CHECK_PTR(stepValueSpinBox);   \
-    Q_CHECK_PTR(stopValueSpinBox);   
+    Q_CHECK_PTR(filenameLineEdit);    
 
 
 
@@ -119,20 +115,20 @@ std::string BaseParametersWidget::getFileKey() const
     return filenameLineEdit->displayText().toStdString();
 }
 
-double BaseParametersWidget::getStartValue() const 
-{
-    Q_CHECK_PTR(startValueSpinBox);
-    return startValueSpinBox->value();
-}
+// double BaseParametersWidget::getStartValue() const 
+// {
+//     Q_CHECK_PTR(startValueSpinBox);
+//     return startValueSpinBox->value();
+// }
 
-double BaseParametersWidget::getStopValue() const 
-{
-    Q_CHECK_PTR(stopValueSpinBox);
-    return stopValueSpinBox->value();
-}
+// double BaseParametersWidget::getStopValue() const 
+// {
+//     Q_CHECK_PTR(stopValueSpinBox);
+//     return stopValueSpinBox->value();
+// }
 
-double BaseParametersWidget::getStepValue() const 
-{
-    Q_CHECK_PTR(stepValueSpinBox);
-    return stepValueSpinBox->value();
-}
+// double BaseParametersWidget::getStepValue() const 
+// {
+//     Q_CHECK_PTR(stepValueSpinBox);
+//     return stepValueSpinBox->value();
+// }

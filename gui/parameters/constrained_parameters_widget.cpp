@@ -10,10 +10,6 @@
     Q_CHECK_PTR(printFreqSpinBox);   \
     Q_CHECK_PTR(randomiseBtn);       \
     Q_CHECK_PTR(filenameLineEdit);   \
-    Q_CHECK_PTR(advancedComboBox);   \
-    Q_CHECK_PTR(startValueSpinBox);  \
-    Q_CHECK_PTR(stepValueSpinBox);   \
-    Q_CHECK_PTR(stopValueSpinBox);   \
     Q_CHECK_PTR(wavelengthSpinBox);  \
     Q_CHECK_PTR(wavelengthCheckBox); \
     Q_CHECK_PTR(ratioCheckBox); \
@@ -68,7 +64,6 @@ void ConstrainedParametersWidget::setup()
     mainLayout->addWidget(createEquilBox());
     mainLayout->addWidget(createProdBox());
     mainLayout->addWidget(createOutputBox());
-    mainLayout->addWidget(createAdvancedOptionsBox());
     setDefault();
     
     // https://stackoverflow.com/a/16795664
@@ -230,65 +225,7 @@ QGroupBox* ConstrainedParametersWidget::createProdBox()
 
 QGroupBox* ConstrainedParametersWidget::createAdvancedOptionsBox()
 {
-    qDebug() << __PRETTY_FUNCTION__;
-    CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
-
-    // the group
-    QGroupBox* advancedOptionsBox = new QGroupBox("Advanced Simulation Options");
-    Q_CHECK_PTR(advancedOptionsBox);
-    
-    // set up the ComboBox:
-    Q_CHECK_PTR(advancedComboBox);
-    advancedComboBox->addItem("T");
-    advancedComboBox->addItem("J");
-
-    // set up the range options:
-    startValueSpinBox->setDecimals(1);
-    startValueSpinBox->setSingleStep(0.1);
-    startValueSpinBox->setMinimum(-10);
-    startValueSpinBox->setMaximum(10);
-
-    stopValueSpinBox->setDecimals(1);
-    stopValueSpinBox->setSingleStep(0.1);
-    stopValueSpinBox->setMinimum(-10);
-    stopValueSpinBox->setMaximum(10);
-
-    stepValueSpinBox->setDecimals(1);
-    stepValueSpinBox->setSingleStep(0.1);
-    stepValueSpinBox->setMinimum(0.1);
-    stepValueSpinBox->setMaximum(1);
-
-    startValueSpinBox->setMinimumWidth(50);
-    startValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    stopValueSpinBox->setMinimumWidth(50);
-    stopValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    stepValueSpinBox->setMinimumWidth(50);
-    stepValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    
-    // the layout 
-    QFormLayout* formLayout = new QFormLayout();
-    Q_CHECK_PTR(formLayout);
-    formLayout->setLabelAlignment(Qt::AlignCenter);
-
-    QLabel *label = new QLabel(this);
-    label->setFrameStyle(QFrame::NoFrame);
-    label->setText("produce a range of MC simulations");
-    label->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-
-    formLayout->addRow(label);
-    formLayout->addRow("parameter to vary", advancedComboBox);
-    
-    QHBoxLayout* rangeOptions = new QHBoxLayout();
-    Q_CHECK_PTR(rangeOptions);
-    rangeOptions->addWidget(startValueSpinBox);
-    rangeOptions->addWidget(stepValueSpinBox);
-    rangeOptions->addWidget(stopValueSpinBox);
-    formLayout->addRow("start : step : end", rangeOptions);
-
-    advancedOptionsBox->setLayout(formLayout);
-    return advancedOptionsBox;
+    return Q_NULLPTR;
 }
 
 
@@ -306,10 +243,6 @@ void ConstrainedParametersWidget::setReadOnly(bool flag)
     printFreqSpinBox->setReadOnly(flag);
     randomiseBtn->setEnabled(!flag);
     filenameLineEdit->setReadOnly(flag);
-    advancedComboBox->setEditable(!flag);
-    startValueSpinBox->setReadOnly(flag);
-    stepValueSpinBox->setReadOnly(flag);
-    stopValueSpinBox->setReadOnly(flag);
     ratioSpinBox->setReadOnly(flag);
     ratioCheckBox->setCheckable(!flag);
     wavelengthSpinBox->setReadOnly(flag);
@@ -335,10 +268,6 @@ void ConstrainedParametersWidget::setDefault()
     stepsProdSpinBox->setValue(10000);
     printFreqSpinBox->setValue(10);
     filenameLineEdit->setText("ising");
-    advancedComboBox->setCurrentIndex(0);
-    startValueSpinBox->setValue(0);
-    stepValueSpinBox->setValue(0.1);
-    stopValueSpinBox->setValue(0);
     ratioSpinBox->setValue(0.5);
     ratioCheckBox->setChecked(true);
     wavelengthSpinBox->setValue(1);
@@ -365,24 +294,8 @@ bool ConstrainedParametersWidget::getConstrained() const
     return true;
 }
 
-void ConstrainedParametersWidget::setAdvancedValue(const double& value)
-{
-    Q_CHECK_PTR(advancedComboBox);
-    Q_CHECK_PTR(temperatureSpinBox);
-    Q_CHECK_PTR(interactionSpinBox);
-
-    if( advancedComboBox->currentIndex() == 0 )
-    {
-        // qInfo() << "setting temperature";
-        temperatureSpinBox->setValue(value);
-    }
-    else if( advancedComboBox->currentIndex() == 1 )
-    {
-        // qInfo() << "setting interaction";
-        interactionSpinBox->setValue(value);
-    }
-    else throw std::runtime_error("something went wrong in ConstrainedParametersWidget::setAdvancedValue()");
-}
+void ConstrainedParametersWidget::setAdvancedValue( __attribute__((unused)) const double& value)
+{}
                 
 
 bool ConstrainedParametersWidget::getWavelengthPattern() const 
@@ -396,5 +309,20 @@ int ConstrainedParametersWidget::getWavelength() const
 {
     Q_CHECK_PTR(wavelengthSpinBox);
     return wavelengthSpinBox->value();
+}
+
+double ConstrainedParametersWidget::getStartValue() const 
+{
+    return 0;
+}
+
+double ConstrainedParametersWidget::getStopValue() const 
+{
+    return 0;
+}
+
+double ConstrainedParametersWidget::getStepValue() const 
+{
+    return 0;
 }
          

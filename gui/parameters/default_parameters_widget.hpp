@@ -25,23 +25,26 @@
 
 
 
-class ConstrainedParametersWidget : public BaseParametersWidget
+class DefaultParametersWidget : public BaseParametersWidget
 {
     Q_OBJECT
     
 public:
-    explicit ConstrainedParametersWidget(QWidget *parent = Q_NULLPTR);
-    ConstrainedParametersWidget(const ConstrainedParametersWidget&) = delete;
-    void operator=(const ConstrainedParametersWidget&) = delete;
+    explicit DefaultParametersWidget(QWidget *parent = Q_NULLPTR);
+    DefaultParametersWidget(const DefaultParametersWidget&) = delete;
+    void operator=(const DefaultParametersWidget&) = delete;
     
-    ~ConstrainedParametersWidget();
+    ~DefaultParametersWidget();
 
     double getMagnetic() const;
     double getRatio() const;
     bool   getWavelengthPattern() const;
     int    getWavelength() const;
+    bool   getConstrained() const;
+    double getStartValue() const;
+    double getStopValue() const;
+    double getStepValue() const;
 
-    bool getConstrained() const;
     void setAdvancedValue(const double&);
     
 public slots:
@@ -58,5 +61,9 @@ protected:
     void setup();
     
 private:
+    QComboBox* advancedComboBox = new QComboBox(this);
+    QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
+    QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
+    QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
 
 };

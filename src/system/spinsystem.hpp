@@ -4,7 +4,8 @@
 #include "spin.hpp"
 #include "utility/histogram.hpp"
 #include "utility/logger.hpp"
-#include "gui/default_parameters_widget.hpp"
+// #include "gui/parameters/default_parameters_widget.hpp"
+#include "gui/parameters/base_parameters_widget.hpp"
 #include <cassert>
 #include <ostream>
 #include <string>

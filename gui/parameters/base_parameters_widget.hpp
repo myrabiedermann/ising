@@ -46,11 +46,11 @@ public:
     virtual double getRatio() const = 0;
     virtual bool   getWavelengthPattern() const = 0;
     virtual int    getWavelength() const = 0;
-    virtual bool getConstrained() const = 0;
-
-    double getStartValue() const;
-    double getStopValue() const;
-    double getStepValue() const;
+    virtual bool   getConstrained() const = 0;
+    virtual double getStartValue() const = 0;
+    virtual double getStopValue() const = 0;
+    virtual double getStepValue() const = 0;
+    
     virtual void setAdvancedValue(const double&) = 0;
     
 public slots:
@@ -92,10 +92,10 @@ protected:
     QSpinBox*       wavelengthSpinBox {Q_NULLPTR};
     QCheckBox*      wavelengthCheckBox {Q_NULLPTR};
 
-    QComboBox* advancedComboBox = new QComboBox(this);
-    QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
-    QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
-    QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
+    // QComboBox* advancedComboBox = new QComboBox(this);
+    // QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
+    // QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
+    // QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
     
     // Buttons
     QPushButton* randomiseBtn = new QPushButton("Randomise spins", this);
