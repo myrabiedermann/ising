@@ -51,7 +51,7 @@ signals:
     void resetChartSignal();
     void runningSignal(bool);
     void drawRequest(const MonteCarloHost&, const unsigned long);
-    void drawCorrelationRequest(const MonteCarloHost&);
+    void drawCorrelationRequest(const Histogram<double>&);
     void finishedSteps(const unsigned long);
     void serverReturn();
     
@@ -74,7 +74,6 @@ protected:
     QPushButton* correlateBtn = new QPushButton("Compute correlation",this);
     
     QTimer* drawRequestTimer;
-    QTimer* drawCorrelationRequestTimer;
     
     std::atomic<bool> equilibration_mode {false};
     std::atomic<bool> advanced_mode {false};
@@ -84,6 +83,7 @@ protected:
     MonteCarloHost MC {};
     
     std::atomic<unsigned long> steps_done {0};
+    std::atomic<unsigned int>  drawRequestTime {100};  
 
 private: 
 

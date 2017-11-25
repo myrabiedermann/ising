@@ -66,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect( prmsWidget, &BaseParametersWidget::randomise, MCwidget, &BaseMCWidget::makeSystemRandom);
     }
     
-    // ### hamiltonianChart
+    // ### upper chart: hamiltonianChart
     {
         // hamiltonianChart->setTitle("Hamiltonian");
         hamiltonianChart->setXLabel("MC steps");
@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
         });
     }
     
-    // ### averageMagnetisationChart // correlationChart
+    // ### lower chart: averageMagnetisationChart / correlationChart
     {
         if( ! prmsWidget->getConstrained() )
         {
@@ -117,17 +117,13 @@ MainWindow::MainWindow(QWidget *parent) :
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, correlationChart, &ChartWidget::reset );
             connect( MCwidget, &BaseMCWidget::resetChartSignal, correlationChart, &ChartWidget::reset);
             connect( MCwidget, &BaseMCWidget::resetSignal, correlationChart, &ChartWidget::reset );
-            connect( MCwidget, &BaseMCWidget::drawCorrelationRequest, [&](const MonteCarloHost& system)
+            connect( MCwidget, &BaseMCWidget::drawCorrelationRequest, [&](const Histogram<double>& correlation)
             {
-                Histogram<double> correlation = system.getSpinsystem().computeCorrelation();
                 for(const auto& B : correlation )
                 {
                     correlationChart->append(B.position(), B.counter);
                 }
                 correlationChart->refresh();
-                system.print_correlation(correlation);
-                auto Sk = system.getSpinsystem().computeStructureFunction(correlation);
-                system.print_structureFunction( Sk );
             });
         }
     }

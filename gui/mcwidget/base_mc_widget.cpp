@@ -9,7 +9,7 @@
     Q_CHECK_PTR(saveBtn);   \
     Q_CHECK_PTR(correlateBtn);  \
     Q_CHECK_PTR(drawRequestTimer);\
-    Q_CHECK_PTR(drawCorrelationRequestTimer);
+    // Q_CHECK_PTR(drawCorrelationRequestTimer);
 
 
 
@@ -17,7 +17,6 @@
 BaseMCWidget::BaseMCWidget(QWidget *parent) 
   : QWidget(parent)
   , drawRequestTimer(new QTimer(this))
-  , drawCorrelationRequestTimer(new QTimer(this))
 {
     qDebug() << __PRETTY_FUNCTION__;
 }
@@ -53,7 +52,7 @@ void BaseMCWidget::setParameters(BaseParametersWidget* widget_ptr)
     prmsWidget = widget_ptr;
     Q_CHECK_PTR(prmsWidget);
     
-    if(!parameters_linked.load())
+    if( ! parameters_linked.load() )
     {
         MC.setParameters(prmsWidget);
         MC.setup();
@@ -65,8 +64,11 @@ void BaseMCWidget::setParameters(BaseParametersWidget* widget_ptr)
 
 void BaseMCWidget::makeSystemNew()
 {
-    steps_done.store(0);
+    qDebug() << __PRETTY_FUNCTION__;
+    Q_CHECK_PTR(prmsWidget);
+
     MC.setup();
+    steps_done.store(0);
     emit resetChartSignal();
     emit drawRequest(MC, steps_done.load());
 }
@@ -78,8 +80,8 @@ void BaseMCWidget::makeRecordsNew()
     qDebug() << __PRETTY_FUNCTION__;
     Q_CHECK_PTR(prmsWidget);
 
-    steps_done.store(0);
     MC.clearRecords();
+    steps_done.store(0);
     emit resetChartSignal();
 }
 
@@ -87,11 +89,12 @@ void BaseMCWidget::makeRecordsNew()
 
 void BaseMCWidget::makeSystemRandom()
 {
-    Q_CHECK_PTR(drawRequestTimer);
+    qDebug() << __PRETTY_FUNCTION__;
+    Q_CHECK_PTR(prmsWidget);
 
-    steps_done.store(0);
-    MC.resetSpins();
     MC.clearRecords();
+    MC.resetSpins();
+    steps_done.store(0);
     emit resetChartSignal();
     emit drawRequest(MC, steps_done.load());
 }
@@ -101,7 +104,6 @@ void BaseMCWidget::makeSystemRandom()
 void BaseMCWidget::equilibrateAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    
     BASE_MC_WIDGET_ASSERT_ALL;
     
     setRunning(true);
@@ -119,8 +121,7 @@ void BaseMCWidget::equilibrateAction()
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(true);
-    // advancedRunBtn->setEnabled(false);
-    drawRequestTimer->start(100);
+    drawRequestTimer->start(drawRequestTime.load());
 
     if( equilibration_mode.load() == false )
     {
@@ -129,7 +130,6 @@ void BaseMCWidget::equilibrateAction()
         emit resetChartSignal();
     }
     emit drawRequest(MC, steps_done.load());
-
     emit runningSignal(true);
     
     QFuture<void> future = QtConcurrent::run([&]
@@ -142,28 +142,26 @@ void BaseMCWidget::equilibrateAction()
 void BaseMCWidget::productionAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    
     BASE_MC_WIDGET_ASSERT_ALL;
     
     setRunning(true);
     
-    if( ! advanced_mode )
-    { 
+    // if( ! advanced_mode )
+    // { 
         pauseBtn->setEnabled(true);
-    }
-    else
-    {
-        pauseBtn->setEnabled(false);
-    }
+    // }
+    // else
+    // {
+        // pauseBtn->setEnabled(false);
+    // }
     
     equilBtn->setEnabled(false);
     prodBtn->setEnabled(false);
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(true);
-    // advancedRunBtn->setEnabled(false);
     
-    drawRequestTimer->start(100);
+    drawRequestTimer->start(drawRequestTime.load());
     
     if( equilibration_mode.load() == true )
     {
@@ -172,7 +170,6 @@ void BaseMCWidget::productionAction()
         emit resetChartSignal();
     }
     emit drawRequest(MC, steps_done.load());
-
     emit runningSignal(true);
     
     QFuture<void> future = QtConcurrent::run([&]
@@ -195,10 +192,8 @@ void BaseMCWidget::pauseAction()
     saveBtn->setEnabled(true);
     correlateBtn->setEnabled(true);
     abortBtn->setEnabled(true);
-    // advancedRunBtn->setEnabled(true);
     
     emit drawRequest(MC, steps_done.load());
-    emit finishedSteps(steps_done.load());
     
     drawRequestTimer->stop();
     
@@ -216,15 +211,14 @@ void BaseMCWidget::abortAction()
     prodBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
     saveBtn->setEnabled(false);
-    correlateBtn->setEnabled(false);
+    correlateBtn->setEnabled(true);
     abortBtn->setEnabled(false);
-    // advancedRunBtn->setEnabled(true);
     
     drawRequestTimer->stop();
     
+    emit runningSignal(false);
     emit resetSignal();
     makeSystemNew();
-    emit runningSignal(false);
     emit drawRequest(MC, steps_done.load());
 }
 
@@ -232,35 +226,30 @@ void BaseMCWidget::abortAction()
 void BaseMCWidget::saveAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    
     BASE_MC_WIDGET_ASSERT_ALL;
     
-    equilBtn->setEnabled(true);
-    prodBtn->setEnabled(true);
-    pauseBtn->setEnabled(false);
-    saveBtn->setEnabled(false);
-    correlateBtn->setEnabled(true);
-    abortBtn->setEnabled(true);
-    // advancedRunBtn->setEnabled(false);
-
-    drawRequestTimer->stop();
-    
-    emit runningSignal(false);
+    // equilBtn->setEnabled(true);
+    // prodBtn->setEnabled(true);
+    // pauseBtn->setEnabled(false);
+    // saveBtn->setEnabled(false);
+    // correlateBtn->setEnabled(true);
+    // abortBtn->setEnabled(true);
 
     MC.print_data();
     MC.print_averages();
-    // if( prmsWidget->getConstrained() ) MC.print_amplitudes();
 }
 
 
 void BaseMCWidget::correlateAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    
     BASE_MC_WIDGET_ASSERT_ALL;
     
-    // MC.print_correlation(); 
-    emit drawCorrelationRequest(MC);
+    auto correlation = MC.getSpinsystem().computeCorrelation();
+    MC.print_correlation( correlation );
+    auto structureFunction = MC.getSpinsystem().computeStructureFunction(correlation);
+    MC.print_structureFunction( structureFunction );
+    emit drawCorrelationRequest( correlation );
 }
 
 
@@ -269,7 +258,6 @@ void BaseMCWidget::correlateAction()
 void BaseMCWidget::server()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    
     Q_CHECK_PTR(prmsWidget);
     
     if (steps_done.load() >= prmsWidget->getStepsProd() or steps_done.load() >= prmsWidget->getStepsEquil())

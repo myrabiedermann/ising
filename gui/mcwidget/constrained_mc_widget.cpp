@@ -7,8 +7,7 @@
     Q_CHECK_PTR(abortBtn);  \
     Q_CHECK_PTR(saveBtn);   \
     Q_CHECK_PTR(correlateBtn);  \
-    Q_CHECK_PTR(drawRequestTimer);\
-    Q_CHECK_PTR(drawCorrelationRequestTimer);
+    Q_CHECK_PTR(drawRequestTimer);
 
 
 
@@ -27,12 +26,12 @@ void ConstrainedMCWidget::setup()
     qDebug() << __PRETTY_FUNCTION__;
     
     equilBtn->setCheckable(false);
-    equilBtn->setChecked(false);
+    equilBtn->setEnabled(true);
     equilBtn->setMaximumWidth(350);
     equilBtn->setMinimumWidth(150);
 
     prodBtn->setCheckable(false);
-    prodBtn->setChecked(false);
+    prodBtn->setEnabled(true);
     prodBtn->setMaximumWidth(350);
     prodBtn->setMinimumWidth(150);
     
@@ -52,7 +51,7 @@ void ConstrainedMCWidget::setup()
     saveBtn->setMinimumWidth(150);
 
     correlateBtn->setCheckable(false);
-    correlateBtn->setEnabled(false);
+    correlateBtn->setEnabled(true);
     correlateBtn->setMaximumWidth(350);
     correlateBtn->setMinimumWidth(150);
 
@@ -63,7 +62,6 @@ void ConstrainedMCWidget::setup()
     connect(saveBtn,      &QPushButton::clicked, this, &BaseMCWidget::saveAction);
     connect(correlateBtn, &QPushButton::clicked, this, &BaseMCWidget::correlateAction);
     connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
-    connect(drawCorrelationRequestTimer, &QTimer::timeout, [&]{ emit drawCorrelationRequest(MC); });
     
     // main layout
     QHBoxLayout* mainLayout = new QHBoxLayout;
