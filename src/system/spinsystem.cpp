@@ -438,7 +438,7 @@ Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correla
     Histogram<double> structureFunction {0.5};
     for(double k=0; k<getWidth()/2; k+=0.5)
     {
-        structureFunction.add_data(k, 0);
+        structureFunction.add_data(k, 0.5);     // includes intitial point for r=0 where cos(k*0)*corr(0)*deltar = 0.5 because corr(0)=1 and deltar = 0.5
         // structureFunction.back() += 0.5;    // initial point where corr(0) = 1
         for(auto& B: correlation)
         {
