@@ -95,16 +95,16 @@ QGroupBox* DefaultParametersWidget::createSystemBox()
     QGroupBox* labelBox = new QGroupBox("System parameters");
 
     // default texts for LineEdits
-    interactionSpinBox->setMinimum(-3);
-    interactionSpinBox->setMaximum(3);
-    interactionSpinBox->setDecimals(1);
-    interactionSpinBox->setSingleStep(0.5);
+    interactionSpinBox->setMinimum(-10);
+    interactionSpinBox->setMaximum(10);
+    interactionSpinBox->setDecimals(2);
+    interactionSpinBox->setSingleStep(0.1);
     interactionSpinBox->setMinimumWidth(40);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     magneticSpinBox->setMinimum(-10);
     magneticSpinBox->setMaximum(10);
-    magneticSpinBox->setDecimals(1);
+    magneticSpinBox->setDecimals(2);
     magneticSpinBox->setSingleStep(0.1);
     magneticSpinBox->setMinimumWidth(40);
     magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

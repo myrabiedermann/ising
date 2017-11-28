@@ -152,7 +152,7 @@ void DefaultMCWidget::advancedRunAction()
     saveBtn->setEnabled(false);
     correlateBtn->setEnabled(false);
     abortBtn->setEnabled(true);
-    advancedRunBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(true);
 }
 
 
