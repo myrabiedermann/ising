@@ -16,6 +16,12 @@ class Spinsystem
     BaseParametersWidget* parameters = Q_NULLPTR;
     double Hamiltonian = 0;
     std::vector<Spin> spins {};
+    
+    /* Aufgabe 1.4
+     * 
+     * Membervariable lastFlipped zufügen: (Typ kann angepasst werden)
+     * XX lastFlipped;
+     */
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
 
     void   computeHamiltonian();

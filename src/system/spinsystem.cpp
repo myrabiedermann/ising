@@ -4,133 +4,191 @@
 
 double Spinsystem::local_energy_interaction(const Spin& _spin) const
 {
-    // calculate interaction contribution to local energy for given spin
+    /* Aufgabe 1.2:
+     *
+     * input:    Ein spezifischer Spin
+     * return:   Der Beitrag zum Wechselwirkungsterm im Hamiltonian durch diesen Spin
+     * Funktion: Berechnung des return Wertes
+     */
 
-    return - getInteraction() * _spin.sumNeighbours();
+    return 0; 
+
+
+    // MÖGLICHE LÖSUNG:
+    // return - getInteraction() * _spin.sumNeighbours();
 }
 
 
 
 double Spinsystem::local_energy_magnetic(const Spin& _spin) const
 {
-    // calculate magnetic contribution to local energy for given spin
+    /* Aufgabe 1.2:
+     *
+     * input:    Ein spezifischer Spin
+     * return:   Der Beitrag zum magnetischen Term im Hamiltonian durch diesen Spin
+     * Funktion: Berechnung des return Wertes.
+     */
 
-    return - getMagnetic() * _spin.getType();
+    return 0;
+
+
+    // MÖGLICHE LÖSUNG:
+    // return - getMagnetic() * _spin.getType();
 }
 
 
 
 void Spinsystem::computeHamiltonian()
 {
-    // calculate Hamiltonian of the system
+    /* Aufgabe 1.3:
+     *
+     * input:    /
+     * return:   /
+     * Funktion: Berechnung des gesamten Hamiltonian des Systems
+     *           bei gegebener Spinkonfiguration und Abspeicherung 
+     *           dieses Wertes in der Membervariable "Hamiltonian".
+     */
 
-    Hamiltonian = 0;
-    for(const auto& S : spins)
-    {
-        Hamiltonian += local_energy_interaction(S) / 2 + local_energy_magnetic(S);
-    }
+
+    // MÖGLICHE LÖSUNG:
+    // Hamiltonian = 0;
+    // for(const auto& S : spins)
+    // {
+    //     Hamiltonian += local_energy_interaction(S) / 2 + local_energy_magnetic(S);
+    // }
 }
 
 
 
 void Spinsystem::flip()
 {
-    // perform one move and save flipped spins in lastFlipped
+    /* Aufgabe 1.4:
+     *
+     * input:    /
+     * return:   /
+     * Funktion: - Im spin-flip Modus:
+     *              Auswahl eines zufälligen Spins, Flip dieses Spins, 
+     *              Update des Hamiltonian, Abspeichern dieses Spins in
+     *              der Membervariable lastFlipped
+     *           - Im spin-exchange Modus:
+     *              Auswahl eines zufälligen Spins und eines weiteren, 
+     *              zufälligen, Nachbarspins mit entgegengesetzer Ausrichtung, 
+     *              Flip dieser beiden Spins, Update des Hamiltonian, Abspeichern
+     *              der geflippten Spins in der Membervariable lastFlipped
+     */
 
-    lastFlipped.clear();
-    double localEnergy_before = 0;
-    double localEnergy_after = 0;
 
-    if( ! getConstrained() )
-    {
-        // find random spin
-        auto randomspin = enhance::random_iterator(spins);
-        lastFlipped.emplace_back( std::ref(*randomspin) );
-        // flip spin
-        localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-        randomspin->flip();
-        localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-        // update Hamiltonian:
-        Hamiltonian += localEnergy_after - localEnergy_before;
-    }
-    else
-    {
-        // find random spin
-        auto randomspin = enhance::random_iterator(spins);
-        do
-        {
-            randomspin = enhance::random_iterator(spins);
-        } while( randomspin->sumOppositeNeighbours() == 0 );
+    // MÖGLICHE LÖSUNG:
+    // lastFlipped.clear();
+    // double localEnergy_before = 0;
+    // double localEnergy_after = 0;
+
+    // if( ! getConstrained() )
+    // {
+    //     // find random spin
+    //     auto randomspin = enhance::random_iterator(spins);
+    //     lastFlipped.emplace_back( std::ref(*randomspin) );
+    //     // flip spin
+    //     localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
+    //     randomspin->flip();
+    //     localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
+    //     // update Hamiltonian:
+    //     Hamiltonian += localEnergy_after - localEnergy_before;
+    // }
+    // else
+    // {
+    //     // find random spin
+    //     auto randomspin = enhance::random_iterator(spins);
+    //     do
+    //     {
+    //         randomspin = enhance::random_iterator(spins);
+    //     } while( randomspin->sumOppositeNeighbours() == 0 );
         
-        // find random neighbour
-        auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-        do
-        {
-            randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-        } while( randomneighbour->get().getType() == randomspin->getType() );
+    //     // find random neighbour
+    //     auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
+    //     do
+    //     {
+    //         randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
+    //     } while( randomneighbour->get().getType() == randomspin->getType() );
         
-        // flip spins
-        lastFlipped.emplace_back(*randomspin);
-        lastFlipped.emplace_back(randomneighbour->get());
-        localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
-        randomspin->flip();
-        randomneighbour->get().flip();
-        localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
+    //     // flip spins
+    //     lastFlipped.emplace_back(*randomspin);
+    //     lastFlipped.emplace_back(randomneighbour->get());
+    //     localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
+    //     randomspin->flip();
+    //     randomneighbour->get().flip();
+    //     localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
 
-        // update Hamiltonian
-        Hamiltonian += localEnergy_after - localEnergy_before;
+    //     // update Hamiltonian
+    //     Hamiltonian += localEnergy_after - localEnergy_before;
         
-    }
+    // }
 
-    Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
-    for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
+    // Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
+    // for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
 }
 
 
 
 void Spinsystem::flip_back()
 {
-    // flip all spins in lastFlipped
+     /* Aufgabe 1.4:
+     *
+     * input:    /
+     * return:   /
+     * Funktion: Macht den gesamten in flip() durchgeführten Prozess rückgängig. 
+     */
 
-    if( lastFlipped.size() == 0 )
-        throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
+
+    // MÖGLICHE LÖSUNG: 
+    // if( lastFlipped.size() == 0 )
+    //     throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
     
-    double localEnergy_before = 0;
-    double localEnergy_after = 0;
+    // double localEnergy_before = 0;
+    // double localEnergy_after = 0;
 
-    for( const auto& s: lastFlipped ) 
-    {
-        localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-    }
-    for( const auto& s: lastFlipped ) 
-    {
-        s.get().flip();
-    }
-    for( const auto& s: lastFlipped ) 
-    {
-        localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-    }
+    // for( const auto& s: lastFlipped ) 
+    // {
+    //     localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+    // }
+    // for( const auto& s: lastFlipped ) 
+    // {
+    //     s.get().flip();
+    // }
+    // for( const auto& s: lastFlipped ) 
+    // {
+    //     localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+    // }
 
-    // update Hamiltonian
-    Hamiltonian += localEnergy_after - localEnergy_before;
+    // // update Hamiltonian
+    // Hamiltonian += localEnergy_after - localEnergy_before;
 
-    Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
-    for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
-
+    // Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
+    // for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
 }
 
 
 
 double Spinsystem::getMagnetisation() const
 {
-    // compute magnetisation M = <S_i>
+    /* Aufgabe 1.5:
+     *
+     * input:    /
+     * return:   Mittlere Magnetisierung M
+     * Funktion: Berechnung der mittleren Magnetisierung M für die aktuelle Spin-
+     *           konfiguration.  
+     */
 
-    int sum = 0;
-    for( const auto& S: spins )
-    {
-        sum += S.getType();
-    }
-    return static_cast<double>(sum) / spins.size();
+    return 0;
+
+
+    // MÖGLICHE LÖSUNG:
+    // int sum = 0;
+    // for( const auto& S: spins )
+    // {
+    //     sum += S.getType();
+    // }
+    // return static_cast<double>(sum) / spins.size();
 }
 
 

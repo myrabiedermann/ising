@@ -28,7 +28,7 @@ class MonteCarloHost
     std::vector<double>  energies {};
     std::vector<double>  magnetisations {};
     
-    bool acceptance(const double, const double, const double);
+    // bool acceptance(const double, const double, const double); // optional
 
 protected:
     

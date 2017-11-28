@@ -1,60 +1,77 @@
 #include "montecarlohost.hpp"
 
 
+// optional:
+// bool MonteCarloHost::acceptance(const double Eold, const double Enew, const double temperature)
+// {
+    
+//     #ifndef NDEBUG
+//         double random = enhance::random_double(0.0, 1.0);
+//         double condition = std::exp(-(Enew-Eold)/temperature);
+//         Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
+//         return random < condition ? true : false;
+//     #endif
 
-bool MonteCarloHost::acceptance(const double Eold, const double Enew, const double temperature)
-{
-    // check acceptance via Metropolis criterion
-
-    #ifndef NDEBUG
-        double random = enhance::random_double(0.0, 1.0);
-        double condition = std::exp(-(Enew-Eold)/temperature);
-        Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
-        return random < condition ? true : false;
-    #endif
-
-    return enhance::random_double(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
-}
+//     return enhance::random_double(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
+// }
 
 
 
 void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 {
-    qDebug() << __PRETTY_FUNCTION__;
 
-    Q_CHECK_PTR(parameters);
+     /* Aufgabe 1.6:
+     *
+     * input:    steps: Anzahl MC Steps die durchgeführt werden sollen, 
+     *           EQUILMODE: Modus des Runs
+     * return:   /
+     * Funktion: Durchführung der MC Schritte, Akzeptanz/Rückweisung der 
+     *           Schritte nach dem Metropoliskriterium.
+     *           Bei EQUILMODE = false: Speichern der aktuellen Werte von 
+     *           Hamiltonian und Magnetisierung nach Durchführung der Schritte 
+     *           durch anhängen an die Membervariablen energies und magnetisations.
+     * Optional: Auslagern des Akzeptanz-Checks in zusätzliche Funktion
+     * 
+     */
+
     
-    double energy_old;
-    double energy_new;
+
+    // MÖGLICHE LÖSUNG:
+    // qDebug() << __PRETTY_FUNCTION__;
+
+    // Q_CHECK_PTR(parameters);
+    
+    // double energy_old;
+    // double energy_new;
     
     
-    for(unsigned int t=0; t<steps; ++t)   
-    {
-        // flip spin:
-        energy_old = spinsystem.getHamiltonian();
-        spinsystem.flip();
-        energy_new = spinsystem.getHamiltonian();
+    // for(unsigned int t=0; t<steps; ++t)   
+    // {
+    //     // flip spin:
+    //     energy_old = spinsystem.getHamiltonian();
+    //     spinsystem.flip();
+    //     energy_new = spinsystem.getHamiltonian();
         
-        // check metropolis criterion:
-        if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
-        {
-            spinsystem.flip_back(); 
-        #ifndef NDEBUG
-            Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
-        }
-        else
-        {
-            Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
-            Logger::getInstance().debug_new_line(spinsystem.str());
-        #endif
-        }
-    }
+    //     // check metropolis criterion:
+    //     if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
+    //     {
+    //         spinsystem.flip_back(); 
+    //     #ifndef NDEBUG
+    //         Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
+    //     }
+    //     else
+    //     {
+    //         Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
+    //         Logger::getInstance().debug_new_line(spinsystem.str());
+    //     #endif
+    //     }
+    // }
     
-    if( !EQUILMODE )
-    {
-        energies.push_back(spinsystem.getHamiltonian());
-        magnetisations.push_back(spinsystem.getMagnetisation());
-    }
+    // if( !EQUILMODE )
+    // {
+    //     energies.push_back(spinsystem.getHamiltonian());
+    //     magnetisations.push_back(spinsystem.getMagnetisation());
+    // }
 }
 
 
