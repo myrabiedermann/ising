@@ -19,6 +19,9 @@
 
 void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
+    Q_CHECK_PTR(parameters);
 
      /* Aufgabe 1.6:
      *
@@ -37,13 +40,8 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     
 
     // MÖGLICHE LÖSUNG:
-    // qDebug() << __PRETTY_FUNCTION__;
-
-    // Q_CHECK_PTR(parameters);
-    
     // double energy_old;
     // double energy_new;
-    
     
     // for(unsigned int t=0; t<steps; ++t)   
     // {
