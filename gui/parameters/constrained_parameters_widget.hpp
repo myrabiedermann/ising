@@ -45,7 +45,7 @@ public:
     double getStopValue() const;
     double getStepValue() const;
 
-    void setAdvancedValue(const double&);
+    void setAdvancedValue(const double);
     
 public slots:
     void setReadOnly(bool);
@@ -58,8 +58,11 @@ protected:
     QGroupBox* createEquilBox();
     QGroupBox* createProdBox();
     QGroupBox* createAdvancedOptionsBox();
-    void setup();
     
 private:
+    QDoubleSpinBox* ratioSpinBox = new QDoubleSpinBox(this);
+    QCheckBox*      ratioCheckBox = new QCheckBox(this);
+    QSpinBox*       wavelengthSpinBox = new QSpinBox(this);
+    QCheckBox*      wavelengthCheckBox = new QCheckBox(this);
 
 };

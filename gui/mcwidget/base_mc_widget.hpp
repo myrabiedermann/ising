@@ -32,13 +32,11 @@ public:
     
     bool getRunning();
     
-    void equilibrateAction();
-    void productionAction();
-    void pauseAction();
-    virtual void abortAction();
+    virtual void equilibrateAction() = 0;
+    virtual void productionAction() = 0;
+    virtual void pauseAction() = 0;
+    virtual void abortAction() = 0;
     void saveAction();
-    void correlateAction();
-    virtual void advancedRunAction() {};
 
     void setParameters(BaseParametersWidget*);
     
@@ -55,16 +53,13 @@ signals:
     void drawRequest(const MonteCarloHost&, const unsigned long);
     void drawCorrelationRequest(const Histogram<double>&);
     void finishedSteps(const unsigned long);
-    void serverReturn();
     
 protected:
     explicit BaseMCWidget(QWidget* parent = Q_NULLPTR);
     BaseMCWidget(const BaseMCWidget&) = delete;
     void operator=(const BaseMCWidget&) = delete;
 
-    
     void server();
-    virtual void setup() = 0;
     
     BaseParametersWidget* prmsWidget = Q_NULLPTR;
     QPushButton* equilBtn = new QPushButton("Equilibration Run",this);
@@ -72,19 +67,17 @@ protected:
     QPushButton* pauseBtn = new QPushButton("Pause",this);
     QPushButton* abortBtn = new QPushButton("Abort",this);
     QPushButton* saveBtn = new QPushButton("Save sample data",this);
-    QPushButton* correlateBtn = new QPushButton("Compute correlation",this);
     
     QTimer* drawRequestTimer;
     
     std::atomic<bool> equilibration_mode {false};
-    std::atomic<bool> advanced_mode {false};
     std::atomic<bool> simulation_running {false};
     std::atomic<bool> parameters_linked {false};
     
     MonteCarloHost MC {};
     
     std::atomic<unsigned long> steps_done {0};
-    std::atomic<unsigned int>  drawRequestTime {100};  
+    std::atomic<unsigned int>  drawRequestTime {10};  
 
 private: 
 

@@ -115,20 +115,4 @@ std::string BaseParametersWidget::getFileKey() const
     return filenameLineEdit->displayText().toStdString();
 }
 
-// double BaseParametersWidget::getStartValue() const 
-// {
-//     Q_CHECK_PTR(startValueSpinBox);
-//     return startValueSpinBox->value();
-// }
 
-// double BaseParametersWidget::getStopValue() const 
-// {
-//     Q_CHECK_PTR(stopValueSpinBox);
-//     return stopValueSpinBox->value();
-// }
-
-// double BaseParametersWidget::getStepValue() const 
-// {
-//     Q_CHECK_PTR(stepValueSpinBox);
-//     return stepValueSpinBox->value();
-// }
