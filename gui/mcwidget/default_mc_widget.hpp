@@ -22,18 +22,23 @@ public:
     
     ~DefaultMCWidget();
     
-    void advancedRunAction() override;
-    void abortAction() override;
+    void advancedRunAction();
+    void equilibrateAction();
+    void productionAction();
+    void pauseAction();
+    void abortAction();
 
 public slots:
     
 signals:
     
-protected:
-    
 private:
-    void setup();
     QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
+    std::vector<double> advancedValues {};
+    std::atomic<unsigned long> advancedEquilMode {true};
+    std::atomic<unsigned long> advancedCycleDone {true};
+
+    void serverAdvanced();
 
 };
 

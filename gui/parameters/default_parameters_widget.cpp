@@ -23,27 +23,9 @@ DefaultParametersWidget::DefaultParametersWidget(QWidget* parent)
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    magneticSpinBox = new QDoubleSpinBox(this);
-
     DEFAULT_PARAMETERS_WIDGET_ASSERT_ALL
-    setup();
-
-}
-
-
-
-DefaultParametersWidget::~DefaultParametersWidget()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-}
-
-
-void DefaultParametersWidget::setup()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-    DEFAULT_PARAMETERS_WIDGET_ASSERT_ALL
-
-    setMinimumWidth(300);
+    
+     setMinimumWidth(300);
     
     // layout of this widget
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -80,9 +62,14 @@ void DefaultParametersWidget::setup()
     
     adjustSize();
     setLayout(mainLayout);
-
 }
 
+
+
+DefaultParametersWidget::~DefaultParametersWidget()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+}
 
 
 
@@ -97,19 +84,19 @@ QGroupBox* DefaultParametersWidget::createSystemBox()
     // default texts for LineEdits
     interactionSpinBox->setMinimum(-3);
     interactionSpinBox->setMaximum(3);
-    interactionSpinBox->setDecimals(1);
+    interactionSpinBox->setDecimals(2);
     interactionSpinBox->setSingleStep(0.5);
     interactionSpinBox->setMinimumWidth(40);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     magneticSpinBox->setMinimum(-10);
     magneticSpinBox->setMaximum(10);
-    magneticSpinBox->setDecimals(1);
+    magneticSpinBox->setDecimals(2);
     magneticSpinBox->setSingleStep(0.1);
     magneticSpinBox->setMinimumWidth(40);
     magneticSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    temperatureSpinBox->setMinimum(0.1);
+    temperatureSpinBox->setMinimum(0.01);
     temperatureSpinBox->setMaximum(20);
     temperatureSpinBox->setDecimals(2);
     temperatureSpinBox->setSingleStep(0.1);
@@ -224,15 +211,15 @@ QGroupBox* DefaultParametersWidget::createAdvancedOptionsBox()
     advancedComboBox->addItem("B");
 
     // set up the range options:
-    startValueSpinBox->setDecimals(1);
+    startValueSpinBox->setDecimals(2);
     startValueSpinBox->setSingleStep(0.1);
-    startValueSpinBox->setMinimum(-10);
-    startValueSpinBox->setMaximum(10);
+    startValueSpinBox->setMinimum(-20);
+    startValueSpinBox->setMaximum(20);
 
-    stopValueSpinBox->setDecimals(1);
+    stopValueSpinBox->setDecimals(2);
     stopValueSpinBox->setSingleStep(0.1);
-    stopValueSpinBox->setMinimum(-10);
-    stopValueSpinBox->setMaximum(10);
+    stopValueSpinBox->setMinimum(-20);
+    stopValueSpinBox->setMaximum(20);
 
     stepValueSpinBox->setDecimals(2);
     stepValueSpinBox->setSingleStep(0.1);
@@ -287,7 +274,7 @@ void DefaultParametersWidget::setReadOnly(bool flag)
     printFreqSpinBox->setReadOnly(flag);
     randomiseBtn->setEnabled(!flag);
     filenameLineEdit->setReadOnly(flag);
-    advancedComboBox->setEditable(!flag);
+    advancedComboBox->setEnabled(!flag);
     startValueSpinBox->setReadOnly(flag);
     stepValueSpinBox->setReadOnly(flag);
     stopValueSpinBox->setReadOnly(flag);
@@ -336,7 +323,7 @@ bool DefaultParametersWidget::getConstrained() const
     return false;
 }
      
-void DefaultParametersWidget::setAdvancedValue(const double& value) 
+void DefaultParametersWidget::setAdvancedValue(const double value) 
 {
     Q_CHECK_PTR(advancedComboBox);
     Q_CHECK_PTR(magneticSpinBox);

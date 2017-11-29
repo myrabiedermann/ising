@@ -22,31 +22,13 @@ ConstrainedParametersWidget::ConstrainedParametersWidget(QWidget* parent)
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    ratioSpinBox = new QDoubleSpinBox(this);
-    ratioCheckBox = new QCheckBox(this);
-    wavelengthSpinBox = new QSpinBox(this);
-    wavelengthCheckBox = new QCheckBox(this);
+    CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
 
+    wavelengthCheckBox->setCheckable(true);
+    ratioCheckBox->setCheckable(true);
     wavelengthCheckBox->setAutoExclusive(true);
     ratioCheckBox->setAutoExclusive(true);
-
-    CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
-    setup();
-
-}
-
-
-
-ConstrainedParametersWidget::~ConstrainedParametersWidget()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-}
-
-
-void ConstrainedParametersWidget::setup()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-    CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
+    ratioCheckBox->setChecked(true);
 
     setMinimumWidth(300);
     
@@ -73,7 +55,7 @@ void ConstrainedParametersWidget::setup()
     connect( stepsProdSpinBox  , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &ConstrainedParametersWidget::valueChanged );
     connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::valueChanged );
     
-    connect( ratioSpinBox      , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConstrainedParametersWidget::criticalValueChanged );
+    connect( ratioSpinBox      , static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &ConstrainedParametersWidget::randomiseSystem );
     connect( ratioCheckBox     , static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), this, &ConstrainedParametersWidget::randomiseSystem );
     connect( wavelengthSpinBox , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::randomiseSystem);
     connect( wavelengthCheckBox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), this, &ConstrainedParametersWidget::randomiseSystem );
@@ -92,6 +74,13 @@ void ConstrainedParametersWidget::setup()
 
 
 
+ConstrainedParametersWidget::~ConstrainedParametersWidget()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+}
+
+
+
 
 QGroupBox* ConstrainedParametersWidget::createSystemBox()
 {
@@ -104,7 +93,7 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
     // default texts for LineEdits
     interactionSpinBox->setMinimum(-3);
     interactionSpinBox->setMaximum(3);
-    interactionSpinBox->setDecimals(1);
+    interactionSpinBox->setDecimals(2);
     interactionSpinBox->setSingleStep(0.5);
     interactionSpinBox->setMinimumWidth(40);
     interactionSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -118,7 +107,7 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
 
     temperatureSpinBox->setMinimum(0.1);
     temperatureSpinBox->setMaximum(10);
-    temperatureSpinBox->setDecimals(1);
+    temperatureSpinBox->setDecimals(2);
     temperatureSpinBox->setSingleStep(0.1);
     temperatureSpinBox->setMinimumWidth(40);
     temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -133,8 +122,8 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
     widthSpinBox->setSingleStep(2);
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    wavelengthSpinBox->setMinimum(0);
-    wavelengthSpinBox->setMaximum(10);
+    wavelengthSpinBox->setMinimum(1);
+    wavelengthSpinBox->setMaximum(20);
     wavelengthSpinBox->setSingleStep(1);
     wavelengthSpinBox->setMinimumWidth(40);
     wavelengthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -244,12 +233,10 @@ void ConstrainedParametersWidget::setReadOnly(bool flag)
     randomiseBtn->setEnabled(!flag);
     filenameLineEdit->setReadOnly(flag);
     ratioSpinBox->setReadOnly(flag);
-    ratioCheckBox->setCheckable(!flag);
+    ratioCheckBox->setEnabled(!flag);
     wavelengthSpinBox->setReadOnly(flag);
-    wavelengthCheckBox->setCheckable(!flag);
+    wavelengthCheckBox->setEnabled(!flag);
 
-    wavelengthCheckBox->setAutoExclusive(true);
-    ratioCheckBox->setAutoExclusive(true);
 }
 
 
@@ -269,7 +256,7 @@ void ConstrainedParametersWidget::setDefault()
     printFreqSpinBox->setValue(10);
     filenameLineEdit->setText("ising");
     ratioSpinBox->setValue(0.5);
-    ratioCheckBox->setChecked(true);
+    ratioCheckBox->click();
     wavelengthSpinBox->setValue(1);
 }
 
@@ -294,7 +281,7 @@ bool ConstrainedParametersWidget::getConstrained() const
     return true;
 }
 
-void ConstrainedParametersWidget::setAdvancedValue( __attribute__((unused)) const double& value)
+void ConstrainedParametersWidget::setAdvancedValue( __attribute__((unused)) const double value)
 {}
                 
 
