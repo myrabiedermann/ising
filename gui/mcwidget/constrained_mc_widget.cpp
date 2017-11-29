@@ -15,14 +15,6 @@
 ConstrainedMCWidget::ConstrainedMCWidget(QWidget *parent) 
   : BaseMCWidget(parent)
 {
-      qDebug() << __PRETTY_FUNCTION__;
-      setup();
-}
-
-
-
-void ConstrainedMCWidget::setup()
-{
     qDebug() << __PRETTY_FUNCTION__;
     
     equilBtn->setCheckable(false);
@@ -60,7 +52,7 @@ void ConstrainedMCWidget::setup()
     connect(pauseBtn,     &QPushButton::clicked, this, &BaseMCWidget::pauseAction);
     connect(abortBtn,     &QPushButton::clicked, this, &BaseMCWidget::abortAction);
     connect(saveBtn,      &QPushButton::clicked, this, &BaseMCWidget::saveAction);
-    connect(correlateBtn, &QPushButton::clicked, this, &BaseMCWidget::correlateAction);
+    connect(correlateBtn, &QPushButton::clicked, this, &ConstrainedMCWidget::correlateAction);
     connect(drawRequestTimer, &QTimer::timeout, [&]{ emit drawRequest(MC, steps_done.load()); });
     
     // main layout
@@ -77,7 +69,131 @@ void ConstrainedMCWidget::setup()
     mainLayout->addWidget(saveBtn);
     mainLayout->addWidget(correlateBtn);
 
-    setLayout(mainLayout);  
+    setLayout(mainLayout); 
+}
+
+
+
+void ConstrainedMCWidget::equilibrateAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    
+    setRunning(true);
+    
+    pauseBtn->setEnabled(true);
+    prodBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(false);
+
+    drawRequestTimer->start(drawRequestTime.load());
+
+    if( equilibration_mode.load() == false )
+    {
+        equilibration_mode.store(true);
+        steps_done.store(0);
+        emit resetChartSignal();
+    }
+    emit drawRequest(MC, steps_done.load());
+    emit runningSignal(true);
+    
+    QFuture<void> future = QtConcurrent::run([&]
+    {
+        server();
+    });
+}
+
+
+
+void ConstrainedMCWidget::productionAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    
+    setRunning(true);
+    
+    pauseBtn->setEnabled(true);
+    equilBtn->setEnabled(false);
+    prodBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(false);
+    
+    drawRequestTimer->start(drawRequestTime.load());
+    
+    if( equilibration_mode.load() == true )
+    {
+        equilibration_mode.store(false);
+        steps_done.store(0);
+        emit resetChartSignal();
+    }
+    emit drawRequest(MC, steps_done.load());
+    emit runningSignal(true);
+    
+    QFuture<void> future = QtConcurrent::run([&]
+    {
+        server();
+    });
+}
+
+
+
+void ConstrainedMCWidget::pauseAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    
+    setRunning(false);
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(true);
+    correlateBtn->setEnabled(true);
+    abortBtn->setEnabled(true);
+    
+    emit drawRequest(MC, steps_done.load());
+    
+    drawRequestTimer->stop();
+    
+    emit runningSignal(false);
+}
+
+
+
+void ConstrainedMCWidget::abortAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(true);
+    abortBtn->setEnabled(false);
+    
+    drawRequestTimer->stop();
+    
+    emit runningSignal(false);
+    emit resetSignal();
+    makeSystemNew();
+}
+
+
+
+void ConstrainedMCWidget::correlateAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    
+    auto correlation = MC.getSpinsystem().computeCorrelation();
+    MC.print_correlation( correlation );
+    auto structureFunction = MC.getSpinsystem().computeStructureFunction(correlation);
+    MC.print_structureFunction( structureFunction );
+    emit drawCorrelationRequest( correlation );
 }
 
 

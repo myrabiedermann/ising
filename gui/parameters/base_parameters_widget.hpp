@@ -51,7 +51,7 @@ public:
     virtual double getStopValue() const = 0;
     virtual double getStepValue() const = 0;
     
-    virtual void setAdvancedValue(const double&) = 0;
+    virtual void setAdvancedValue(const double) = 0;
     
 public slots:
     virtual void setReadOnly(bool) = 0;
@@ -73,7 +73,6 @@ protected:
     virtual QGroupBox* createEquilBox() = 0;
     virtual QGroupBox* createProdBox() = 0;
     virtual QGroupBox* createAdvancedOptionsBox() = 0;
-    virtual void setup() = 0;
     
     // Line edits
     QSpinBox* heightSpinBox = new QSpinBox(this);
@@ -85,17 +84,6 @@ protected:
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
 
     QLineEdit* filenameLineEdit = new QLineEdit(this);
-
-    QDoubleSpinBox* magneticSpinBox {Q_NULLPTR};
-    QDoubleSpinBox* ratioSpinBox {Q_NULLPTR};
-    QCheckBox*      ratioCheckBox {Q_NULLPTR};
-    QSpinBox*       wavelengthSpinBox {Q_NULLPTR};
-    QCheckBox*      wavelengthCheckBox {Q_NULLPTR};
-
-    // QComboBox* advancedComboBox = new QComboBox(this);
-    // QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
-    // QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
-    // QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
     
     // Buttons
     QPushButton* randomiseBtn = new QPushButton("Randomise spins", this);

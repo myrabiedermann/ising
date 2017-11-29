@@ -22,6 +22,12 @@ public:
     
     ~ConstrainedMCWidget();
 
+    void equilibrateAction();
+    void productionAction();
+    void pauseAction();
+    void abortAction();
+    void correlateAction();
+
 public slots:
     
 signals:
@@ -29,7 +35,7 @@ signals:
 protected:
     
 private:
-    void setup();
+    QPushButton* correlateBtn = new QPushButton("Compute correlation",this);
 
 };
 
