@@ -16,8 +16,7 @@ class Spinsystem
 private:
     double Hamiltonian {0};
     std::vector<Spin> spins {};
-    std::vector<unsigned int> lastFlipped {}; 
-    // std::vector<std::reference_wrapper<Spin>> lastFlipped {}; 
+    std::vector<std::reference_wrapper<Spin>> lastFlipped {}; 
 
     void   computeHamiltonian();
     double local_energy_interaction(const Spin&) const;

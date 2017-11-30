@@ -37,62 +37,45 @@ void Spinsystem::flip()
 {
     // perform one move and save flipped spins in lastFlipped
 
-    lastFlipped.clear();    // contains ID's of spins that have been flipped in last move
+    lastFlipped.clear();    
     double localEnergy_before = 0;
     double localEnergy_after = 0;
 
     if( ! getSpinExchange() )
     {
         // find random spin
-        unsigned int randomSpinID = enhance::random_int(0, spins.size()-1);
-        // auto randomspin = enhance::random_iterator(spins);
-        // lastFlipped.emplace_back( std::ref(*randomspin) );
-        lastFlipped.emplace_back( randomSpinID );
+        auto randomspin = enhance::random_iterator(spins);
+        lastFlipped.emplace_back( std::ref(*randomspin) );
         // flip spin
-        // localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-        localEnergy_before = local_energy_interaction( spins[randomSpinID] ) + local_energy_magnetic( spins[randomSpinID] );
-        // randomspin->flip();
-        spins[randomSpinID].flip();
-        // localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-        localEnergy_after = local_energy_interaction( spins[randomSpinID] ) + local_energy_magnetic( spins[randomSpinID] );
+        localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
+        randomspin->flip();
+        localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
         // update Hamiltonian:
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
     else
     {
         // find random spin
-        // auto randomspin = enhance::random_iterator(spins);
-        unsigned int randomSpinID = enhance::random_int(0, spins.size()-1);
+        auto randomspin = enhance::random_iterator(spins);
         do
         {
-            // randomspin = enhance::random_iterator(spins);
-            randomSpinID = enhance::random_int(0, spins.size()-1);
-        // } while( randomspin->sumOppositeNeighbours() == 0 );
-        } while( spins[randomSpinID].sumOppositeNeighbours() == 0 );
+            randomspin = enhance::random_iterator(spins);
+        } while( randomspin->sumOppositeNeighbours() == 0 );
         
         // find random neighbour
-        // auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-        unsigned int randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
+        auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
         do
         {
-            // randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-            randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
-        // } while( randomneighbour->get().getType() == randomspin->getType() );
-        } while( spins[randomSpinID].getType() == spins[randomNeighbourID].getType() );
+            randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
+        } while( randomneighbour->get().getType() == randomspin->getType() );
         
         // flip spins
-        // lastFlipped.emplace_back(*randomspin);
-        // lastFlipped.emplace_back(randomneighbour->get());
-        lastFlipped.emplace_back(randomSpinID);
-        lastFlipped.emplace_back(randomNeighbourID);
-        // localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
-        localEnergy_before = local_energy_interaction(spins[randomSpinID]) + local_energy_interaction(spins[randomNeighbourID]);
-        // randomspin->flip();
-        // randomneighbour->get().flip();
-        spins[randomSpinID].flip();
-        spins[randomNeighbourID].flip();
-        // localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
-        localEnergy_after = local_energy_interaction(spins[randomSpinID]) + local_energy_interaction(spins[randomNeighbourID]);
+        lastFlipped.emplace_back(*randomspin);
+        lastFlipped.emplace_back(randomneighbour->get());
+        localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
+        randomspin->flip();
+        randomneighbour->get().flip();
+        localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
 
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
@@ -112,31 +95,24 @@ void Spinsystem::flip_back()
     double localEnergy_before = 0;
     double localEnergy_after = 0;
 
-    // for( const auto& s: lastFlipped ) 
-    for( const auto& id: lastFlipped ) 
+    for( const auto& s: lastFlipped ) 
     {
-        // localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-        localEnergy_before += local_energy_interaction( spins[id] ) + local_energy_magnetic( spins[id] );
+        localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
     }
-    // for( const auto& s: lastFlipped ) 
-    for( const auto& id: lastFlipped ) 
+    for( const auto& s: lastFlipped ) 
     {
-        // s.get().flip();
-        spins[id].flip();
+        s.get().flip();
     }
-    // for( const auto& s: lastFlipped ) 
-    for( const auto& id: lastFlipped ) 
+    for( const auto& s: lastFlipped ) 
     {
-        // localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-        localEnergy_after += local_energy_interaction( spins[id] ) + local_energy_magnetic( spins[id] );
+        localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
     }
 
     // update Hamiltonian
     Hamiltonian += localEnergy_after - localEnergy_before;
 
     Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
-    // for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
-    for(const auto& id: lastFlipped) Logger::getInstance().debug("  ", id);
+    for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
 
 }
 
