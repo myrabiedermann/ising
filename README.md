@@ -5,10 +5,10 @@
 
 - Qt5Widgets
 - Qt5Charts
+- Qt5Concurrent
 
 ## Known Issues
 
-- [ ] Interaction Parameter J results in wrong energies for hamiltonianChart
 
 ## Installation guide
 
