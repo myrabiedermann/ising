@@ -88,6 +88,20 @@ unsigned int BaseParametersWidget::getWidth() const
 }
 
 
+void BaseParametersWidget::setHeight(const unsigned int H)
+{
+    Q_CHECK_PTR(heightSpinBox);
+    return heightSpinBox->setValue(H);
+}
+
+
+void BaseParametersWidget::setWidth(const unsigned int W)
+{
+    Q_CHECK_PTR(widthSpinBox);
+    return widthSpinBox->setValue(W);
+}
+
+
 unsigned long BaseParametersWidget::getStepsEquil() const
 {
     Q_CHECK_PTR(stepsEquilSpinBox);
