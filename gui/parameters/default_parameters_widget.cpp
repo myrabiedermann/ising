@@ -287,8 +287,12 @@ void DefaultParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     DEFAULT_PARAMETERS_WIDGET_ASSERT_ALL
 
-    heightSpinBox->setValue(4);
-    widthSpinBox->setValue(4);
+    heightSpinBox->setValue(50);
+    widthSpinBox->setValue(50);
+    #ifndef NDEBUG
+        heightSpinBox->setValue(6);
+        widthSpinBox->setValue(6);
+    #endif
     interactionSpinBox->setValue(1.0);
     temperatureSpinBox->setValue(1.0);
     stepsEquilSpinBox->setValue(1000000);
