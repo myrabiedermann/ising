@@ -45,7 +45,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         else
         {
             Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
-            Logger::getInstance().debug_new_line(spinsystem.str());
+            Logger::getInstance().debug_new_line(spinsystem.getStringOfSystem());
         #endif
         }
     }
