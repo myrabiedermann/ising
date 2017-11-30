@@ -77,7 +77,7 @@ protected:
     MonteCarloHost MC {};
     
     std::atomic<unsigned long> steps_done {0};
-    std::atomic<unsigned int>  drawRequestTime {10};  
+    std::atomic<unsigned int>  drawRequestTime {100};  
 
 private: 
 

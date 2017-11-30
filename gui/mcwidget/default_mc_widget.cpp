@@ -239,6 +239,7 @@ void DefaultMCWidget::serverAdvanced()
             prmsWidget->setAdvancedValue( advancedValues.back() );
             advancedValues.pop_back();
             advancedCycleDone.store(false);
+            // makeSystemRandom();
         }
 
         while( simulation_running.load() && advancedEquilMode.load() == true && steps_done.load() < prmsWidget->getStepsEquil() )
@@ -260,11 +261,12 @@ void DefaultMCWidget::serverAdvanced()
             if( steps_done.load() >= prmsWidget->getStepsProd() )
             {
                 advancedEquilMode.store(true);
+                advancedCycleDone.store(true);
                 steps_done.store(0);
                 MC.print_averages();
                 MC.clearRecords();
+                MC.resetSpins();
                 emit resetChartSignal();
-                advancedCycleDone.store(true);
             }
         }
     }

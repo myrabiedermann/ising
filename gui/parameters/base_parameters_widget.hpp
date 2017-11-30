@@ -35,6 +35,8 @@ public:
     
     unsigned int getHeight() const;
     unsigned int getWidth() const;
+    void         setHeight(const unsigned int);
+    void         setWidth(const unsigned int);
     double getInteraction() const;
     double getTemperature() const;
     unsigned long getStepsEquil() const;
