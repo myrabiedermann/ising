@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include "lib/enhance.hpp"
 
 
 class Spin
@@ -20,6 +21,8 @@ public:
     auto  getID()   const { return ID; }
     auto  getType() const { return type; }
     auto& getNeighbours() { return neighbours; }
+
+    Spin& getRandomNeighbour();
 
     void flip();
 

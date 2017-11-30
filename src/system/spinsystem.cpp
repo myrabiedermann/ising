@@ -79,45 +79,45 @@ void Spinsystem::flip()
 
 
     // MÖGLICHE LÖSUNG:
-    // lastFlipped.clear();
+    // lastFlipped.clear();    // contains ID's of spins that have been flipped in last move
     // double localEnergy_before = 0;
     // double localEnergy_after = 0;
 
-    // if( ! getConstrained() )
+    // if( ! getSpinExchange() )
     // {
     //     // find random spin
-    //     auto randomspin = enhance::random_iterator(spins);
-    //     lastFlipped.emplace_back( std::ref(*randomspin) );
+    //     unsigned int randomSpinID = enhance::random_int(0, spins.size()-1);
+    //     lastFlipped.emplace_back( randomSpinID );
     //     // flip spin
-    //     localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-    //     randomspin->flip();
-    //     localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
+    //     localEnergy_before = local_energy_interaction( spins[randomSpinID] ) + local_energy_magnetic( spins[randomSpinID] );
+    //     spins[randomSpinID].flip();
+    //     localEnergy_after = local_energy_interaction( spins[randomSpinID] ) + local_energy_magnetic( spins[randomSpinID] );
     //     // update Hamiltonian:
     //     Hamiltonian += localEnergy_after - localEnergy_before;
     // }
     // else
     // {
     //     // find random spin
-    //     auto randomspin = enhance::random_iterator(spins);
+    //     unsigned int randomSpinID = enhance::random_int(0, spins.size()-1);
     //     do
     //     {
-    //         randomspin = enhance::random_iterator(spins);
-    //     } while( randomspin->sumOppositeNeighbours() == 0 );
+    //         randomSpinID = enhance::random_int(0, spins.size()-1);
+    //     } while( spins[randomSpinID].sumOppositeNeighbours() == 0 );
         
     //     // find random neighbour
-    //     auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
+    //     unsigned int randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
     //     do
     //     {
-    //         randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-    //     } while( randomneighbour->get().getType() == randomspin->getType() );
+    //         randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
+    //     } while( spins[randomSpinID].getType() == spins[randomNeighbourID].getType() );
         
     //     // flip spins
-    //     lastFlipped.emplace_back(*randomspin);
-    //     lastFlipped.emplace_back(randomneighbour->get());
-    //     localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
-    //     randomspin->flip();
-    //     randomneighbour->get().flip();
-    //     localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
+    //     lastFlipped.emplace_back(randomSpinID);
+    //     lastFlipped.emplace_back(randomNeighbourID);
+    //     localEnergy_before = local_energy_interaction(spins[randomSpinID]) + local_energy_interaction(spins[randomNeighbourID]);
+    //     spins[randomSpinID].flip();
+    //     spins[randomNeighbourID].flip();
+    //     localEnergy_after = local_energy_interaction(spins[randomSpinID]) + local_energy_interaction(spins[randomNeighbourID]);
 
     //     // update Hamiltonian
     //     Hamiltonian += localEnergy_after - localEnergy_before;
@@ -125,7 +125,7 @@ void Spinsystem::flip()
     // }
 
     // Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
-    // for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
+    // for(const auto& spinID: lastFlipped) Logger::getInstance().debug( " ", spinID);
 }
 
 
@@ -140,31 +140,27 @@ void Spinsystem::flip_back()
      */
 
 
-    // MÖGLICHE LÖSUNG: 
-    // if( lastFlipped.size() == 0 )
-    //     throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
-    
+    // MÖGLICHE LÖSUNG:
     // double localEnergy_before = 0;
     // double localEnergy_after = 0;
-
-    // for( const auto& s: lastFlipped ) 
+    // // flip spins back:
+    // for( const auto& id: lastFlipped ) 
     // {
-    //     localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+    //     localEnergy_before += local_energy_interaction( spins[id] ) + local_energy_magnetic( spins[id] );
     // }
-    // for( const auto& s: lastFlipped ) 
+    // for( const auto& id: lastFlipped ) 
     // {
-    //     s.get().flip();
+    //     spins[id].flip();
     // }
-    // for( const auto& s: lastFlipped ) 
+    // for( const auto& id: lastFlipped ) 
     // {
-    //     localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
+    //     localEnergy_after += local_energy_interaction( spins[id] ) + local_energy_magnetic( spins[id] );
     // }
-
     // // update Hamiltonian
     // Hamiltonian += localEnergy_after - localEnergy_before;
 
     // Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
-    // for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
+    // for(const auto& id: lastFlipped) Logger::getInstance().debug("  ", id);
 }
 
 
@@ -179,7 +175,7 @@ double Spinsystem::getMagnetisation() const
      *           konfiguration.  
      */
 
-    return 0;
+    // return 0;
 
 
     // MÖGLICHE LÖSUNG:
