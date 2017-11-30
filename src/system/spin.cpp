@@ -34,6 +34,13 @@ void Spin::flip()
 
 
 
+Spin& Spin::getRandomNeighbour() 
+{ 
+    unsigned int randomNr = enhance::random_int(0, neighbours.size() - 1);
+    return neighbours[randomNr].get();
+}
+
+
 int Spin::sumOppositeNeighbours() const
 {
     // return number of neighbours of opposite type
