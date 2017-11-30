@@ -289,10 +289,6 @@ void DefaultParametersWidget::setDefault()
 
     heightSpinBox->setValue(50);
     widthSpinBox->setValue(50);
-    #ifndef NDEBUG
-        heightSpinBox->setValue(6);
-        widthSpinBox->setValue(6);
-    #endif
     interactionSpinBox->setValue(1.0);
     temperatureSpinBox->setValue(1.0);
     stepsEquilSpinBox->setValue(1000000);
@@ -304,6 +300,14 @@ void DefaultParametersWidget::setDefault()
     stepValueSpinBox->setValue(0.1);
     stopValueSpinBox->setValue(0);
     magneticSpinBox->setValue(0.0);
+
+    #ifndef NDEBUG
+        heightSpinBox->setValue(6);
+        widthSpinBox->setValue(6);
+        stepsEquilSpinBox->setValue(5);
+        stepsProdSpinBox->setValue(10);
+        printFreqSpinBox->setValue(5);
+    #endif
 }
 
 
