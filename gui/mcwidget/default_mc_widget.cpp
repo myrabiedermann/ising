@@ -21,31 +21,37 @@ DefaultMCWidget::DefaultMCWidget(QWidget *parent)
     equilBtn->setEnabled(true);
     equilBtn->setMaximumWidth(350);
     equilBtn->setMinimumWidth(150);
+    equilBtn->setFocusPolicy(Qt::NoFocus);
 
     prodBtn->setCheckable(false);
     prodBtn->setEnabled(true);
     prodBtn->setMaximumWidth(350);
     prodBtn->setMinimumWidth(150);
+    prodBtn->setFocusPolicy(Qt::NoFocus);
     
     pauseBtn->setCheckable(false);
     pauseBtn->setEnabled(false);
     pauseBtn->setMaximumWidth(350);
     pauseBtn->setMinimumWidth(150);
+    pauseBtn->setFocusPolicy(Qt::NoFocus);
     
     abortBtn->setCheckable(false);
     abortBtn->setEnabled(false);
     abortBtn->setMaximumWidth(350);
     abortBtn->setMinimumWidth(150);
+    abortBtn->setFocusPolicy(Qt::NoFocus);
 
     saveBtn->setCheckable(false);
     saveBtn->setEnabled(false);
     saveBtn->setMaximumWidth(350);
     saveBtn->setMinimumWidth(150);
+    saveBtn->setFocusPolicy(Qt::NoFocus);
 
     advancedRunBtn->setCheckable(false);
     advancedRunBtn->setEnabled(true);
     advancedRunBtn->setMaximumWidth(350);
     advancedRunBtn->setMinimumWidth(150);
+    advancedRunBtn->setFocusPolicy(Qt::NoFocus);
 
     connect(advancedRunBtn, &QPushButton::clicked, this, &DefaultMCWidget::advancedRunAction);
     connect(equilBtn,       &QPushButton::clicked, this, &BaseMCWidget::equilibrateAction);
