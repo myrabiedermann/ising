@@ -166,9 +166,13 @@ void Spinsystem::setup()
     lastFlipped.clear();
 
     // some safety checks:
-    if( getConstrained() && (getWidth()*getHeight()) % 2 != 0 )
+    if( getConstrained() )
     {
-        throw std::logic_error("[spinsystem] system size must be an even number if system is constrained");
+        if( parameters->getWidth() % 2 != 0 )
+            parameters->setWidth(parameters->getWidth()+1);
+        if( parameters->getHeight() % 2 != 0 )
+            parameters->setHeight(parameters->getHeight()+1);
+        qInfo() << "Remember: system size must be an even number if system is constrained!";
     }
 
     auto width  = getWidth();
