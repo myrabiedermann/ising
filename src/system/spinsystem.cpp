@@ -12,10 +12,6 @@ double Spinsystem::local_energy_interaction(const Spin& _spin) const
      */
 
     return 0; 
-
-
-    // MÖGLICHE LÖSUNG:
-    // return - getInteraction() * _spin.sumNeighbours();
 }
 
 
@@ -30,10 +26,6 @@ double Spinsystem::local_energy_magnetic(const Spin& _spin) const
      */
 
     return 0;
-
-
-    // MÖGLICHE LÖSUNG:
-    // return - getMagnetic() * _spin.getType();
 }
 
 
@@ -48,14 +40,6 @@ void Spinsystem::computeHamiltonian()
      *           bei gegebener Spinkonfiguration und Abspeicherung 
      *           dieses Wertes in der Membervariable "Hamiltonian".
      */
-
-
-    // MÖGLICHE LÖSUNG:
-    // Hamiltonian = 0;
-    // for(const auto& S : spins)
-    // {
-    //     Hamiltonian += local_energy_interaction(S) / 2 + local_energy_magnetic(S);
-    // }
 }
 
 
@@ -76,56 +60,6 @@ void Spinsystem::flip()
      *              Flip dieser beiden Spins, Update des Hamiltonian, Abspeichern
      *              der geflippten Spins in der Membervariable lastFlipped
      */
-
-
-    // MÖGLICHE LÖSUNG:
-    // lastFlipped.clear();
-    // double localEnergy_before = 0;
-    // double localEnergy_after = 0;
-
-    // if( ! getConstrained() )
-    // {
-    //     // find random spin
-    //     auto randomspin = enhance::random_iterator(spins);
-    //     lastFlipped.emplace_back( std::ref(*randomspin) );
-    //     // flip spin
-    //     localEnergy_before = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-    //     randomspin->flip();
-    //     localEnergy_after = local_energy_interaction( *randomspin ) + local_energy_magnetic( *randomspin );
-    //     // update Hamiltonian:
-    //     Hamiltonian += localEnergy_after - localEnergy_before;
-    // }
-    // else
-    // {
-    //     // find random spin
-    //     auto randomspin = enhance::random_iterator(spins);
-    //     do
-    //     {
-    //         randomspin = enhance::random_iterator(spins);
-    //     } while( randomspin->sumOppositeNeighbours() == 0 );
-        
-    //     // find random neighbour
-    //     auto randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-    //     do
-    //     {
-    //         randomneighbour = enhance::random_iterator(randomspin->getNeighbours());
-    //     } while( randomneighbour->get().getType() == randomspin->getType() );
-        
-    //     // flip spins
-    //     lastFlipped.emplace_back(*randomspin);
-    //     lastFlipped.emplace_back(randomneighbour->get());
-    //     localEnergy_before = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
-    //     randomspin->flip();
-    //     randomneighbour->get().flip();
-    //     localEnergy_after = local_energy_interaction(*randomspin) + local_energy_interaction(randomneighbour->get());
-
-    //     // update Hamiltonian
-    //     Hamiltonian += localEnergy_after - localEnergy_before;
-        
-    // }
-
-    // Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
-    // for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
 }
 
 
@@ -138,33 +72,6 @@ void Spinsystem::flip_back()
      * return:   /
      * Funktion: Macht den gesamten in flip() durchgeführten Prozess rückgängig. 
      */
-
-
-    // MÖGLICHE LÖSUNG: 
-    // if( lastFlipped.size() == 0 )
-    //     throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
-    
-    // double localEnergy_before = 0;
-    // double localEnergy_after = 0;
-
-    // for( const auto& s: lastFlipped ) 
-    // {
-    //     localEnergy_before += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-    // }
-    // for( const auto& s: lastFlipped ) 
-    // {
-    //     s.get().flip();
-    // }
-    // for( const auto& s: lastFlipped ) 
-    // {
-    //     localEnergy_after += local_energy_interaction( s.get() ) + local_energy_magnetic( s.get() );
-    // }
-
-    // // update Hamiltonian
-    // Hamiltonian += localEnergy_after - localEnergy_before;
-
-    // Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: ");
-    // for(const auto& s: lastFlipped) Logger::getInstance().debug("  ", s.get().getID());
 }
 
 
@@ -180,23 +87,14 @@ double Spinsystem::getMagnetisation() const
      */
 
     return 0;
-
-
-    // MÖGLICHE LÖSUNG:
-    // int sum = 0;
-    // for( const auto& S: spins )
-    // {
-    //     sum += S.getType();
-    // }
-    // return static_cast<double>(sum) / spins.size();
 }
 
 
 
 
 /*
- * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
- * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN 
  */
 
 unsigned long Spinsystem::getHeight() const 

@@ -19,8 +19,7 @@ private:
     
     /* Aufgabe 1.4
      * 
-     * Membervariable lastFlipped zufügen: (Typ kann angepasst werden)
-     * XX lastFlipped;
+     * Membervariable lastFlipped zufügen bzw Typ anpassen
      */
     std::vector<std::reference_wrapper<Spin>> lastFlipped {};
 
@@ -53,7 +52,7 @@ public:
 
 /*
  * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
- * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN 
  */ 
 private:
     BaseParametersWidget* parameters = Q_NULLPTR;

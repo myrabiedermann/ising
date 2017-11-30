@@ -27,8 +27,6 @@ private:
     std::vector<double>  energies {};
     std::vector<double>  magnetisations {};
     
-    // bool acceptance(const double, const double, const double); // optional
-
 public:
     void run(const unsigned long&, const bool EQUILMODE = false);
 
@@ -36,7 +34,7 @@ public:
 
 /*
  * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
- * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN 
  */
 
 private:
