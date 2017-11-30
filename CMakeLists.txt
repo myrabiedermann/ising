@@ -38,6 +38,8 @@ file(GLOB ising_SRC
   gui/*/*.cpp
 )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ~/bin)
+
 # Create code from a list of Qt designer ui files.
 set(CMAKE_AUTOUIC ON) # use this if you have CMake 3.x instead of the following
 # qt5_wrap_ui(ising_SRC gui/ising.ui)

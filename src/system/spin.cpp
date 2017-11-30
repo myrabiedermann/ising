@@ -2,14 +2,15 @@
 
 
 
-Spin::Spin(const unsigned int _id, const int _type)
- : ID (_id)
- , type (_type)
-{}
+Spin::Spin(unsigned int _id, int _type)
+{
+    ID = _id;
+    type = _type;
+}
 
 
 
-void Spin::setType(const int _type)
+void Spin::setType(int _type)
 {   
     // set type of this spin
     type = _type; 
@@ -17,7 +18,7 @@ void Spin::setType(const int _type)
 
 
 
-void Spin::setNeighbours(const std::vector<std::reference_wrapper<Spin>>& _neighbours) 
+void Spin::setNeighbours(std::vector<std::reference_wrapper<Spin>>& _neighbours) 
 {
     // set neighbours for this spin
     neighbours = _neighbours; 
@@ -28,7 +29,7 @@ void Spin::setNeighbours(const std::vector<std::reference_wrapper<Spin>>& _neigh
 void Spin::flip()
 { 
     // flip this spin
-    type = ( type == -1 ? 1: -1 ); 
+    type = -1 * type;
 }
 
 
