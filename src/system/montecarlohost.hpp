@@ -22,16 +22,26 @@
 
 class MonteCarloHost
 {
-    BaseParametersWidget* parameters = Q_NULLPTR;
-    Spinsystem            spinsystem {};
-
+private:
+    Spinsystem           spinsystem {};
     std::vector<double>  energies {};
     std::vector<double>  magnetisations {};
     
     // bool acceptance(const double, const double, const double); // optional
 
-protected:
-    
+public:
+    void run(const unsigned long&, const bool EQUILMODE = false);
+
+
+
+/*
+ * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ */
+
+private:
+    BaseParametersWidget* parameters = Q_NULLPTR;
+
 public:
     MonteCarloHost();
     MonteCarloHost(const MonteCarloHost&) = delete;
@@ -44,8 +54,6 @@ public:
     void clearRecords();
     
     const Spinsystem& getSpinsystem() const;
-    
-    void run(const unsigned long&, const bool EQUILMODE = false);
     
     void print_data() const;
     void print_averages() const;

@@ -7,15 +7,15 @@
 class Spin
 {
 
-    const unsigned int  ID;
-    int                 type;
+    unsigned int  ID {0};
+    int           type {1};
     std::vector<std::reference_wrapper<Spin>> neighbours {};
 
 public:
-    Spin(const unsigned int, const int);
+    Spin(unsigned int, int);
 
-    void setType(int _t);
-    void setNeighbours(const std::vector<std::reference_wrapper<Spin>>&);
+    void setType(int);
+    void setNeighbours(std::vector<std::reference_wrapper<Spin>>&);
 
     auto  getID()   const { return ID; }
     auto  getType() const { return type; }
