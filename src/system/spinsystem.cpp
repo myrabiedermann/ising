@@ -436,14 +436,15 @@ Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correla
 
     // computation of structure factor:
     Histogram<double> structureFunction {0.5};
-    for(double k=0; k<getWidth()/2; k+=0.5)
+    double k = 0;
+    while( k < getWidth()/2 )
     {
         structureFunction.add_data(k, 0.5);     // includes intitial point for r=0 where cos(k*0)*corr(0)*deltar = 0.5 because corr(0)=1 and deltar = 0.5
-        // structureFunction.back() += 0.5;    // initial point where corr(0) = 1
         for(auto& B: correlation)
         {
             structureFunction.add_data(k, std::cos( k*B.position()*2*M_PI/getWidth() ) * B.counter * deltaR.get_data(B.position()) );
         }
+        k += 0.5;
     }
 
     return structureFunction;
