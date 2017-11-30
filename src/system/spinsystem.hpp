@@ -17,11 +17,8 @@ private:
     double Hamiltonian {0};
     std::vector<Spin> spins {};
     
-    /* Aufgabe 1.4
-     * 
-     * Membervariable lastFlipped zufügen bzw Typ anpassen
-     */
-    std::vector<std::reference_wrapper<Spin>> lastFlipped {};
+    // Fuer Aufgabe 1.4:
+    std::vector<unsigned int> lastFlipped {};   // contains spin-ID's of flipped Spins from last call to flip()
 
     void   computeHamiltonian();
     double local_energy_interaction(const Spin&) const;

@@ -249,10 +249,6 @@ void ConstrainedParametersWidget::setDefault()
 
     heightSpinBox->setValue(60);
     widthSpinBox->setValue(60);
-    #ifndef NDEBUG
-        heightSpinBox->setValue(6);
-        widthSpinBox->setValue(6);
-    #endif
     interactionSpinBox->setValue(1.0);
     temperatureSpinBox->setValue(1.0);
     stepsEquilSpinBox->setValue(1000000);
@@ -262,6 +258,14 @@ void ConstrainedParametersWidget::setDefault()
     ratioSpinBox->setValue(0.5);
     ratioCheckBox->click();
     wavelengthSpinBox->setValue(1);
+    
+    #ifndef NDEBUG
+        heightSpinBox->setValue(6);
+        widthSpinBox->setValue(6);
+        stepsEquilSpinBox->setValue(5);
+        stepsProdSpinBox->setValue(10);
+        printFreqSpinBox->setValue(5);
+    #endif
 }
 
 
