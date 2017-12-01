@@ -41,7 +41,6 @@ public:
     void operator=(const MainWindow&) = delete;
     ~MainWindow();
     
-    
 protected:
     QGroupBox* createBottomActionGroup();
     
