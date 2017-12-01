@@ -508,5 +508,38 @@ Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correla
 }
 
 
+void Spinsystem::computeSystemTimesCos() const
+{
+    // compute S(x,y)*cos(k0*y)
+
+    Q_CHECK_PTR(parameters);
+    std::string filekeystring = parameters->getFileKey();
+    std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+    filekey.append(".cos");
+
+    std::ofstream FILE;
+    FILE.open(filekey);
+
+    std::vector<double> amplitudes;
+    for( int k = 0; k < getWidth() / 2; ++k )
+    {
+        amplitudes.emplace_back(0);
+        for( unsigned int y = 0; y < getWidth(); ++y )
+        {
+            double cosTerm = ((0.5*std::cos(k*(2*M_PI/getWidth())*static_cast<double>(y+0.5)) + 1) / 2);
+            int sumSy = 0;
+            for(unsigned int x=y*getWidth(); x<(y+1)*getWidth()-1; ++x)
+            {
+                sumSy += spins[x].getType();
+            }
+            // std::cout << y << "   " << (double) sumSy / getWidth() << " " << cosTerm  << " " << cosTerm * sumSy / getWidth() << std::endl; 
+            amplitudes.back() += cosTerm * sumSy / getWidth();
+        }
+        FILE << k << "  " << amplitudes.back() << '\n';
+    }
+
+    FILE.close();
+}
+
 
 

@@ -73,6 +73,7 @@ public:
 
     Histogram<double> computeCorrelation() const;
     Histogram<double> computeStructureFunction(const Histogram<double>) const;
+    void computeSystemTimesCos() const;
 
     void print(std::ostream & ) const;
 
