@@ -37,11 +37,11 @@ void Spinsystem::flip()
 {
     // perform one move and save flipped spins in lastFlipped
 
-    lastFlipped.clear();
+    lastFlipped.clear();    
     double localEnergy_before = 0;
     double localEnergy_after = 0;
 
-    if( ! getConstrained() )
+    if( ! getSpinExchange() )
     {
         // find random spin
         auto randomspin = enhance::random_iterator(spins);
@@ -83,7 +83,7 @@ void Spinsystem::flip()
     }
 
     Logger::getInstance().debug_new_line("[spinsystem]",  "flipping spin: ");
-    for(const auto& s: lastFlipped) Logger::getInstance().debug( " ", s.get().getID());
+    for(const auto& spinID: lastFlipped) Logger::getInstance().debug( " ", spinID);
 }
 
 
@@ -91,10 +91,7 @@ void Spinsystem::flip()
 void Spinsystem::flip_back()
 {
     // flip all spins in lastFlipped
-
-    if( lastFlipped.size() == 0 )
-        throw std::logic_error("[spinsystem] Cannot flip back, since nothing has flipped yet");
-    
+   
     double localEnergy_before = 0;
     double localEnergy_after = 0;
 
@@ -135,6 +132,68 @@ double Spinsystem::getMagnetisation() const
 
 
 
+
+/*
+ * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ */
+
+unsigned long Spinsystem::getHeight() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getHeight(); 
+}
+
+
+unsigned long Spinsystem::getWidth() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getWidth(); 
+}
+
+
+double Spinsystem::getInteraction() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getInteraction(); 
+}
+
+
+double Spinsystem::getMagnetic() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getMagnetic(); 
+}
+
+
+bool Spinsystem::getSpinExchange() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getConstrained(); 
+}
+
+
+double Spinsystem::getRatio() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getRatio(); 
+}
+
+
+bool Spinsystem::getWavelengthPattern() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getWavelengthPattern(); 
+}
+
+
+int Spinsystem::getWavelength() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getWavelength(); 
+}
+
+
 void Spinsystem::setParameters(BaseParametersWidget* prms)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -145,20 +204,18 @@ void Spinsystem::setParameters(BaseParametersWidget* prms)
 }
 
 
-
 void Spinsystem::resetParameters()
 {
     qDebug() << __PRETTY_FUNCTION__;
 
     computeHamiltonian();
-    Logger::getInstance().write_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
+    Logger::getInstance().debug_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
 }
-
 
 
 void Spinsystem::setup()
 {
-    // setup of the spinsystem: add all spins, add corresponding neighbours to each spin, et all spintypes randomly
+    // setup of the spinsystem: add all spins, add corresponding neighbours to each spin, set all spintypes randomly
 
     qDebug() << __PRETTY_FUNCTION__;
 
@@ -166,13 +223,18 @@ void Spinsystem::setup()
     lastFlipped.clear();
 
     // some safety checks:
-    if( getConstrained() )
+    if( getSpinExchange() )
     {
         if( parameters->getWidth() % 2 != 0 )
+        {
             parameters->setWidth(parameters->getWidth()+1);
+            qInfo() << "Remember: system size must be an even number if system is constrained!";
+        }
         if( parameters->getHeight() % 2 != 0 )
+        {
             parameters->setHeight(parameters->getHeight()+1);
-        qInfo() << "Remember: system size must be an even number if system is constrained!";
+            qInfo() << "Remember: system size must be an even number if system is constrained!";
+        }
     }
 
     auto width  = getWidth();
@@ -184,7 +246,7 @@ void Spinsystem::setup()
         spins.emplace_back(i, +1);
 
     // set neighbours:
-    Logger::getInstance().write_new_line("[spinsystem]", "system setup: setting neighbours for", getWidth(), "*", getHeight(), "system");
+    Logger::getInstance().debug_new_line("[spinsystem]", "system setup: setting neighbours for", getWidth(), "*", getHeight(), "system");
     for(auto& s: spins)
     {
         std::vector<std::reference_wrapper<Spin> > Nrefs;
@@ -228,10 +290,10 @@ void Spinsystem::setup()
         std::for_each( std::begin(s.getNeighbours()), std::end(s.getNeighbours()), [](auto& N){ Logger::getInstance().debug( N.get().getID()," "); } );
     }
     
-    // set spins:
+    // set spin types:
     if( getWavelengthPattern() )
     {
-        resetSpinsCosinus( getWavelength());
+        resetSpinsCosinus( getWavelength() );
     }
     else
     {
@@ -241,7 +303,6 @@ void Spinsystem::setup()
 }
 
 
-
 void Spinsystem::resetSpins() 
 {
     // randomly set types of all spins new
@@ -249,7 +310,7 @@ void Spinsystem::resetSpins()
     qDebug() << __PRETTY_FUNCTION__;
 
     int random;
-    if( ! getConstrained() ) // initialise spins randomly
+    if( ! getSpinExchange() ) // initialise spins randomly
     {
         for( auto& s: spins )
         {
@@ -259,7 +320,7 @@ void Spinsystem::resetSpins()
     }      
     else  // constrained to specific up-spin to down-spin ratio
     {
-        Logger::getInstance().write_new_line("[spinsystem]", "ratio =", getRatio(), ", results in", static_cast<unsigned int>(getRatio() * spins.size()), " down spins.");
+        Logger::getInstance().debug_new_line("[spinsystem]", "ratio =", getRatio(), ", results in", static_cast<unsigned int>(getRatio() * spins.size()), " down spins.");
         for( auto& s: spins ) 
             s.setType( +1 );
         for(unsigned int i=0; i<static_cast<unsigned int>( getRatio() * spins.size()); ++i)
@@ -278,11 +339,10 @@ void Spinsystem::resetSpins()
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins randomly... new initial H =", Hamiltonian);
-    Logger::getInstance().debug_new_line(str());
+    Logger::getInstance().debug_new_line("[spinsystem]", "resetting spins randomly... new initial H =", Hamiltonian);
+    Logger::getInstance().debug_new_line(getStringOfSystem());
 
 }
-
 
 
 void Spinsystem::resetSpinsCosinus(const double k) 
@@ -292,8 +352,6 @@ void Spinsystem::resetSpinsCosinus(const double k)
     qDebug() << __PRETTY_FUNCTION__;
 
     int random;
-    if( ! getConstrained() ) 
-        throw std::logic_error("[spinsystem] resetting spins according to cos not implemented for !CONSTRAINED");
     
     unsigned int totNrDownSpins = 0;
     for( auto& s: spins ) 
@@ -319,12 +377,11 @@ void Spinsystem::resetSpinsCosinus(const double k)
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    Logger::getInstance().write_new_line("[spinsystem]", "resetting spins with cos(", getWavelength(),"y ) pattern ... new initial H =", Hamiltonian);
-    Logger::getInstance().write_new_line("[spinsystem]", "# of down spins:", totNrDownSpins);
-    Logger::getInstance().debug_new_line(str());
+    Logger::getInstance().debug_new_line("[spinsystem]", "resetting spins with cos(", getWavelength(),"y ) pattern ... new initial H =", Hamiltonian);
+    Logger::getInstance().debug_new_line("[spinsystem]", "# of down spins:", totNrDownSpins);
+    Logger::getInstance().debug_new_line(getStringOfSystem());
 
 }
-
 
 
 void Spinsystem::print(std::ostream & stream) const
@@ -339,8 +396,7 @@ void Spinsystem::print(std::ostream & stream) const
 }
 
 
-
-std::string Spinsystem::str() const
+std::string Spinsystem::getStringOfSystem() const
 {
     // return string of spinsystem
 
@@ -349,7 +405,6 @@ std::string Spinsystem::str() const
     
     return sstream.str(); 
 }
-
 
 
 double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
@@ -370,7 +425,6 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 }
 
 
-
 Histogram<double> Spinsystem::computeCorrelation() const
 {
     // compute correlation between spins: G(r) = <S(0)S(r)> - <S>^2
@@ -378,7 +432,7 @@ Histogram<double> Spinsystem::computeCorrelation() const
     double binWidth = 0.1;
     Histogram<double> correlation {binWidth};
     Histogram<double> counter {binWidth};
-    Logger::getInstance().write_new_line("[spinsystem]", "computing correlation <Si Sj>");
+    Logger::getInstance().debug_new_line("[spinsystem]", "computing correlation <Si Sj>");
 
     // first: <S(0)S(r)>:
     double maxDist = ( getWidth() >= getHeight() ? (double) getWidth() : (double) getHeight() )/2  + binWidth/2;
@@ -413,12 +467,11 @@ Histogram<double> Spinsystem::computeCorrelation() const
 }
 
 
-
 Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correlation) const
 {
     // compute Fourier transformation S(k) = integral cos(2PI/width*k*r) G(r) dr, with r = distance between spins
 
-    Logger::getInstance().write_new_line("[spinsystem]", "computing structure function S(k)");
+    Logger::getInstance().debug_new_line("[spinsystem]", "computing structure function S(k)");
 
     // computation of delta r's:
     Histogram<double> deltaR {correlation};

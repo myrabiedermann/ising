@@ -45,7 +45,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         else
         {
             Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
-            Logger::getInstance().debug_new_line(spinsystem.str());
+            Logger::getInstance().debug_new_line(spinsystem.getStringOfSystem());
         #endif
         }
     }
@@ -59,18 +59,22 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 
 
 
+
+/*
+ * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ */
+
 MonteCarloHost::MonteCarloHost()
 {
     qDebug() << __PRETTY_FUNCTION__;
 }
 
 
-
 MonteCarloHost::~MonteCarloHost()
 {
     qDebug() << __PRETTY_FUNCTION__;
 }
-
 
 
 const Spinsystem& MonteCarloHost::getSpinsystem() const
@@ -81,7 +85,6 @@ const Spinsystem& MonteCarloHost::getSpinsystem() const
 }
 
 
-
 void MonteCarloHost::setParameters(BaseParametersWidget* prms)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -90,7 +93,6 @@ void MonteCarloHost::setParameters(BaseParametersWidget* prms)
     parameters = prms;
     Q_CHECK_PTR(parameters);
 }
-
 
 
 void MonteCarloHost::setup()
@@ -104,7 +106,6 @@ void MonteCarloHost::setup()
     
     clearRecords();
 }
-
 
 
 void MonteCarloHost::resetSpins()
@@ -124,7 +125,6 @@ void MonteCarloHost::resetSpins()
 }
 
 
-
 void MonteCarloHost::clearRecords()
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -137,13 +137,12 @@ void MonteCarloHost::clearRecords()
 }
 
 
-
 void MonteCarloHost::print_data() const
 {
     // save to file:  step  J  T  B  H  M  
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().write_new_line("[mc]", "saving data ...");
+    Logger::getInstance().debug_new_line("[mc]", "saving data ...");
     
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -178,13 +177,12 @@ void MonteCarloHost::print_data() const
 }
 
 
-
 void MonteCarloHost::print_averages() const
 {
     // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>  <heat capacity>
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().write_new_line("[mc]", "saving averaged data ...");
+    Logger::getInstance().debug_new_line("[mc]", "saving averaged data ...");
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -230,13 +228,12 @@ void MonteCarloHost::print_averages() const
 }
 
 
-
 void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
 {
     // save correlation of current state in file  
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().write_new_line("[mc]", "saving correlation function G(r) ...");
+    Logger::getInstance().debug_new_line("[mc]", "saving correlation function G(r) ...");
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -250,13 +247,12 @@ void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
 }
 
 
-
 void MonteCarloHost::print_structureFunction(Histogram<double>& structureFunction) const
 {
     // save structure Function of current state in file
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().write_new_line("[mc]", "saving structure function S(k) ...");
+    Logger::getInstance().debug_new_line("[mc]", "saving structure function S(k) ...");
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -268,8 +264,4 @@ void MonteCarloHost::print_structureFunction(Histogram<double>& structureFunctio
     FILE << structureFunction.formatted_string();
     FILE.close();
 }
-
-
-
-
 
