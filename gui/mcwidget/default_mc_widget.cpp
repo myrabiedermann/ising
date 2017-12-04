@@ -207,16 +207,19 @@ void DefaultMCWidget::advancedRunAction()
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
 
-    setRunning(true);
-    emit runningSignal(true);
-
+    advancedValues.clear();
     double value = prmsWidget->getStopValue();
     advancedValues.push_back(value);
-    while( value >= prmsWidget->getStartValue() + prmsWidget->getStepValue() )
+    while( value > prmsWidget->getStartValue() + prmsWidget->getStepValue() )
     {
         value -= prmsWidget->getStepValue();
         advancedValues.push_back(value);
     }
+    advancedValues.push_back( prmsWidget->getStartValue() );
+
+    setRunning(true);
+    emit runningSignal(true);
+
     steps_done.store(0);
     emit resetChartSignal();
 
