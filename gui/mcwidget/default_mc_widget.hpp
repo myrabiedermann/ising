@@ -31,12 +31,11 @@ public:
 public slots:
     
 signals:
+    void serverReturn();
     
 private:
     QPushButton* advancedRunBtn = new QPushButton("Advanced Simulation Scheme", this);
-    std::vector<double> advancedValues {};
-    std::atomic<unsigned long> advancedEquilMode {true};
-    std::atomic<unsigned long> advancedCycleDone {true};
+    // std::vector<double> advancedValues {};
 
     void serverAdvanced();
 

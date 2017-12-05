@@ -174,6 +174,7 @@ void DefaultMCWidget::abortAction()
     DEFAULT_MC_WIDGET_ASSERT_ALL;
     
     setRunning(false);
+    // emit abortSignal();
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
@@ -181,9 +182,9 @@ void DefaultMCWidget::abortAction()
     abortBtn->setEnabled(false);
     advancedRunBtn->setEnabled(true);
 
-    advancedCycleDone.store(true);
-    advancedEquilMode.store(true);
-    advancedValues.clear();
+    // advancedCycleDone.store(true);
+    // advancedEquilMode.store(true);
+    // advancedValues.clear();
     
     drawRequestTimer->stop();
     
@@ -207,30 +208,75 @@ void DefaultMCWidget::advancedRunAction()
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
 
-    advancedValues.clear();
-    double value = prmsWidget->getStopValue();
-    advancedValues.push_back(value);
-    while( value > prmsWidget->getStartValue() + prmsWidget->getStepValue() )
-    {
-        value -= prmsWidget->getStepValue();
-        advancedValues.push_back(value);
-    }
-    advancedValues.push_back( prmsWidget->getStartValue() );
+    // advancedValues.clear();
+    // double value = prmsWidget->getStopValue();
+    // advancedValues.push_back(value);
+    // while( value > prmsWidget->getStartValue() + prmsWidget->getStepValue() )
+    // {
+    //     value -= prmsWidget->getStepValue();
+    //     advancedValues.push_back(value);
+    // }
+    // advancedValues.push_back( prmsWidget->getStartValue() );
+
+    // setRunning(true);
+    // emit runningSignal(true);
+
+    // steps_done.store(0);
+    // emit resetChartSignal();
+
+    // emit drawRequest(MC, steps_done.load());
+    // drawRequestTimer->start(drawRequestTime.load());
+    
+    // QFuture<void> future = QtConcurrent::run([&]
+    // {
+    //     serverAdvanced();
+    // });
 
     setRunning(true);
     emit runningSignal(true);
 
-    steps_done.store(0);
-    emit resetChartSignal();
-
     emit drawRequest(MC, steps_done.load());
     drawRequestTimer->start(drawRequestTime.load());
-    
-    QFuture<void> future = QtConcurrent::run([&]
-    {
-        serverAdvanced();
-    });
 
+    MC.clearRecords();
+
+    double value = prmsWidget->getStartValue();
+    while( value <= prmsWidget->getStopValue() )
+    {
+        prmsWidget->setAdvancedValue(value);
+        MC.resetSpins();
+        steps_done.store(0);
+        emit resetChartSignal();
+        equilibration_mode.store(true);
+        {
+            QEventLoop pause;
+            connect(this, &DefaultMCWidget::serverReturn, &pause, &QEventLoop::quit);
+            QFuture<void> future = QtConcurrent::run([&]
+            {
+                serverAdvanced();
+            });
+            pause.exec();
+        }
+
+        steps_done.store(0);
+        equilibration_mode.store(false);
+        emit resetChartSignal();
+        {
+            QEventLoop pause;
+            connect(this, &DefaultMCWidget::serverReturn, &pause, &QEventLoop::quit);
+            QFuture<void> future = QtConcurrent::run([&]
+            {
+                serverAdvanced();
+            });
+            pause.exec();
+        }
+        MC.print_averages();
+        MC.clearRecords();
+
+        value += prmsWidget->getStepValue();
+    }
+
+    emit abortBtn->clicked();
 }
 
 
@@ -240,46 +286,74 @@ void DefaultMCWidget::serverAdvanced()
     qDebug() << __PRETTY_FUNCTION__;
     Q_CHECK_PTR(prmsWidget);
     
-    while( advancedValues.size() > 0 && simulation_running.load() )
+    if( equilibration_mode.load() == true )
     {
-
-        if( advancedCycleDone.load() == true )
-        {
-            prmsWidget->setAdvancedValue( advancedValues.back() );
-            advancedValues.pop_back();
-            advancedCycleDone.store(false);
-            // makeSystemRandom();
-        }
-
-        while( simulation_running.load() && advancedEquilMode.load() == true && steps_done.load() < prmsWidget->getStepsEquil() )
+        while(simulation_running.load() && steps_done.load() < prmsWidget->getStepsEquil())
         {
             MC.run(prmsWidget->getPrintFreq(), true);
             steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
+            
             if( steps_done.load() >= prmsWidget->getStepsEquil() )
-            {
-                advancedEquilMode.store(false);
-                steps_done.store(0);
-                emit resetChartSignal();
-            }
+                emit serverReturn();
         }
-
-        while( simulation_running.load() && advancedEquilMode.load() == false && steps_done.load() < prmsWidget->getStepsProd() )
+    }
+    else
+    {
+        while(simulation_running.load() && steps_done.load() < prmsWidget->getStepsProd())
         {
             MC.run(prmsWidget->getPrintFreq(), false);
             steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
-            if( steps_done.load() >= prmsWidget->getStepsProd() )
+            
+            if (steps_done.load() >= prmsWidget->getStepsProd())
             {
-                advancedEquilMode.store(true);
-                advancedCycleDone.store(true);
-                steps_done.store(0);
-                MC.print_averages();
-                MC.clearRecords();
-                MC.resetSpins();
-                emit resetChartSignal();
+                emit serverReturn();
             }
         }
     }
-    emit pauseBtn->clicked();
+    emit serverReturn();
+    // qDebug() << __PRETTY_FUNCTION__;
+    // Q_CHECK_PTR(prmsWidget);
+    
+    // while( advancedValues.size() > 0 && simulation_running.load() )
+    // {
+
+    //     if( advancedCycleDone.load() == true )
+    //     {
+    //         prmsWidget->setAdvancedValue( advancedValues.back() );
+    //         advancedValues.pop_back();
+    //         advancedCycleDone.store(false);
+    //         // makeSystemRandom();
+    //     }
+
+    //     while( simulation_running.load() && advancedEquilMode.load() == true && steps_done.load() < prmsWidget->getStepsEquil() )
+    //     {
+    //         MC.run(prmsWidget->getPrintFreq(), true);
+    //         steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
+    //         if( steps_done.load() >= prmsWidget->getStepsEquil() )
+    //         {
+    //             advancedEquilMode.store(false);
+    //             steps_done.store(0);
+    //             emit resetChartSignal();
+    //         }
+    //     }
+
+    //     while( simulation_running.load() && advancedEquilMode.load() == false && steps_done.load() < prmsWidget->getStepsProd() )
+    //     {
+    //         MC.run(prmsWidget->getPrintFreq(), false);
+    //         steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
+    //         if( steps_done.load() >= prmsWidget->getStepsProd() )
+    //         {
+    //             advancedEquilMode.store(true);
+    //             advancedCycleDone.store(true);
+    //             steps_done.store(0);
+    //             MC.print_averages();
+    //             MC.clearRecords();
+    //             MC.resetSpins();
+    //             emit resetChartSignal();
+    //         }
+    //     }
+    // }
+    // emit pauseBtn->clicked();
 }
 
 
