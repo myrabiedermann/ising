@@ -306,7 +306,7 @@ void Spinsystem::resetSpins()
 
 void Spinsystem::resetSpinsCosinus(const double k) 
 {
-    // set types of all spins new according to c(x) =  cos(kx) 
+    // set types of all spins new according to c(x) = cos(kx) 
 
     qDebug() << __PRETTY_FUNCTION__;
 
@@ -317,7 +317,7 @@ void Spinsystem::resetSpinsCosinus(const double k)
         s.setType( +1 );
     for(unsigned int i = 0; i<getWidth(); ++i)
     {
-        double ratio = (std::cos(k*(2*M_PI/getWidth())*static_cast<double>(i+0.5)) + 1) / 2;
+        double ratio = ((0.5*std::cos(k*(2*M_PI/getWidth())*static_cast<double>(i+0.5)) + 1) / 2);
         unsigned int nrDownSpins = std::round(ratio*getWidth());
         totNrDownSpins += nrDownSpins;
         for(unsigned int j=0; j<nrDownSpins; ++j)
@@ -466,6 +466,39 @@ Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correla
     return structureFunction;
 }
 
+
+// void Spinsystem::computeSystemTimesCos() const
+// {
+//     // compute S(x,y)*cos(k0*y)
+
+//     Q_CHECK_PTR(parameters);
+//     std::string filekeystring = parameters->getFileKey();
+//     std::string filekey = filekeystring.substr( 0, filekeystring.find_first_of(" ") );
+//     filekey.append(".cos");
+
+//     std::ofstream FILE;
+//     FILE.open(filekey);
+
+//     std::vector<double> amplitudes;
+//     for( int k = 0; k < getWidth() / 2; ++k )
+//     {
+//         amplitudes.emplace_back(0);
+//         for( unsigned int y = 0; y < getWidth(); ++y )
+//         {
+//             double cosTerm = ((0.5*std::cos(k*(2*M_PI/getWidth())*static_cast<double>(y+0.5)) + 1) / 2);
+//             int sumSy = 0;
+//             for(unsigned int x=y*getWidth(); x<(y+1)*getWidth()-1; ++x)
+//             {
+//                 sumSy += spins[x].getType();
+//             }
+//             // std::cout << y << "   " << (double) sumSy / getWidth() << " " << cosTerm  << " " << cosTerm * sumSy / getWidth() << std::endl; 
+//             amplitudes.back() += cosTerm * sumSy / getWidth();
+//         }
+//         FILE << k << "  " << amplitudes.back() << '\n';
+//     }
+
+//     FILE.close();
+// }
 
 
 

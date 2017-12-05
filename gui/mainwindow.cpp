@@ -180,7 +180,8 @@ QGroupBox* MainWindow::createBottomActionGroup()
     // the quit button
     quitBtn->setMaximumWidth(150);
     quitBtn->setMinimumWidth(50);
-    connect(quitBtn, &QPushButton::clicked, QCoreApplication::instance(), &QApplication::quit);
+    connect(quitBtn, &QPushButton::clicked, this, &MainWindow::quitAction);
+    // connect(quitBtn, &QPushButton::clicked, QCoreApplication::instance(), &QApplication::quit);
     
     // pack buttons into layout
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -192,6 +193,15 @@ QGroupBox* MainWindow::createBottomActionGroup()
     groupBox->setLayout(hbox);
     
     return groupBox;
+}
+
+
+void MainWindow::quitAction()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    Logger::destroyInstance();
+    QApplication::quit();
 }
 
 

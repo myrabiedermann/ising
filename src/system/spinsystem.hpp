@@ -48,7 +48,7 @@ public:
 
 
 /*
- * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
+ * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
  * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN 
  */ 
 private:
@@ -75,6 +75,7 @@ public:
 
     Histogram<double> computeCorrelation() const;
     Histogram<double> computeStructureFunction(const Histogram<double>) const;
+    // void computeSystemTimesCos() const;
 
     void print(std::ostream & ) const;
 

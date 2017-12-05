@@ -200,6 +200,7 @@ void ConstrainedMCWidget::correlateAction()
     auto structureFunction = MC.getSpinsystem().computeStructureFunction(correlation);
     MC.print_structureFunction( structureFunction );
     emit drawCorrelationRequest( correlation );
+    // MC.getSpinsystem().computeSystemTimesCos();
 }
 
 
