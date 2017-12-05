@@ -16,7 +16,9 @@ class Spinsystem
 private:
     double Hamiltonian {0};
     std::vector<Spin> spins {};
-    std::vector<std::reference_wrapper<Spin>> lastFlipped {}; 
+    
+    // Fuer Aufgabe 1.4:
+    std::vector<unsigned int> lastFlipped {};   // contains spin-ID's of flipped Spins from last call to flip()
 
     void   computeHamiltonian();
     double local_energy_interaction(const Spin&) const;
@@ -46,8 +48,8 @@ public:
 
 
 /*
- * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
- * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
+ * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
+ * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN 
  */ 
 private:
     BaseParametersWidget* parameters = Q_NULLPTR;

@@ -1,11 +1,10 @@
 #include "montecarlohost.hpp"
 
 
-
+// optional:
 bool MonteCarloHost::acceptance(const double Eold, const double Enew, const double temperature)
 {
-    // check acceptance via Metropolis criterion
-
+    
     #ifndef NDEBUG
         double random = enhance::random_double(0.0, 1.0);
         double condition = std::exp(-(Enew-Eold)/temperature);
@@ -23,10 +22,23 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     qDebug() << __PRETTY_FUNCTION__;
 
     Q_CHECK_PTR(parameters);
-    
+
+     /* Aufgabe 1.6:
+     *
+     * input:    steps: Anzahl MC Steps die durchgeführt werden sollen, 
+     *           EQUILMODE: Modus des Runs
+     * return:   /
+     * Funktion: Durchführung der MC Schritte, Akzeptanz/Rückweisung der 
+     *           Schritte nach dem Metropoliskriterium.
+     *           Bei EQUILMODE = false: Speichern der aktuellen Werte von 
+     *           Hamiltonian und Magnetisierung nach Durchführung der Schritte 
+     *           durch anhängen an die Membervariablen energies und magnetisations.
+     * Optional: Auslagern des Akzeptanz-Checks in zusätzliche Funktion
+     * 
+     */
+
     double energy_old;
     double energy_new;
-    
     
     for(unsigned int t=0; t<steps; ++t)   
     {
@@ -45,7 +57,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         else
         {
             Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
-            Logger::getInstance().debug_new_line(spinsystem.getStringOfSystem());
+            Logger::getInstance().debug_new_line(spinsystem.str());
         #endif
         }
     }
@@ -61,7 +73,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
 
 
 /*
- * DER HIER FOLGENDE TEIL DER KLASSE NICHT RELEVANT FUER 
+ * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
  * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN !
  */
 
