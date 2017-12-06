@@ -320,4 +320,9 @@ double ConstrainedParametersWidget::getStepValue() const
 {
     return 0;
 }
+
+bool ConstrainedParametersWidget::getAdvancedRandomise() const
+{
+    return false;
+}
          

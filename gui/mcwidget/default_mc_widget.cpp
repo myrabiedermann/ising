@@ -220,7 +220,10 @@ void DefaultMCWidget::advancedRunAction()
     while( value <= prmsWidget->getStopValue() )
     {
         prmsWidget->setAdvancedValue(value);
-        MC.resetSpins();
+        if( prmsWidget->getAdvancedRandomise() )
+        {
+            MC.resetSpins();
+        }
         steps_done.store(0);
         emit resetChartSignal();
         equilibration_mode.store(true);

@@ -52,6 +52,7 @@ public:
     virtual double getStartValue() const = 0;
     virtual double getStopValue() const = 0;
     virtual double getStepValue() const = 0;
+    virtual bool   getAdvancedRandomise() const = 0;
     
     virtual void setAdvancedValue(const double) = 0;
     

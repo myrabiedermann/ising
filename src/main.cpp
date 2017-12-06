@@ -1,8 +1,8 @@
 #include "gui/mainwindow.hpp"
 #include "lib/enhance.hpp"
-// #include "system/montecarlohost.hpp"
-#include <QApplication>
 #include "utility/logger.hpp"
+#include <QApplication>
+#include <random>
 
 
 
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
     Logger::getInstance().write_new_line( "[GENERAL]" , "ISING LOG FILE");
 
-    enhance::seed = std::time(nullptr);
+    enhance::seed = std::random_device{}();
     #ifndef NDEBUG
     enhance::seed = 123456789;
     #endif

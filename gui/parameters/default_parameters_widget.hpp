@@ -44,6 +44,7 @@ public:
     double getStartValue() const;
     double getStopValue() const;
     double getStepValue() const;
+    bool   getAdvancedRandomise() const;
 
     void setAdvancedValue(const double);
     
@@ -66,5 +67,7 @@ private:
     QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
+
+    QCheckBox*  advancedRandomiseCheckBox = new QCheckBox(this);
 
 };
