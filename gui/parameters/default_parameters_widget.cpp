@@ -226,14 +226,19 @@ QGroupBox* DefaultParametersWidget::createAdvancedOptionsBox()
     stepValueSpinBox->setMinimum(-1);
     stepValueSpinBox->setMaximum(1);
 
-    startValueSpinBox->setMinimumWidth(50);
+    startValueSpinBox->setMinimumWidth(55);
     startValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    stopValueSpinBox->setMinimumWidth(50);
+    stopValueSpinBox->setMinimumWidth(55);
     stopValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    stepValueSpinBox->setMinimumWidth(50);
+    stepValueSpinBox->setMinimumWidth(55);
     stepValueSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    // set up advancedRandomiseCheckBox:
+    advancedRandomiseCheckBox->setCheckable(true);
+    advancedRandomiseCheckBox->setChecked(false);
+
     
     // the layout 
     QFormLayout* formLayout = new QFormLayout();
@@ -254,6 +259,8 @@ QGroupBox* DefaultParametersWidget::createAdvancedOptionsBox()
     rangeOptions->addWidget(stepValueSpinBox);
     rangeOptions->addWidget(stopValueSpinBox);
     formLayout->addRow("start : step : end", rangeOptions);
+
+    formLayout->addRow("randomise between runs", advancedRandomiseCheckBox);
 
     advancedOptionsBox->setLayout(formLayout);
     return advancedOptionsBox;
@@ -279,6 +286,7 @@ void DefaultParametersWidget::setReadOnly(bool flag)
     stepValueSpinBox->setReadOnly(flag);
     stopValueSpinBox->setReadOnly(flag);
     magneticSpinBox->setReadOnly(flag);
+    advancedRandomiseCheckBox->setEnabled(!flag);
 }
 
 
@@ -300,6 +308,7 @@ void DefaultParametersWidget::setDefault()
     stepValueSpinBox->setValue(0.1);
     stopValueSpinBox->setValue(0);
     magneticSpinBox->setValue(0.0);
+    advancedRandomiseCheckBox->setChecked(false);
 
     #ifndef NDEBUG
         heightSpinBox->setValue(6);
@@ -346,11 +355,12 @@ void DefaultParametersWidget::setAdvancedValue(const double value)
     {
         interactionSpinBox->setValue(value);
     }
-    else if( advancedComboBox->currentIndex() == 2 )
+    // else if( advancedComboBox->currentIndex() == 2 )
+    else
     {
         magneticSpinBox->setValue(value);
     }
-    else throw std::runtime_error("something went wrong in DefaultParametersWidget::setAdvancedValue()");
+    // else throw std::runtime_error("something went wrong in DefaultParametersWidget::setAdvancedValue()");
 }
 
 
@@ -382,6 +392,12 @@ double DefaultParametersWidget::getStepValue() const
 {
     Q_CHECK_PTR(stepValueSpinBox);
     return stepValueSpinBox->value();
+}
+
+bool DefaultParametersWidget::getAdvancedRandomise() const
+{
+    Q_CHECK_PTR(advancedRandomiseCheckBox);
+    return advancedRandomiseCheckBox->isChecked();
 }
                 
                 

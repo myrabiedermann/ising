@@ -44,6 +44,7 @@ public:
     double getStartValue() const;
     double getStopValue() const;
     double getStepValue() const;
+    bool   getAdvancedRandomise() const;
 
     void setAdvancedValue(const double);
     
