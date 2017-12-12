@@ -51,5 +51,7 @@ add_executable(ising ${ising_SRC} ${sources})
 # Use the Widgets module from Qt 5.
 target_link_libraries(ising enhance Qt5::Widgets Qt5::Charts)
 
-# Install the executable
-install(TARGETS ising DESTINATION bin)
+if(UNIX)
+  install(FILES ${CMAKE_SOURCE_DIR}/ising.png DESTINATION /usr/share/pixmaps/ PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ WORLD_READ GROUP_READ)
+  install(FILES ${CMAKE_SOURCE_DIR}/ising.desktop DESTINATION $ENV{HOME}/.local/share/applications/ PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ WORLD_READ GROUP_READ)
+endif()
