@@ -2,7 +2,7 @@
 
 
 
-double Spinsystem::local_energy_interaction(const Spin& _spin) const
+double Spinsystem::localEnergyInteraction(const Spin& _spin) const
 {
     /* Aufgabe 1.2:
      *
@@ -16,7 +16,7 @@ double Spinsystem::local_energy_interaction(const Spin& _spin) const
 
 
 
-double Spinsystem::local_energy_magnetic(const Spin& _spin) const
+double Spinsystem::localEnergyMagnetic(const Spin& _spin) const
 {
     /* Aufgabe 1.2:
      *
@@ -44,7 +44,7 @@ void Spinsystem::computeHamiltonian()
     Hamiltonian = 0;
     for(const auto& S : spins)
     {
-        Hamiltonian += local_energy_interaction(S) / 2 + local_energy_magnetic(S);
+        Hamiltonian += localEnergyInteraction(S) / 2 + localEnergyMagnetic(S);
     }
 }
 
@@ -77,9 +77,9 @@ void Spinsystem::flip()
         unsigned int randomSpinID = enhance::random_int(0, spins.size()-1);
         lastFlipped.emplace_back( randomSpinID );
         // flip spin
-        localEnergy_before = local_energy_interaction( spins[randomSpinID] ) + local_energy_magnetic( spins[randomSpinID] );
+        localEnergy_before = localEnergyInteraction( spins[randomSpinID] ) + localEnergyMagnetic( spins[randomSpinID] );
         spins[randomSpinID].flip();
-        localEnergy_after = local_energy_interaction( spins[randomSpinID] ) + local_energy_magnetic( spins[randomSpinID] );
+        localEnergy_after = localEnergyInteraction( spins[randomSpinID] ) + localEnergyMagnetic( spins[randomSpinID] );
         // update Hamiltonian:
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
@@ -102,10 +102,10 @@ void Spinsystem::flip()
         // flip spins
         lastFlipped.emplace_back(randomSpinID);
         lastFlipped.emplace_back(randomNeighbourID);
-        localEnergy_before = local_energy_interaction(spins[randomSpinID]) + local_energy_interaction(spins[randomNeighbourID]);
+        localEnergy_before = localEnergyInteraction(spins[randomSpinID]) + localEnergyInteraction(spins[randomNeighbourID]);
         spins[randomSpinID].flip();
         spins[randomNeighbourID].flip();
-        localEnergy_after = local_energy_interaction(spins[randomSpinID]) + local_energy_interaction(spins[randomNeighbourID]);
+        localEnergy_after = localEnergyInteraction(spins[randomSpinID]) + localEnergyInteraction(spins[randomNeighbourID]);
 
         // update Hamiltonian
         Hamiltonian += localEnergy_after - localEnergy_before;
@@ -132,7 +132,7 @@ void Spinsystem::flip_back()
     // flip spins back:
     for( const auto& id: lastFlipped ) 
     {
-        localEnergy_before += local_energy_interaction( spins[id] ) + local_energy_magnetic( spins[id] );
+        localEnergy_before += localEnergyInteraction( spins[id] ) + localEnergyMagnetic( spins[id] );
     }
     for( const auto& id: lastFlipped ) 
     {
@@ -140,7 +140,7 @@ void Spinsystem::flip_back()
     }
     for( const auto& id: lastFlipped ) 
     {
-        localEnergy_after += local_energy_interaction( spins[id] ) + local_energy_magnetic( spins[id] );
+        localEnergy_after += localEnergyInteraction( spins[id] ) + localEnergyMagnetic( spins[id] );
     }
     // update Hamiltonian
     Hamiltonian += localEnergy_after - localEnergy_before;

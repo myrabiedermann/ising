@@ -113,12 +113,12 @@ QGroupBox* ConstrainedParametersWidget::createSystemBox()
     temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     heightSpinBox->setMinimum(2);
-    heightSpinBox->setMaximum(300);
+    heightSpinBox->setMaximum(500);
     heightSpinBox->setSingleStep(2);
     heightSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     widthSpinBox->setMinimum(2);
-    widthSpinBox->setMaximum(300);
+    widthSpinBox->setMaximum(500);
     widthSpinBox->setSingleStep(2);
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 

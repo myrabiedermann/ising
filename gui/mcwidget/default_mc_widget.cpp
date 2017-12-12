@@ -208,30 +208,6 @@ void DefaultMCWidget::advancedRunAction()
     abortBtn->setEnabled(true);
     advancedRunBtn->setEnabled(false);
 
-    // advancedValues.clear();
-    // double value = prmsWidget->getStopValue();
-    // advancedValues.push_back(value);
-    // while( value > prmsWidget->getStartValue() + prmsWidget->getStepValue() )
-    // {
-    //     value -= prmsWidget->getStepValue();
-    //     advancedValues.push_back(value);
-    // }
-    // advancedValues.push_back( prmsWidget->getStartValue() );
-
-    // setRunning(true);
-    // emit runningSignal(true);
-
-    // steps_done.store(0);
-    // emit resetChartSignal();
-
-    // emit drawRequest(MC, steps_done.load());
-    // drawRequestTimer->start(drawRequestTime.load());
-    
-    // QFuture<void> future = QtConcurrent::run([&]
-    // {
-    //     serverAdvanced();
-    // });
-
     setRunning(true);
     emit runningSignal(true);
 
@@ -314,49 +290,6 @@ void DefaultMCWidget::serverAdvanced()
         }
     }
     emit serverReturn();
-    // qDebug() << __PRETTY_FUNCTION__;
-    // Q_CHECK_PTR(prmsWidget);
-    
-    // while( advancedValues.size() > 0 && simulation_running.load() )
-    // {
-
-    //     if( advancedCycleDone.load() == true )
-    //     {
-    //         prmsWidget->setAdvancedValue( advancedValues.back() );
-    //         advancedValues.pop_back();
-    //         advancedCycleDone.store(false);
-    //         // makeSystemRandom();
-    //     }
-
-    //     while( simulation_running.load() && advancedEquilMode.load() == true && steps_done.load() < prmsWidget->getStepsEquil() )
-    //     {
-    //         MC.run(prmsWidget->getPrintFreq(), true);
-    //         steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
-    //         if( steps_done.load() >= prmsWidget->getStepsEquil() )
-    //         {
-    //             advancedEquilMode.store(false);
-    //             steps_done.store(0);
-    //             emit resetChartSignal();
-    //         }
-    //     }
-
-    //     while( simulation_running.load() && advancedEquilMode.load() == false && steps_done.load() < prmsWidget->getStepsProd() )
-    //     {
-    //         MC.run(prmsWidget->getPrintFreq(), false);
-    //         steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
-    //         if( steps_done.load() >= prmsWidget->getStepsProd() )
-    //         {
-    //             advancedEquilMode.store(true);
-    //             advancedCycleDone.store(true);
-    //             steps_done.store(0);
-    //             MC.print_averages();
-    //             MC.clearRecords();
-    //             MC.resetSpins();
-    //             emit resetChartSignal();
-    //         }
-    //     }
-    // }
-    // emit pauseBtn->clicked();
 }
 
 
