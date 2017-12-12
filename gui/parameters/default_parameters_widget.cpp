@@ -53,8 +53,6 @@ DefaultParametersWidget::DefaultParametersWidget(QWidget* parent)
     connect( stepsProdSpinBox  , static_cast<void (QtLongLongSpinBox::*)(qlonglong)>(&QtLongLongSpinBox::valueChanged), this, &DefaultParametersWidget::valueChanged );
     connect( printFreqSpinBox  , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DefaultParametersWidget::valueChanged );
     
-    // connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), widthSpinBox, &QSpinBox::setValue );
-    // connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), heightSpinBox, &QSpinBox::setValue );
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DefaultParametersWidget::valueChanged );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DefaultParametersWidget::valueChanged );
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DefaultParametersWidget::criticalValueChanged );
@@ -104,12 +102,12 @@ QGroupBox* DefaultParametersWidget::createSystemBox()
     temperatureSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     heightSpinBox->setMinimum(1);
-    heightSpinBox->setMaximum(300);
+    heightSpinBox->setMaximum(500);
     heightSpinBox->setSingleStep(1);
     heightSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     widthSpinBox->setMinimum(1);
-    widthSpinBox->setMaximum(300);
+    widthSpinBox->setMaximum(500);
     widthSpinBox->setSingleStep(1);
     widthSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -144,7 +142,7 @@ QGroupBox* DefaultParametersWidget::createEquilBox()
     // default texts for LineEdits
     stepsEquilSpinBox->setMinimum(0);
     stepsEquilSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
-    stepsEquilSpinBox->setSingleStep(1000);
+    stepsEquilSpinBox->setSingleStep(10000);
     stepsEquilSpinBox->setMinimumWidth(100);
     stepsEquilSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -171,13 +169,13 @@ QGroupBox* DefaultParametersWidget::createProdBox()
 
     // default texts for LineEdits
     printFreqSpinBox->setMinimum(0);
-    printFreqSpinBox->setMaximum(1000000);
+    printFreqSpinBox->setMaximum(10000000);
     printFreqSpinBox->setSingleStep(10);
     printFreqSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     stepsProdSpinBox->setMinimum(0);
     stepsProdSpinBox->setMaximum(std::numeric_limits<qlonglong>::max());
-    stepsProdSpinBox->setSingleStep(1000);
+    stepsProdSpinBox->setSingleStep(10000);
     stepsProdSpinBox->setMinimumWidth(100);
     stepsProdSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -355,12 +353,10 @@ void DefaultParametersWidget::setAdvancedValue(const double value)
     {
         interactionSpinBox->setValue(value);
     }
-    // else if( advancedComboBox->currentIndex() == 2 )
     else
     {
         magneticSpinBox->setValue(value);
     }
-    // else throw std::runtime_error("something went wrong in DefaultParametersWidget::setAdvancedValue()");
 }
 
 

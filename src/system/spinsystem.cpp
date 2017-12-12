@@ -2,7 +2,7 @@
 
 
 
-double Spinsystem::local_energy_interaction(const Spin& _spin) const
+double Spinsystem::localEnergyInteraction(const Spin& _spin) const
 {
     /* Aufgabe 1.2:
      *
@@ -16,7 +16,7 @@ double Spinsystem::local_energy_interaction(const Spin& _spin) const
 
 
 
-double Spinsystem::local_energy_magnetic(const Spin& _spin) const
+double Spinsystem::localEnergyMagnetic(const Spin& _spin) const
 {
     /* Aufgabe 1.2:
      *

@@ -21,8 +21,8 @@ private:
     std::vector<unsigned int> lastFlipped {};   // contains spin-ID's of flipped Spins from last call to flip()
 
     void   computeHamiltonian();
-    double local_energy_interaction(const Spin&) const;
-    double local_energy_magnetic(const Spin&) const;
+    double localEnergyInteraction(const Spin&) const;
+    double localEnergyMagnetic(const Spin&) const;
 
 public:
     void flip();
@@ -38,6 +38,7 @@ public:
  * IHRE KONKRETE IMPLEMENTIERUNG MUSS ZUR VERWENDUNG DER FUNKTIONEN 
  * JEDOCH NICHT BEKANNT SEIN
  */ 
+public:
     unsigned long getHeight() const;         // returns system height
     unsigned long getWidth() const;          // returns system width
     double        getInteraction() const;    // returns J
