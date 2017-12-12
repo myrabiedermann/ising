@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Exec=$HOME/bin/ising
+Name=ising
+Icon=/usr/share/pixmaps/ising.png
+
+#read: https://linuxcritic.wordpress.com/2010/04/07/anatomy-of-a-desktop-file/
