@@ -103,6 +103,8 @@ void ConstrainedMCWidget::equilibrateAction()
     }
     emit drawRequest(MC, steps_done.load());
     emit runningSignal(true);
+
+    Logger::getInstance().write_new_line("[gui]", "start equilibration with", prmsWidget->getStepsEquil() - steps_done.load(), "steps");
     
     QFuture<void> future = QtConcurrent::run([&]
     {
@@ -137,6 +139,8 @@ void ConstrainedMCWidget::productionAction()
     emit drawRequest(MC, steps_done.load());
     emit runningSignal(true);
     
+    Logger::getInstance().write_new_line("[gui]", "start production with", prmsWidget->getStepsProd() - steps_done.load(), "steps");
+
     QFuture<void> future = QtConcurrent::run([&]
     {
         server();
@@ -164,6 +168,8 @@ void ConstrainedMCWidget::pauseAction()
     drawRequestTimer->stop();
     
     emit runningSignal(false);
+
+    Logger::getInstance().write_new_line("[gui]", "pausing");
 }
 
 
@@ -186,6 +192,7 @@ void ConstrainedMCWidget::abortAction()
     emit runningSignal(false);
     emit resetSignal();
     makeSystemNew();
+    Logger::getInstance().write_new_line("[gui]", "abort & reset to default parameters");
 }
 
 
@@ -195,6 +202,8 @@ void ConstrainedMCWidget::correlateAction()
     qDebug() << __PRETTY_FUNCTION__;
     CONSTRAINED_MC_WIDGET_ASSERT_ALL;
     
+    Logger::getInstance().write_new_line("[gui]", "computing correlation");
+
     auto correlation = MC.getSpinsystem().computeCorrelation();
     MC.print_correlation( correlation );
     auto structureFunction = MC.getSpinsystem().computeStructureFunction(correlation);

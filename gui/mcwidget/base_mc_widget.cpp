@@ -123,7 +123,9 @@ void BaseMCWidget::server()
             steps_done.store(steps_done.load() + prmsWidget->getPrintFreq());
             
             if( steps_done.load() >= prmsWidget->getStepsEquil() )
+            {
                 emit pauseBtn->clicked();
+            }
         }
     }
     else
@@ -140,7 +142,7 @@ void BaseMCWidget::server()
         }
     }
     
-    emit pauseBtn->clicked();
+    // emit pauseBtn->clicked();
 }
 
 
