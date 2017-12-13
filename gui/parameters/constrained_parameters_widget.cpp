@@ -29,8 +29,8 @@ ConstrainedParametersWidget::ConstrainedParametersWidget(QWidget* parent)
     wavelengthCheckBox->setAutoExclusive(true);
     ratioCheckBox->setAutoExclusive(true);
     ratioCheckBox->setChecked(true);
+    wavelengthSpinBox->setEnabled(false);
 
-    setMinimumWidth(300);
     
     // layout of this widget
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -66,6 +66,10 @@ ConstrainedParametersWidget::ConstrainedParametersWidget(QWidget* parent)
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::valueChanged );
     connect( heightSpinBox     , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::criticalValueChanged );
     connect( widthSpinBox      , static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ConstrainedParametersWidget::criticalValueChanged );
+
+    connect( ratioCheckBox     , &QCheckBox::stateChanged, this, &ConstrainedParametersWidget::setRatioWavelengthCheckBox );
+    
+    setMinimumWidth(300);
     
     adjustSize();
     setLayout(mainLayout);
@@ -266,6 +270,26 @@ void ConstrainedParametersWidget::setDefault()
         stepsProdSpinBox->setValue(10);
         printFreqSpinBox->setValue(5);
     #endif
+}
+
+
+
+
+void ConstrainedParametersWidget::setRatioWavelengthCheckBox()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL;
+
+    if( ratioCheckBox->isChecked() )
+    {
+        ratioSpinBox->setEnabled(true);
+        wavelengthSpinBox->setEnabled(false);
+    }
+    else
+    {
+        ratioSpinBox->setEnabled(false);
+        wavelengthSpinBox->setEnabled(true);
+    }
 }
 
 

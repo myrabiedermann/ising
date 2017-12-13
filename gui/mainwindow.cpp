@@ -191,6 +191,10 @@ QGroupBox* MainWindow::createBottomActionGroup()
     
     // set layout of group
     groupBox->setLayout(hbox);
+
+    groupBox->setMinimumHeight(50);
+    groupBox->setMaximumHeight(70);
+    groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     return groupBox;
 }

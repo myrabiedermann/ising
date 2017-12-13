@@ -174,7 +174,6 @@ void DefaultMCWidget::abortAction()
     DEFAULT_MC_WIDGET_ASSERT_ALL;
     
     setRunning(false);
-    // emit abortSignal();
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
@@ -182,10 +181,6 @@ void DefaultMCWidget::abortAction()
     abortBtn->setEnabled(false);
     advancedRunBtn->setEnabled(true);
 
-    // advancedCycleDone.store(true);
-    // advancedEquilMode.store(true);
-    // advancedValues.clear();
-    
     drawRequestTimer->stop();
     
     emit runningSignal(false);
@@ -255,7 +250,17 @@ void DefaultMCWidget::advancedRunAction()
         value += prmsWidget->getStepValue();
     }
 
-    emit abortBtn->clicked();
+    setRunning(false);
+    emit runningSignal(false);
+    drawRequestTimer->stop();
+
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    abortBtn->setEnabled(false);
+    advancedRunBtn->setEnabled(true);
+
 }
 
 

@@ -51,6 +51,7 @@ public:
 public slots:
     void setReadOnly(bool);
     void setDefault();
+    void setRatioWavelengthCheckBox();
     
 signals:
     
