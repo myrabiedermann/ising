@@ -9,6 +9,7 @@
 
 #include "parameters/default_parameters_widget.hpp"
 #include "parameters/constrained_parameters_widget.hpp"
+#include "utility/logger.hpp"
 #include "system/montecarlohost.hpp"
 #include <QWidget>
 #include <QPushButton>

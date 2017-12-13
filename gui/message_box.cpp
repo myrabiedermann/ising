@@ -10,7 +10,6 @@ MessageBox::MessageBox(QWidget *parent)
 
     setText("Program Ising");
     setInformativeText("Please choose your system type:");
-    // setDetailedText("Default: \nstandard Ising system \n\nConstrained: \nIsing system constrained to \n# up-spins = # down-spins \n(phase-separating particles model)");
     defaultButton = addButton("spin-flip", QMessageBox::YesRole);
     constrainedButton = addButton("spin-exchange", QMessageBox::YesRole);
     defaultButton->setFocusPolicy(Qt::NoFocus);

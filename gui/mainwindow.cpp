@@ -25,10 +25,12 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         case SYSTEMTYPE::Default :      prmsWidget = new DefaultParametersWidget(this); 
                                         MCwidget = new DefaultMCWidget(this);
+                                        Logger::write_new_line("[gui]", "running in spin-flip mode");
                                         break;
         
         case SYSTEMTYPE::Constrained :  prmsWidget = new ConstrainedParametersWidget(this);
                                         MCwidget = new ConstrainedMCWidget(this);
+                                        Logger::write_new_line("[gui]", "running in spin-exchange mode");
                                         break; 
 
         default :                       throw std::logic_error("nope");
@@ -181,7 +183,6 @@ QGroupBox* MainWindow::createBottomActionGroup()
     quitBtn->setMaximumWidth(150);
     quitBtn->setMinimumWidth(50);
     connect(quitBtn, &QPushButton::clicked, this, &MainWindow::quitAction);
-    // connect(quitBtn, &QPushButton::clicked, QCoreApplication::instance(), &QApplication::quit);
     
     // pack buttons into layout
     QHBoxLayout *hbox = new QHBoxLayout;
