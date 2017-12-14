@@ -293,13 +293,21 @@ void DefaultParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     DEFAULT_PARAMETERS_WIDGET_ASSERT_ALL
 
-    heightSpinBox->setValue(50);
-    widthSpinBox->setValue(50);
+    #ifndef NDEBUG
+        heightSpinBox->setValue(6);
+        widthSpinBox->setValue(6);
+        stepsEquilSpinBox->setValue(5);
+        stepsProdSpinBox->setValue(10);
+        printFreqSpinBox->setValue(5);
+    #else 
+        heightSpinBox->setValue(50);
+        widthSpinBox->setValue(50);
+        stepsEquilSpinBox->setValue(1000000);
+        stepsProdSpinBox->setValue(5000000);
+        printFreqSpinBox->setValue(100);
+    #endif
     interactionSpinBox->setValue(1.0);
     temperatureSpinBox->setValue(1.0);
-    stepsEquilSpinBox->setValue(1000000);
-    stepsProdSpinBox->setValue(5000000);
-    printFreqSpinBox->setValue(100);
     filenameLineEdit->setText("ising");
     advancedComboBox->setCurrentIndex(0);
     startValueSpinBox->setValue(0);
@@ -308,13 +316,6 @@ void DefaultParametersWidget::setDefault()
     magneticSpinBox->setValue(0.0);
     advancedRandomiseCheckBox->setChecked(false);
 
-    #ifndef NDEBUG
-        heightSpinBox->setValue(6);
-        widthSpinBox->setValue(6);
-        stepsEquilSpinBox->setValue(5);
-        stepsProdSpinBox->setValue(10);
-        printFreqSpinBox->setValue(5);
-    #endif
 }
 
 

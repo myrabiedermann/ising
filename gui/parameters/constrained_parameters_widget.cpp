@@ -251,25 +251,26 @@ void ConstrainedParametersWidget::setDefault()
     qDebug() << __PRETTY_FUNCTION__;
     CONSTRAINED_PARAMETERS_WIDGET_ASSERT_ALL
 
-    heightSpinBox->setValue(60);
-    widthSpinBox->setValue(60);
-    interactionSpinBox->setValue(1.0);
-    temperatureSpinBox->setValue(1.0);
-    stepsEquilSpinBox->setValue(1000000);
-    stepsProdSpinBox->setValue(5000000);
-    printFreqSpinBox->setValue(100);
-    filenameLineEdit->setText("ising");
-    ratioSpinBox->setValue(0.5);
-    ratioCheckBox->click();
-    wavelengthSpinBox->setValue(1);
-    
     #ifndef NDEBUG
         heightSpinBox->setValue(6);
         widthSpinBox->setValue(6);
         stepsEquilSpinBox->setValue(5);
         stepsProdSpinBox->setValue(10);
         printFreqSpinBox->setValue(5);
+    #else
+        heightSpinBox->setValue(60);
+        widthSpinBox->setValue(60);
+        stepsEquilSpinBox->setValue(1000000);
+        stepsProdSpinBox->setValue(5000000);
+        printFreqSpinBox->setValue(100);
     #endif
+    interactionSpinBox->setValue(1.0);
+    temperatureSpinBox->setValue(1.0);
+    filenameLineEdit->setText("ising");
+    ratioSpinBox->setValue(0.5);
+    ratioCheckBox->click();
+    wavelengthSpinBox->setValue(1);
+    
 }
 
 
