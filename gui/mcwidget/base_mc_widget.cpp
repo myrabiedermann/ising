@@ -142,7 +142,7 @@ void BaseMCWidget::server()
         }
     }
     
-    // emit pauseBtn->clicked();
+    emit pauseBtn->clicked();
 }
 
 
