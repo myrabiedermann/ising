@@ -31,7 +31,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         energy_new = spinsystem.getHamiltonian();
     
         // check metropolis criterion:
-        if( ! acceptance(energy_old, energy_new, parameters->getTemperature()) )
+        if( ! acceptance(energy_old, energy_new, getTemperature()) )
         {
             spinsystem.flip_back(); 
         #ifndef NDEBUG
@@ -75,6 +75,13 @@ bool MonteCarloHost::acceptance(const double Eold, const double Enew, const doub
  * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
  * DIE IMPLEMENTIERUNGSAUFGABEN UND KANN IGNORIERT WERDEN 
  */
+
+double MonteCarloHost::getTemperature() const 
+{ 
+    Q_CHECK_PTR(parameters); 
+    return parameters->getTemperature(); 
+}
+
 
 MonteCarloHost::MonteCarloHost()
 {

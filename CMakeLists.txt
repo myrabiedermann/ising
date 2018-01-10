@@ -2,7 +2,7 @@ set(CMAKE_CXX_COMPILER "g++-7")	# to avoid using clang on macbook
 set(CMAKE_C_COMPILER "gcc-7")	# ,,
 
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 cmake_minimum_required(VERSION 3.0)
 project(ising)

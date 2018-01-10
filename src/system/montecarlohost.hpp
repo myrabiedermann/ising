@@ -33,6 +33,17 @@ public:
     void run(const unsigned long&, const bool EQUILMODE = false);
 
 
+/* 
+ * DIE FOLGENDEN FUNKTIONEN SOLLTEN NUETZLICH FUER DIE
+ * IMPLEMENTIERUNGSAUFGABEN SEIN
+ * IHRE KONKRETE IMPLEMENTIERUNG MUSS ZUR VERWENDUNG DER FUNKTIONEN 
+ * JEDOCH NICHT BEKANNT SEIN
+ */ 
+
+public:
+    double getTemperature() const;         // returns temperature
+
+
 
 /*
  * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
