@@ -11,7 +11,7 @@ double Spinsystem::localEnergyInteraction(const Spin& _spin) const
      * Funktion: Berechnung des return Wertes
      */
 
-    return -getInteraction() * _spin.sumNeighbours();
+    return 0;
 }
 
 
@@ -25,7 +25,7 @@ double Spinsystem::localEnergyMagnetic(const Spin& _spin) const
      * Funktion: Berechnung des return Wertes.
      */
 
-    return -getMagnetic() * _spin.getType();
+    return 0;
 }
 
 
@@ -41,11 +41,7 @@ void Spinsystem::computeHamiltonian()
      *           dieses Wertes in der Membervariable "Hamiltonian".
      */
 
-    Hamiltonian = 0;
-    for( const auto& S : spins )
-    {
-        Hamiltonian += localEnergyInteraction(S) / 2 + localEnergyMagnetic(S);
-    }
+    
 }
 
 
@@ -67,49 +63,6 @@ void Spinsystem::flip()
      *              der geflippten Spins in der Membervariable lastFlipped
      */
 
-    lastFlipped.clear(); // contains ID's of spins that have been flipped in last move
-    double localEnergy_before = 0;
-    double localEnergy_after = 0;
-
-    if( ! getSpinExchange() )
-    {
-        // find random spin
-        unsigned int randomSpinID = enhance::random_int(0, spins.size() - 1);
-        lastFlipped.emplace_back( randomSpinID );
-        // flip spin
-        localEnergy_before = localEnergyInteraction( spins[randomSpinID] ) + localEnergyMagnetic( spins[randomSpinID] );
-        spins[randomSpinID].flip();
-        localEnergy_after = localEnergyInteraction( spins[randomSpinID] ) + localEnergyMagnetic( spins[randomSpinID] );
-        // update Hamiltonian
-        Hamiltonian += localEnergy_after - localEnergy_before;
-    }
-    else
-    {
-        // find random spin
-        unsigned int randomSpinID = enhance::random_int(0, spins.size() - 1);
-        do
-        {
-            randomSpinID = enhance::random_int(0, spins.size() - 1);
-        }while( spins[randomSpinID].sumOppositeNeighbours() == 0 );
-        // find random neighbour
-        unsigned int randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
-        do
-        {
-            randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
-        }while( spins[randomSpinID].getType() == spins[randomNeighbourID].getType() );
-        // flip spins
-        lastFlipped.emplace_back(randomSpinID);
-        lastFlipped.emplace_back(randomNeighbourID);
-        localEnergy_before = localEnergyInteraction(spins[randomSpinID]) + localEnergyInteraction(spins[randomNeighbourID]);
-        spins[randomSpinID].flip();
-        spins[randomNeighbourID].flip();
-        localEnergy_after = localEnergyInteraction(spins[randomSpinID]) + localEnergyInteraction(spins[randomNeighbourID]);
-        // update Hamiltonian
-        Hamiltonian += localEnergy_after - localEnergy_before;
-    }
-    
-    Logger::getInstance().debug_new_line("[spinsystem]", "flipping spin: ");
-    for(const auto& spinID: lastFlipped) Logger::getInstance().debug(" ", spinID);
 
 }
 
@@ -124,27 +77,7 @@ void Spinsystem::flip_back()
      * Funktion: Macht den gesamten in flip() durchgeführten Prozess rückgängig. 
      */
 
-    double localEnergy_before = 0;
-    double localEnergy_after = 0;
     
-    for( const auto& id: lastFlipped )
-    {
-        localEnergy_before += localEnergyInteraction( spins[id] ) + localEnergyMagnetic( spins[id] );
-    }
-    // flip spins
-    for( const auto& id: lastFlipped )
-    {
-        spins[id].flip();
-    }
-    for( const auto& id: lastFlipped )
-    {
-        localEnergy_after += localEnergyInteraction( spins[id] ) + localEnergyMagnetic( spins[id] );
-    }
-    // update Hamiltonian
-    Hamiltonian += localEnergy_after - localEnergy_before;
-
-    Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: "); 
-    for( const auto& id: lastFlipped) Logger::getInstance().debug("   ", id);
 
 }
 
@@ -160,12 +93,7 @@ double Spinsystem::getMagnetisation() const
      *           konfiguration.  
      */
 
-    int sum = 0;
-    for( const auto& S: spins)
-    {
-        sum += S.getType();
-    }
-    return static_cast<double>(sum) / spins.size();
+    return 0;
 }
 
 
