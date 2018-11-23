@@ -1,6 +1,3 @@
-set(CMAKE_CXX_COMPILER "g++-7")	# to avoid using clang on macbook
-set(CMAKE_C_COMPILER "gcc-7")	# ,,
-
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -13,7 +10,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 set(CMAKE_CXX_STANDARD 14)
-# set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_CXX_COMPILER "g++-8")	# to avoid using clang on macbook
+set(CMAKE_C_COMPILER "gcc-8")	# ,,
 
 # Find the QtWidgets library
 find_package(Qt5Widgets REQUIRED)  

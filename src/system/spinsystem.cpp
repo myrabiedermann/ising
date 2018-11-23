@@ -98,6 +98,20 @@ double Spinsystem::getMagnetisation() const
 
 
 
+double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
+{
+     /* Aufgabe 1.6:
+     *
+     * input:       Zwei spezifische Spins
+     * return:      Abstand r
+     * Funktion:    Berechnung des Abstands zwischen zwei Spins auf dem Gitter
+     * 
+     */
+
+    return 0;
+}
+
+
 
 /*
  * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
@@ -373,22 +387,6 @@ std::string Spinsystem::getStringOfSystem() const
 }
 
 
-double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
-{
-    // compute distance between spins _spin1 and _spin2
-
-    int a, b, c, d, x, y;
-
-    a = _spin1.getID() % getWidth();
-    b = _spin1.getID() / getWidth();
-    c = _spin2.getID() % getWidth();
-    d = _spin2.getID() / getWidth();
-
-    x = (std::abs(c - a) <= static_cast<int>(getWidth()/2) ? std::abs(c - a) : std::abs(c - a) - getWidth());
-    y = (std::abs(d - b) <= static_cast<int>(getHeight()/2) ? std::abs(d - b) : std::abs(d - b) - getHeight());
-
-    return  std::sqrt( x*x + y*y );
-}
 
 
 Histogram<double> Spinsystem::computeCorrelation() const
