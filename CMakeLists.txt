@@ -1,6 +1,3 @@
-set(CMAKE_CXX_COMPILER "g++-7")	# to avoid using clang on macbook
-set(CMAKE_C_COMPILER "gcc-7")	# ,,
-
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -9,11 +6,13 @@ project(ising)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
 set(CMAKE_CXX_STANDARD 14)
-# set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_CXX_COMPILER "g++-8")	# to avoid using clang on macbook
+set(CMAKE_C_COMPILER "gcc-8")	# ,,
 
 # Find the QtWidgets library
 find_package(Qt5Widgets REQUIRED)  
@@ -26,8 +25,8 @@ include_directories("./gui/")
 include_directories("./src/")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize")
-set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_NO_DEBUG")  # without qdebug
-# set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -DNDEBUG -DQT_DEBUG")     # with qdebug
+# set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_NO_DEBUG")  # without qdebug
+set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -DNDEBUG -DQT_DEBUG")     # with qdebug
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g1 -ggdb -DNDEBUG -DQT_NO_DEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -g0       -DNDEBUG -DQT_NO_DEBUG")
 
@@ -38,6 +37,7 @@ file(GLOB ising_SRC
   gui/*.cpp
   gui/*/*.cpp
 )
+
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ~/bin)
 

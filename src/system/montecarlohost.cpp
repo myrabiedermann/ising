@@ -59,13 +59,13 @@ bool MonteCarloHost::acceptance(const double Eold, const double Enew, const doub
 {
     
     #ifndef NDEBUG
-        double random = enhance::random_double(0.0, 1.0);
+        double random = enhance::randomDouble(0.0, 1.0);
         double condition = std::exp(-(Enew-Eold)/temperature);
         Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
         return random < condition ? true : false;
     #endif
 
-    return enhance::random_double(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
+    return enhance::randomDouble(0.0, 1.0) < std::exp(-(Enew-Eold)/temperature) ? true : false;
 }
 
 

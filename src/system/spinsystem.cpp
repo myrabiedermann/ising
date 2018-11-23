@@ -74,7 +74,7 @@ void Spinsystem::flip()
     if( ! getSpinExchange() )
     {
         // find random spin
-        unsigned int randomSpinID = enhance::random_int(0, spins.size() - 1);
+        unsigned int randomSpinID = enhance::randomInt(0, spins.size() - 1);
         lastFlipped.emplace_back( randomSpinID );
         // flip spin
         localEnergy_before = localEnergyInteraction( spins[randomSpinID] ) + localEnergyMagnetic( spins[randomSpinID] );
@@ -86,10 +86,10 @@ void Spinsystem::flip()
     else
     {
         // find random spin
-        unsigned int randomSpinID = enhance::random_int(0, spins.size() - 1);
+        unsigned int randomSpinID = enhance::randomInt(0, spins.size() - 1);
         do
         {
-            randomSpinID = enhance::random_int(0, spins.size() - 1);
+            randomSpinID = enhance::randomInt(0, spins.size() - 1);
         }while( spins[randomSpinID].sumOppositeNeighbours() == 0 );
         // find random neighbour
         unsigned int randomNeighbourID = spins[randomSpinID].getRandomNeighbour().getID();
@@ -352,7 +352,7 @@ void Spinsystem::resetSpins()
     {
         for( auto& s: spins )
         {
-            random = enhance::random_int(0,1);
+            random = enhance::randomInt(0,1);
             s.setType( random == 1 ? +1 : -1 );
         }
     }      
@@ -365,7 +365,7 @@ void Spinsystem::resetSpins()
         {
             do
             {
-                random = enhance::random_int(0, spins.size()-1);
+                random = enhance::randomInt(0, spins.size()-1);
             }
             while( spins[random].getType() == -1 );
             spins[random].setType(-1);
@@ -403,7 +403,7 @@ void Spinsystem::resetSpinsCosinus(const double k)
         {
             do
             {
-                random = enhance::random_int(i*getWidth(), (i+1)*getWidth() - 1);
+                random = enhance::randomInt(i*getWidth(), (i+1)*getWidth() - 1);
             }
             while( spins[random].getType() == -1 );
             spins[random].setType(-1);

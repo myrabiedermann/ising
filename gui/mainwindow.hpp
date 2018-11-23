@@ -49,14 +49,13 @@ protected:
     QGroupBox* createBottomActionGroup();
     
 private:
-    GridWidget* gridWidget;
-    BaseParametersWidget* prmsWidget;
-    BaseMCWidget* MCwidget;
-    ChartWidget* hamiltonianChart;
-    ChartWidget* averageMagnetisationChart;
-    ChartWidget* correlationChart;
+    GridWidget*             gridWidget;
+    BaseParametersWidget*   prmsWidget;
+    BaseMCWidget*           mcWidget;
+    ChartWidget*            hamiltonianChart;
+    ChartWidget*            averageMagnetisationChart;
+    ChartWidget*            correlationChart;
     
-    // QProgressBar* progressBar;
     QPushButton* quitBtn = new QPushButton("Quit",this);
     
     Ui::MainWindow* ui;
