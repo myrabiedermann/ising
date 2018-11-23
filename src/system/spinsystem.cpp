@@ -170,6 +170,52 @@ double Spinsystem::getMagnetisation() const
 
 
 
+double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
+{
+    /* Aufgabe 1.6:
+     *
+     * input:       Zwei spezifische Spins
+     * return:      Abstand r
+     * Funktion:    Berechnung des Abstands zwischen zwei Spins auf dem Gitter
+     * 
+     */
+
+    Logger::getInstance().debug_new_line("[spinsystem]", "computing distance between spins", _spin1.getID(), ",", _spin2.getID()); 
+
+    // step 1: get location of spin1 and spin2:
+    int spin1_row, spin1_col, spin2_row, spin2_col;
+
+    spin1_row = _spin1.getID() / getWidth();
+    spin1_col = _spin1.getID() % getWidth();
+   
+    spin2_row = _spin2.getID() / getWidth();
+    spin2_col = _spin2.getID() % getWidth();
+
+    Logger::getInstance().debug_new_line("            ","at positions (", spin1_row, ',', spin1_col, ") and (", spin2_row, ' ', spin2_col, ')');
+
+    // step 2: compute x, y components of distance vector, accounting for pbc:
+    int x, y;
+
+    x = std::abs( spin2_col - spin1_col );
+    if( x > static_cast<int>(getWidth() / 2) )   
+    {
+        x = x - getWidth();     // pbc 
+    }
+    y = std::abs( spin2_row - spin1_row );
+
+    if( y > static_cast<int>(getHeight() / 2) )
+    {
+        y = y - getHeight();    // pbc
+    }
+
+    // step 3: compute norm of vector and return it
+    double distance = std::sqrt( x*x + y*y );
+    Logger::getInstance().debug_new_line("            ", "distance: sqrt(", x, "^2 * ", y, "^2) = ", distance);
+    
+    return distance; 
+}
+
+
 
 /*
  * DER HIER FOLGENDE TEIL DER KLASSE IST NICHT RELEVANT FUER 
@@ -445,22 +491,6 @@ std::string Spinsystem::getStringOfSystem() const
 }
 
 
-double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
-{
-    // compute distance between spins _spin1 and _spin2
-
-    int a, b, c, d, x, y;
-
-    a = _spin1.getID() % getWidth();
-    b = _spin1.getID() / getWidth();
-    c = _spin2.getID() % getWidth();
-    d = _spin2.getID() / getWidth();
-
-    x = (std::abs(c - a) <= static_cast<int>(getWidth()/2) ? std::abs(c - a) : std::abs(c - a) - getWidth());
-    y = (std::abs(d - b) <= static_cast<int>(getHeight()/2) ? std::abs(d - b) : std::abs(d - b) - getHeight());
-
-    return  std::sqrt( x*x + y*y );
-}
 
 
 Histogram<double> Spinsystem::computeCorrelation() const
