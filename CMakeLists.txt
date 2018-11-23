@@ -25,8 +25,8 @@ include_directories("./gui/")
 include_directories("./src/")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fmax-errors=3 -Weffc++ -ftree-vectorize")
-# set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_NO_DEBUG")  # without qdebug
-set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -DNDEBUG -DQT_DEBUG")     # with qdebug
+set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -D_DEBUG -DDEBUG -DQT_NO_DEBUG")  # without qdebug but with "normal" debug
+# set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3 -ggdb -DNDEBUG -DQT_DEBUG")     # with qdebug but without "normal" debug
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g1 -ggdb -DNDEBUG -DQT_NO_DEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -g0       -DNDEBUG -DQT_NO_DEBUG")
 

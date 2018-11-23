@@ -8,7 +8,7 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
     Q_CHECK_PTR(parameters);                // einfach stehen lassen und ignorieren
 
 
-     /* Aufgabe 1.6:
+     /* Aufgabe 1.7:
      *
      * input:    steps: Anzahl MC Steps die durchgeführt werden sollen, 
      *           EQUILMODE: Modus des Runs
