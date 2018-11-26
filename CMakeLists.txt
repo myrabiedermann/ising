@@ -1,5 +1,5 @@
 
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 cmake_minimum_required(VERSION 3.0)
 project(ising)
