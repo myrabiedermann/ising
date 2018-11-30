@@ -23,8 +23,8 @@ namespace enhance
     extern unsigned int     seed;
     extern std::mt19937_64  rand_engine;
 
-    double random_double(double, double);
-    int    random_int(int, int);
+    double randomDouble(double, double);
+    int    randomInt(int, int);
 
 
     // Type aliasing
@@ -54,7 +54,7 @@ namespace enhance
             std::uniform_int_distribution<std::size_t> dist(0,_container.size()-1);
             return std::begin(_container) + dist(rand_engine);
         }
-    } random_iterator __attribute__((unused));
+    } randomIterator __attribute__((unused));
 
 
     // check if a file exists
@@ -62,4 +62,3 @@ namespace enhance
 }
 
 
-namespace enh = enhance;

@@ -36,7 +36,7 @@ void Spin::flip()
 
 Spin& Spin::getRandomNeighbour() 
 { 
-    unsigned int randomNr = enhance::random_int(0, neighbours.size() - 1);
+    unsigned int randomNr = enhance::randomInt(0, neighbours.size() - 1);
     return neighbours[randomNr].get();
 }
 

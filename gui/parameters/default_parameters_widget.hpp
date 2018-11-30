@@ -8,7 +8,6 @@
 #endif
 
 #include "base_parameters_widget.hpp"
-#include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -61,12 +60,12 @@ protected:
     QGroupBox* createAdvancedOptionsBox();
     
 private:
-    QDoubleSpinBox* magneticSpinBox = new QDoubleSpinBox(this);
+    QDoubleSpinBox* magneticSpinBox     = new QDoubleSpinBox(this);
 
-    QComboBox* advancedComboBox = new QComboBox(this);
-    QDoubleSpinBox* startValueSpinBox = new QDoubleSpinBox(this);
-    QDoubleSpinBox* stopValueSpinBox = new QDoubleSpinBox(this);
-    QDoubleSpinBox* stepValueSpinBox = new QDoubleSpinBox(this);
+    QComboBox*      advancedComboBox    = new QComboBox(this);
+    QDoubleSpinBox* startValueSpinBox   = new QDoubleSpinBox(this);
+    QDoubleSpinBox* stopValueSpinBox    = new QDoubleSpinBox(this);
+    QDoubleSpinBox* stepValueSpinBox    = new QDoubleSpinBox(this);
 
     QCheckBox*  advancedRandomiseCheckBox = new QCheckBox(this);
 

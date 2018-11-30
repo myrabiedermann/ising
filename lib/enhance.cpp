@@ -8,14 +8,14 @@ namespace enhance
 
 
     // random double from [a,b)
-    double random_double(double a, double b)
+    double randomDouble(double a, double b)
     {
         std::uniform_real_distribution<double> distribution(a,b);
         return distribution(rand_engine);
     }
 
     // random int from [a,b]
-    int random_int(int a, int b)
+    int randomInt(int a, int b)
     {
         std::uniform_int_distribution<int> intdistribution(a,b);
         return intdistribution(rand_engine);

@@ -8,7 +8,6 @@
 #endif
 
 #include "base_parameters_widget.hpp"
-#include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
 #include <QLineEdit>

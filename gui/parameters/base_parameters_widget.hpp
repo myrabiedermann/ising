@@ -7,7 +7,7 @@
     #endif
 #endif
 
-#include "long_qspinbox.hpp"
+// #include "long_qspinbox.hpp"
 #include <QWidget>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -23,6 +23,7 @@
 #include <QIntValidator>
 #include <QSize>
 #include <limits>
+#include <cmath>
 
 
 
@@ -82,8 +83,10 @@ protected:
     QSpinBox* widthSpinBox = new QSpinBox(this);
     QDoubleSpinBox* interactionSpinBox = new QDoubleSpinBox(this);
     QDoubleSpinBox* temperatureSpinBox = new QDoubleSpinBox(this);
-    QtLongLongSpinBox* stepsEquilSpinBox = new QtLongLongSpinBox(this);
-    QtLongLongSpinBox* stepsProdSpinBox = new QtLongLongSpinBox(this);
+    QSpinBox* stepsEquilSpinBox = new QSpinBox(this);
+    QSpinBox* stepsEquilExponentSpinBox = new QSpinBox(this);
+    QSpinBox* stepsProdSpinBox = new QSpinBox(this);
+    QSpinBox* stepsProdExponentSpinBox = new QSpinBox(this);
     QSpinBox* printFreqSpinBox = new QSpinBox(this);
 
     QLineEdit* filenameLineEdit = new QLineEdit(this);

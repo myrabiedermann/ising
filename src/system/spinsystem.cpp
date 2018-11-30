@@ -100,7 +100,7 @@ double Spinsystem::getMagnetisation() const
 
 double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 {
-     /* Aufgabe 1.6:
+    /* Aufgabe 1.6:
      *
      * input:       Zwei spezifische Spins
      * return:      Abstand r
@@ -294,7 +294,7 @@ void Spinsystem::resetSpins()
     {
         for( auto& s: spins )
         {
-            random = enhance::random_int(0,1);
+            random = enhance::randomInt(0,1);
             s.setType( random == 1 ? +1 : -1 );
         }
     }      
@@ -307,7 +307,7 @@ void Spinsystem::resetSpins()
         {
             do
             {
-                random = enhance::random_int(0, spins.size()-1);
+                random = enhance::randomInt(0, spins.size()-1);
             }
             while( spins[random].getType() == -1 );
             spins[random].setType(-1);
@@ -345,7 +345,7 @@ void Spinsystem::resetSpinsCosinus(const double k)
         {
             do
             {
-                random = enhance::random_int(i*getWidth(), (i+1)*getWidth() - 1);
+                random = enhance::randomInt(i*getWidth(), (i+1)*getWidth() - 1);
             }
             while( spins[random].getType() == -1 );
             spins[random].setType(-1);
