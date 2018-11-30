@@ -6,7 +6,9 @@
     Q_CHECK_PTR(heightSpinBox);      \
     Q_CHECK_PTR(widthSpinBox);       \
     Q_CHECK_PTR(stepsEquilSpinBox);  \
+    Q_CHECK_PTR(stepsEquilExponentSpinBox); \
     Q_CHECK_PTR(stepsProdSpinBox);   \
+    Q_CHECK_PTR(stepsProdExponentSpinBox); \
     Q_CHECK_PTR(printFreqSpinBox);   \
     Q_CHECK_PTR(randomiseBtn);       \
     Q_CHECK_PTR(filenameLineEdit);    
@@ -47,6 +49,7 @@ QGroupBox* BaseParametersWidget::createOutputBox()
     // default texts for LineEdits
     filenameLineEdit->setMaxLength(20);
     filenameLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    filenameLineEdit->setAlignment(Qt::AlignRight);
 
     // the layout
     QFormLayout* formLayout = new QFormLayout();
@@ -105,14 +108,14 @@ void BaseParametersWidget::setWidth(const unsigned int W)
 unsigned long BaseParametersWidget::getStepsEquil() const
 {
     Q_CHECK_PTR(stepsEquilSpinBox);
-    return stepsEquilSpinBox->value();
+    return stepsEquilSpinBox->value() * std::pow(10, stepsEquilExponentSpinBox->value());
 }
 
 
 unsigned long BaseParametersWidget::getStepsProd() const
 {
     Q_CHECK_PTR(stepsProdSpinBox);
-    return stepsProdSpinBox->value();
+    return stepsProdSpinBox->value() * std::pow(10, stepsProdExponentSpinBox->value());
 }
 
 
