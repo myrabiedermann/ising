@@ -201,15 +201,49 @@ void ConstrainedMCWidget::correlateAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
     CONSTRAINED_MC_WIDGET_ASSERT_ALL;
-    
-    Logger::getInstance().write_new_line("[gui]", "computing correlation");
 
+    setRunning(true);
+    emit runningSignal(true);
+
+    equilBtn->setEnabled(false);
+    prodBtn->setEnabled(false);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(true);
+
+    Logger::getInstance().write_new_line("[gui]", "computing correlation...");
+
+    QFuture<void> future = QtConcurrent::run([&]
+    {
+        serverCorrelation();
+    });
+ 
+}
+
+
+void ConstrainedMCWidget::serverCorrelation()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    Q_CHECK_PTR(prmsWidget);
+    
     auto correlation = MC.getSpinsystem().computeCorrelation();
     MC.print_correlation( correlation );
     auto structureFunction = MC.getSpinsystem().computeStructureFunction(correlation);
     MC.print_structureFunction( structureFunction );
     emit drawCorrelationRequest( correlation );
-    // MC.getSpinsystem().computeSystemTimesCos();
+
+    
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(true);
+    correlateBtn->setEnabled(true);
+    abortBtn->setEnabled(true);
+
+    emit runningSignal(false);
+    Logger::getInstance().write_new_line("[gui]", "...done");
 }
 
 

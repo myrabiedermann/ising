@@ -33,9 +33,10 @@ public slots:
 signals:
     
 protected:
+    void serverCorrelation();
     
 private:
-    QPushButton* correlateBtn = new QPushButton("Compute correlation",this);
+    QPushButton* correlateBtn = new QPushButton("Compute + Save correlation", this);
 
 };
 
