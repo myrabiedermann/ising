@@ -104,7 +104,7 @@ void ConstrainedMCWidget::equilibrateAction()
     emit drawRequest(MC, steps_done.load());
     emit runningSignal(true);
 
-    Logger::getInstance().write_new_line("[gui]", "start equilibration with", prmsWidget->getStepsEquil() - steps_done.load(), "steps");
+    isingLOG("gui: " << "start equilibration with " << prmsWidget->getStepsEquil() - steps_done.load() << " steps")
     
     QFuture<void> future = QtConcurrent::run([&]
     {
@@ -139,7 +139,7 @@ void ConstrainedMCWidget::productionAction()
     emit drawRequest(MC, steps_done.load());
     emit runningSignal(true);
     
-    Logger::getInstance().write_new_line("[gui]", "start production with", prmsWidget->getStepsProd() - steps_done.load(), "steps");
+    isingLOG("gui: " << "start production with " << prmsWidget->getStepsProd() - steps_done.load() << " steps")
 
     QFuture<void> future = QtConcurrent::run([&]
     {
@@ -156,6 +156,8 @@ void ConstrainedMCWidget::pauseAction()
     CONSTRAINED_MC_WIDGET_ASSERT_ALL;
     
     setRunning(false);
+    emit runningSignal(false);
+
     equilBtn->setEnabled(true);
     prodBtn->setEnabled(true);
     pauseBtn->setEnabled(false);
@@ -167,9 +169,7 @@ void ConstrainedMCWidget::pauseAction()
     
     drawRequestTimer->stop();
     
-    emit runningSignal(false);
-
-    Logger::getInstance().write_new_line("[gui]", "pausing");
+    isingLOG("gui: " << "pausing @ step " << steps_done.load())
 }
 
 
@@ -192,7 +192,7 @@ void ConstrainedMCWidget::abortAction()
     emit runningSignal(false);
     emit resetSignal();
     makeSystemNew();
-    Logger::getInstance().write_new_line("[gui]", "abort & reset to default parameters");
+    isingLOG("gui: " << "abort & reset to default parameters")
 }
 
 
@@ -201,15 +201,49 @@ void ConstrainedMCWidget::correlateAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
     CONSTRAINED_MC_WIDGET_ASSERT_ALL;
-    
-    Logger::getInstance().write_new_line("[gui]", "computing correlation");
 
+    setRunning(true);
+    emit runningSignal(true);
+
+    equilBtn->setEnabled(false);
+    prodBtn->setEnabled(false);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    correlateBtn->setEnabled(false);
+    abortBtn->setEnabled(true);
+
+    isingLOG("gui: " << "computing correlation...")
+
+    QFuture<void> future = QtConcurrent::run([&]
+    {
+        serverCorrelation();
+    });
+ 
+}
+
+
+void ConstrainedMCWidget::serverCorrelation()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    CONSTRAINED_MC_WIDGET_ASSERT_ALL;
+    Q_CHECK_PTR(prmsWidget);
+    
     auto correlation = MC.getSpinsystem().computeCorrelation();
     MC.print_correlation( correlation );
     auto structureFunction = MC.getSpinsystem().computeStructureFunction(correlation);
     MC.print_structureFunction( structureFunction );
     emit drawCorrelationRequest( correlation );
-    // MC.getSpinsystem().computeSystemTimesCos();
+
+    
+    equilBtn->setEnabled(true);
+    prodBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    saveBtn->setEnabled(true);
+    correlateBtn->setEnabled(true);
+    abortBtn->setEnabled(true);
+
+    emit runningSignal(false);
+    isingLOG("gui: " << "...done")
 }
 
 

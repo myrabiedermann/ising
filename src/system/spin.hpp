@@ -1,8 +1,8 @@
 #pragma once
 
+#include "lib/enhance.hpp"
 #include <vector>
 #include <functional>
-#include "lib/enhance.hpp"
 
 
 class Spin

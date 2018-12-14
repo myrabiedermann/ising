@@ -13,7 +13,7 @@
 #include "parameters/constrained_parameters_widget.hpp"
 #include "mcwidget/default_mc_widget.hpp"
 #include "mcwidget/constrained_mc_widget.hpp"
-#include "utility/logger.hpp"
+#include "definitions.hpp"
 #include "grid_widget.hpp"
 #include "chart_widget.hpp"
 #include <QMainWindow>

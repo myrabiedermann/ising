@@ -115,7 +115,7 @@ void MonteCarloHost::print_data() const
     // save to file:  step  J  T  B  H  M  
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving data ...");
+    isingDEBUG("mc: " << "saving data ...")
     
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -155,7 +155,7 @@ void MonteCarloHost::print_averages() const
     // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>  <heat capacity>
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving averaged data ...");
+    isingDEBUG("mc: " << "saving averaged data ...")
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -206,7 +206,7 @@ void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
     // save correlation of current state in file  
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving correlation function G(r) ...");
+    isingDEBUG("mc: " << "saving correlation function G(r) ...")
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -225,7 +225,7 @@ void MonteCarloHost::print_structureFunction(Histogram<double>& structureFunctio
     // save structure Function of current state in file
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving structure function S(k) ...");
+    isingDEBUG("mc: " << "saving structure function S(k) ...")
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();

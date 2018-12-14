@@ -25,12 +25,12 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         case SYSTEMTYPE::Default :      prmsWidget = new DefaultParametersWidget(this); 
                                         mcWidget = new DefaultMCWidget(this);
-                                        Logger::getInstance().write_new_line("[gui]", "running in spin-flip mode");
+                                        isingLOG("gui: " << "running in spin-flip mode")
                                         break;
         
         case SYSTEMTYPE::Constrained :  prmsWidget = new ConstrainedParametersWidget(this);
                                         mcWidget = new ConstrainedMCWidget(this);
-                                        Logger::getInstance().write_new_line("[gui]", "running in spin-exchange mode");
+                                        isingLOG("gui: " << "running in spin-exchange mode")
                                         break; 
 
         default :                       throw std::logic_error("nope");
@@ -205,7 +205,7 @@ void MainWindow::quitAction()
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    Logger::destroyInstance();
+    isingLOG("- - - end of program - - -")
     QApplication::quit();
 }
 

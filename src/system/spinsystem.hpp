@@ -2,8 +2,8 @@
 
 #include "spin.hpp"
 #include "lib/enhance.hpp"
-#include "utility/histogram.hpp"
-#include "utility/logger.hpp"
+#include "definitions.hpp"
+#include "histogram.hpp"
 #include "gui/parameters/base_parameters_widget.hpp"
 #include <ostream>
 #include <string>

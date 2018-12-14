@@ -105,7 +105,7 @@ void DefaultMCWidget::equilibrateAction()
     drawRequestTimer->start(drawRequestTime.load());
     emit runningSignal(true);
 
-    Logger::getInstance().write_new_line("[gui]", "start equilibration with", prmsWidget->getStepsEquil() - steps_done.load(), "steps");
+    isingLOG("gui: " << "start equilibration with " << prmsWidget->getStepsEquil() - steps_done.load() << " steps")
     
     QFuture<void> future = QtConcurrent::run([&]
     {
@@ -141,7 +141,7 @@ void DefaultMCWidget::productionAction()
     drawRequestTimer->start(drawRequestTime.load());
     emit runningSignal(true);
     
-    Logger::getInstance().write_new_line("[gui]", "start production with", prmsWidget->getStepsProd() - steps_done.load(), "steps");
+    isingLOG("gui: " << "start production with " << prmsWidget->getStepsProd() - steps_done.load() << " steps")
 
     QFuture<void> future = QtConcurrent::run([&]
     {
@@ -170,7 +170,7 @@ void DefaultMCWidget::pauseAction()
     drawRequestTimer->stop();
     emit drawRequest(MC, steps_done.load());
 
-    Logger::getInstance().write_new_line("[gui]", "pausing");
+    isingLOG("gui: " << "pausing @ step " << steps_done.load())
 }
 
 
@@ -195,7 +195,7 @@ void DefaultMCWidget::abortAction()
     emit resetSignal();
     makeSystemNew();
 
-    Logger::getInstance().write_new_line("[gui]", "abort & reset to default parameters");
+    isingLOG("gui: " << "abort & reset to default parameters")
 }
 
 
@@ -219,7 +219,7 @@ void DefaultMCWidget::advancedRunAction()
     emit drawRequest(MC, steps_done.load());
     drawRequestTimer->start(drawRequestTime.load());
 
-    Logger::getInstance().write_new_line("[gui]", "start running advanced scheme");
+    isingLOG("gui: " << "start running advanced scheme")
 
     MC.clearRecords();
 
