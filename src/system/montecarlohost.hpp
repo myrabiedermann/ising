@@ -9,9 +9,9 @@
 
 #include "gui/parameters/base_parameters_widget.hpp"
 #include "spinsystem.hpp"
-#include "utility/histogram.hpp"
-#include "utility/logger.hpp"
+#include "histogram.hpp"
 #include "lib/enhance.hpp"
+#include "definitions.hpp"
 #include <QDebug>
 #include <cassert>
 #include <cmath>

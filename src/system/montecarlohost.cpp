@@ -34,14 +34,12 @@ void MonteCarloHost::run(const unsigned long& steps, const bool EQUILMODE)
         if( ! acceptance(energy_old, energy_new, getTemperature()) )
         {
             spinsystem.flip_back(); 
-        #ifndef NDEBUG
-            Logger::getInstance().debug_new_line("[mc]", "move rejected, new H would have been: ", energy_new);
+            isingDEBUG("mc: " << "move rejected, new H would have been: " << energy_new)
         }
         else
         {
-            Logger::getInstance().debug_new_line("[mc]", "move accepted, new H: ", energy_new);
-            Logger::getInstance().debug_new_line(spinsystem.getStringOfSystem());
-        #endif
+            isingDEBUG("mc: " << "move accepted, new H: " << energy_new)
+            isingDEBUG(spinsystem.getStringOfSystem())
         }
     }
     
@@ -61,7 +59,7 @@ bool MonteCarloHost::acceptance(const double Eold, const double Enew, const doub
     #ifndef NDEBUG
         double random = enhance::randomDouble(0.0, 1.0);
         double condition = std::exp(-(Enew-Eold)/temperature);
-        Logger::getInstance().debug_new_line("[mc]", "random = ", random, ", exp(-(energy_new-energy_old)/temperature) = ", condition);
+        isingDEBUG("mc: " << "random = " << random << ", exp(-(energy_new-energy_old)/temperature) = " << condition)
         return random < condition ? true : false;
     #endif
 
@@ -160,7 +158,7 @@ void MonteCarloHost::print_data() const
     // save to file:  step  J  T  B  H  M  
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving data ...");
+    isingDEBUG("mc: " << "saving data ...")
     
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -200,7 +198,7 @@ void MonteCarloHost::print_averages() const
     // compute averages and save to file: <energy>  <magnetisation>  <susceptibility>  <heat capacity>
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving averaged data ...");
+    isingDEBUG("mc: " << "saving averaged data ...")
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -251,7 +249,7 @@ void MonteCarloHost::print_correlation(Histogram<double>& correlation) const
     // save correlation of current state in file  
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving correlation function G(r) ...");
+    isingDEBUG("mc: " << "saving correlation function G(r) ...")
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();
@@ -270,7 +268,7 @@ void MonteCarloHost::print_structureFunction(Histogram<double>& structureFunctio
     // save structure Function of current state in file
 
     qDebug() << __PRETTY_FUNCTION__;
-    Logger::getInstance().debug_new_line("[mc]", "saving structure function S(k) ...");
+    isingDEBUG("mc: " << "saving structure function S(k) ...")
 
     Q_CHECK_PTR(parameters);
     std::string filekeystring = parameters->getFileKey();

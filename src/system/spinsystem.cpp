@@ -108,8 +108,9 @@ void Spinsystem::flip()
         Hamiltonian += localEnergy_after - localEnergy_before;
     }
     
-    Logger::getInstance().debug_new_line("[spinsystem]", "flipping spin: ");
-    for(const auto& spinID: lastFlipped) Logger::getInstance().debug(" ", spinID);
+    std::stringstream tmp;
+    for(const auto& spinID: lastFlipped) tmp <<  spinID << " ";
+    isingDEBUG("spinsystem: " << "flipping spin: " << tmp.str())
 
 }
 
@@ -143,8 +144,9 @@ void Spinsystem::flip_back()
     // update Hamiltonian
     Hamiltonian += localEnergy_after - localEnergy_before;
 
-    Logger::getInstance().debug_new_line("[spinsystem]", "flipping back: "); 
-    for( const auto& id: lastFlipped) Logger::getInstance().debug("   ", id);
+    std::stringstream tmp;
+    for(const auto& spinID: lastFlipped) tmp <<  spinID << " ";
+    isingDEBUG("spinsystem: " << "flipping back: " << tmp.str())
 
 }
 
@@ -180,7 +182,7 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
      * 
      */
 
-    Logger::getInstance().debug_new_line("[spinsystem]", "computing distance between spins", _spin1.getID(), ",", _spin2.getID()); 
+    isingDEBUG("spinsystem: " << "computing distance between spins" << _spin1.getID() << "," << _spin2.getID() )
 
     // step 1: get location of spin1 and spin2:
     int spin1_row, spin1_col, spin2_row, spin2_col;
@@ -191,7 +193,7 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
     spin2_row = _spin2.getID() / getWidth();
     spin2_col = _spin2.getID() % getWidth();
 
-    Logger::getInstance().debug_new_line("            ","at positions (", spin1_row, ',', spin1_col, ") and (", spin2_row, ' ', spin2_col, ')');
+    isingDEBUG("            " << " at positions (" << spin1_row << ',' << spin1_col << ") and (" << spin2_row << ' ' << spin2_col << ')')
 
     // step 2: compute x, y components of distance vector, accounting for pbc:
     int x, y;
@@ -210,7 +212,7 @@ double Spinsystem::distance(const Spin& _spin1, const Spin& _spin2) const
 
     // step 3: compute norm of vector and return it
     double distance = std::sqrt( x*x + y*y );
-    Logger::getInstance().debug_new_line("            ", "distance: sqrt(", x, "^2 * ", y, "^2) = ", distance);
+    isingDEBUG("            " << " distance: sqrt(" << x << "^2 * " << y << "^2) = " << distance)
     
     return distance; 
 }
@@ -293,7 +295,7 @@ void Spinsystem::resetParameters()
     qDebug() << __PRETTY_FUNCTION__;
 
     computeHamiltonian();
-    Logger::getInstance().debug_new_line("[spinsystem]", "resetting parameters ... new initial H = ", Hamiltonian);
+    isingDEBUG("spinsystem: " << "resetting parameters ... new initial H = " << Hamiltonian)
 }
 
 
@@ -330,7 +332,7 @@ void Spinsystem::setup()
         spins.emplace_back(i, +1);
 
     // set neighbours:
-    Logger::getInstance().debug_new_line("[spinsystem]", "system setup: setting neighbours for", getWidth(), "*", getHeight(), "system");
+    isingDEBUG("spinsystem: " << "system setup: setting neighbours for " << getWidth() << "*" << getHeight() << " system")
     for(auto& s: spins)
     {
         std::vector<std::reference_wrapper<Spin> > Nrefs;
@@ -370,8 +372,9 @@ void Spinsystem::setup()
         }
 
         s.setNeighbours(Nrefs);
-        Logger::getInstance().debug_new_line("            ",  "spin", s.getID(), "has neighbours :");
-        std::for_each( std::begin(s.getNeighbours()), std::end(s.getNeighbours()), [](auto& N){ Logger::getInstance().debug( N.get().getID()," "); } );
+        std::stringstream tmp; 
+        std::for_each( std::begin(s.getNeighbours()), std::end(s.getNeighbours()), [&tmp](auto& N){ tmp << N.get().getID() <<  " "; } );
+        isingDEBUG("            " << "spin " << s.getID() << " has neighbours: " << tmp.str())
     }
     
     // set spin types:
@@ -404,7 +407,7 @@ void Spinsystem::resetSpins()
     }      
     else  // constrained to specific up-spin to down-spin ratio
     {
-        Logger::getInstance().debug_new_line("[spinsystem]", "ratio =", getRatio(), ", results in", static_cast<unsigned int>(getRatio() * spins.size()), " down spins.");
+        isingDEBUG("spinsystem: " << "ratio = " << getRatio() << ", results in " << static_cast<unsigned int>(getRatio() * spins.size()) << " down spins.")
         for( auto& s: spins ) 
             s.setType( +1 );
         for(unsigned int i=0; i<static_cast<unsigned int>( getRatio() * spins.size()); ++i)
@@ -423,8 +426,8 @@ void Spinsystem::resetSpins()
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    Logger::getInstance().debug_new_line("[spinsystem]", "resetting spins randomly... new initial H =", Hamiltonian);
-    Logger::getInstance().debug_new_line(getStringOfSystem());
+    isingDEBUG("spinsystem: " << "resetting spins randomly... new initial H = " << Hamiltonian)
+    isingDEBUG( getStringOfSystem() )
 
 }
 
@@ -461,9 +464,9 @@ void Spinsystem::resetSpinsCosinus(const double k)
     
     // calculate initial Hamiltonian:
     computeHamiltonian();
-    Logger::getInstance().debug_new_line("[spinsystem]", "resetting spins with cos(", getWavelength(),"y ) pattern ... new initial H =", Hamiltonian);
-    Logger::getInstance().debug_new_line("[spinsystem]", "# of down spins:", totNrDownSpins);
-    Logger::getInstance().debug_new_line(getStringOfSystem());
+    isingDEBUG("spinsystem: " << "resetting spins with cos(" << getWavelength() << "y ) pattern ... new initial H = " << Hamiltonian)
+    isingDEBUG("spinsystem: " << "# of down spins: " << totNrDownSpins)
+    isingDEBUG(getStringOfSystem())
 
 }
 
@@ -475,7 +478,7 @@ void Spinsystem::print(std::ostream & stream) const
     for( const auto& s: spins )
     {
         stream << ( s.getType() == -1 ? "-" : "+" )
-        << ( (static_cast<unsigned int>(s.getID() + 1)) % getWidth() == 0 ? '\n' : ' ');
+        << ( (static_cast<unsigned int>(s.getID() + 1)) % getWidth() == 0 ? "\n        " : " " );
     }
 }
 
@@ -500,7 +503,7 @@ Histogram<double> Spinsystem::computeCorrelation() const
     double binWidth = 0.1;
     Histogram<double> correlation {binWidth};
     Histogram<double> counter {binWidth};
-    Logger::getInstance().debug_new_line("[spinsystem]", "computing correlation <Si Sj>");
+    isingDEBUG("spinsystem: " << "computing correlation <Si Sj>")
 
     // first: <S(0)S(r)>:
     double maxDist = ( getWidth() >= getHeight() ? (double) getWidth() : (double) getHeight() )/2  + binWidth/2;
@@ -515,8 +518,7 @@ Histogram<double> Spinsystem::computeCorrelation() const
                 {
                     correlation.add_data( dist, s1.getType() == s2.getType() ? 1 : -1);
                     counter.add_data( dist );
-                    Logger::getInstance().debug_new_line("            ", "correlating ", s1.getID(), " with ", s2.getID()," : ", s1.getType() == s2.getType() ? 1 : -1);
-                    Logger::getInstance().debug("   distance ", dist);
+                    isingDEBUG("            " << "correlating " << s1.getID() << " with " << s2.getID() <<" : " << (s1.getType() == s2.getType() ? 1 : -1) << "   distance " << dist)
                 }
             }
         }
@@ -539,7 +541,7 @@ Histogram<double> Spinsystem::computeStructureFunction(Histogram<double> correla
 {
     // compute Fourier transformation S(k) = integral cos(2PI/width*k*r) G(r) dr, with r = distance between spins
 
-    Logger::getInstance().debug_new_line("[spinsystem]", "computing structure function S(k)");
+    isingDEBUG("spinsystem: " << "computing structure function S(k)")
 
     // computation of delta r's:
     Histogram<double> deltaR {correlation};
