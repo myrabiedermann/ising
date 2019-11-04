@@ -13,7 +13,7 @@
 ## Installation guide
 
 ```
-git clone https://github.com/myra-b/ising.git
+git clone https://github.com/myrabiedermann/ising.git
 cd ising
 mkdir build
 cd build
