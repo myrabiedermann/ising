@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // ### GridWidget
     {   
-        gridWidget->setFixedSize(500, 500);
+        gridWidget->setFixedSize(600, 600);
         gridWidget->setSceneRect(0, 0, 500, 500);
         gridWidget->fitInView(0, 0, 500, 500, Qt::KeepAspectRatio);
         gridWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -54,7 +54,10 @@ MainWindow::MainWindow(QWidget *parent) :
     
     // ### ParametersWidget
     {
-        prmsWidget->setMinimumWidth(300);
+        prmsWidget->setMinimumWidth(400);
+        prmsWidget->setMaximumWidth(700);
+        prmsWidget->setMinimumHeight(700);
+        prmsWidget->setMaximumHeight(800);
         connect( mcWidget, &BaseMCWidget::runningSignal, prmsWidget, &BaseParametersWidget::setReadOnly );
         connect( mcWidget, &BaseMCWidget::resetSignal, prmsWidget, &BaseParametersWidget::setDefault );
     }
@@ -71,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         hamiltonianChart->setXLabel("MC steps");
         hamiltonianChart->setYLabel("Hamiltonian");
-        hamiltonianChart->setMinimumHeight(400);
+        hamiltonianChart->setMinimumHeight(300);
         hamiltonianChart->setMinimumWidth(600);
         
         connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, hamiltonianChart, &ChartWidget::reset );
@@ -92,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
             averageMagnetisationChart->setXLabel("MC steps");
             averageMagnetisationChart->setYLabel("Magnetisation per spin");
-            averageMagnetisationChart->setMinimumHeight(400);
+            averageMagnetisationChart->setMinimumHeight(300);
             averageMagnetisationChart->setMinimumWidth(600);
             
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, averageMagnetisationChart, &ChartWidget::reset );
@@ -110,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
             correlationChart->setXLabel("distance");
             correlationChart->setYLabel("correlation");
-            correlationChart->setMinimumHeight(400);
+            correlationChart->setMinimumHeight(300);
             correlationChart->setMinimumWidth(600);
 
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, correlationChart, &ChartWidget::reset );
@@ -180,8 +183,10 @@ QGroupBox* MainWindow::createBottomActionGroup()
     Q_CHECK_PTR(groupBox);
     
     // the quit button
-    quitBtn->setMaximumWidth(150);
     quitBtn->setMinimumWidth(50);
+    quitBtn->setMaximumWidth(150);
+    quitBtn->setMinimumHeight(10);
+    quitBtn->setMaximumHeight(30);
     connect(quitBtn, &QPushButton::clicked, this, &MainWindow::quitAction);
     
     // pack buttons into layout
@@ -193,8 +198,8 @@ QGroupBox* MainWindow::createBottomActionGroup()
     // set layout of group
     groupBox->setLayout(hbox);
 
-    groupBox->setMinimumHeight(50);
-    groupBox->setMaximumHeight(70);
+    groupBox->setMinimumHeight(80);
+    groupBox->setMaximumHeight(100);
     groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     return groupBox;

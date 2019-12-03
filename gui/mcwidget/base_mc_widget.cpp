@@ -15,7 +15,7 @@ BaseMCWidget::BaseMCWidget(QWidget *parent)
   : QWidget(parent)
   , drawRequestTimer(new QTimer(this))
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    // qDebug() << __PRETTY_FUNCTION__;
 }
 
 
