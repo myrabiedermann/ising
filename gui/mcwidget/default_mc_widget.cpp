@@ -21,36 +21,48 @@ DefaultMCWidget::DefaultMCWidget(QWidget *parent)
     equilBtn->setEnabled(true);
     equilBtn->setMaximumWidth(350);
     equilBtn->setMinimumWidth(150);
+    equilBtn->setMinimumHeight(10);
+    equilBtn->setMaximumHeight(30);
     equilBtn->setFocusPolicy(Qt::NoFocus);
 
     prodBtn->setCheckable(false);
     prodBtn->setEnabled(true);
     prodBtn->setMaximumWidth(350);
     prodBtn->setMinimumWidth(150);
+    prodBtn->setMinimumHeight(10);
+    prodBtn->setMaximumHeight(30);
     prodBtn->setFocusPolicy(Qt::NoFocus);
     
     pauseBtn->setCheckable(false);
     pauseBtn->setEnabled(false);
     pauseBtn->setMaximumWidth(350);
     pauseBtn->setMinimumWidth(150);
+    pauseBtn->setMinimumHeight(10);
+    pauseBtn->setMaximumHeight(30);
     pauseBtn->setFocusPolicy(Qt::NoFocus);
     
     abortBtn->setCheckable(false);
     abortBtn->setEnabled(false);
     abortBtn->setMaximumWidth(350);
     abortBtn->setMinimumWidth(150);
+    abortBtn->setMinimumHeight(10);
+    abortBtn->setMaximumHeight(30);
     abortBtn->setFocusPolicy(Qt::NoFocus);
 
     saveBtn->setCheckable(false);
     saveBtn->setEnabled(false);
     saveBtn->setMaximumWidth(350);
     saveBtn->setMinimumWidth(150);
+    saveBtn->setMinimumHeight(10);
+    saveBtn->setMaximumHeight(30);
     saveBtn->setFocusPolicy(Qt::NoFocus);
 
     advancedRunBtn->setCheckable(false);
     advancedRunBtn->setEnabled(true);
     advancedRunBtn->setMaximumWidth(350);
     advancedRunBtn->setMinimumWidth(150);
+    advancedRunBtn->setMinimumHeight(10);
+    advancedRunBtn->setMaximumHeight(30);
     advancedRunBtn->setFocusPolicy(Qt::NoFocus);
 
     connect(advancedRunBtn, &QPushButton::clicked, this, &DefaultMCWidget::advancedRunAction);

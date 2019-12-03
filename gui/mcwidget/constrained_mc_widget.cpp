@@ -21,12 +21,16 @@ ConstrainedMCWidget::ConstrainedMCWidget(QWidget *parent)
     equilBtn->setEnabled(true);
     equilBtn->setMaximumWidth(350);
     equilBtn->setMinimumWidth(150);
+    equilBtn->setMinimumHeight(10);
+    equilBtn->setMaximumHeight(30);
     equilBtn->setFocusPolicy(Qt::NoFocus);
 
     prodBtn->setCheckable(false);
     prodBtn->setEnabled(true);
     prodBtn->setMaximumWidth(350);
     prodBtn->setMinimumWidth(150);
+    prodBtn->setMinimumHeight(10);
+    prodBtn->setMaximumHeight(30);
     prodBtn->setFocusPolicy(Qt::NoFocus);
     
     pauseBtn->setCheckable(false);
@@ -39,18 +43,24 @@ ConstrainedMCWidget::ConstrainedMCWidget(QWidget *parent)
     abortBtn->setEnabled(false);
     abortBtn->setMaximumWidth(350);
     abortBtn->setMinimumWidth(150);
+    abortBtn->setMinimumHeight(10);
+    abortBtn->setMaximumHeight(30);
     abortBtn->setFocusPolicy(Qt::NoFocus);
 
     saveBtn->setCheckable(false);
     saveBtn->setEnabled(false);
     saveBtn->setMaximumWidth(350);
     saveBtn->setMinimumWidth(150);
+    saveBtn->setMinimumHeight(10);
+    saveBtn->setMaximumHeight(30);
     saveBtn->setFocusPolicy(Qt::NoFocus);
 
     correlateBtn->setCheckable(false);
     correlateBtn->setEnabled(true);
     correlateBtn->setMaximumWidth(350);
     correlateBtn->setMinimumWidth(150);
+    correlateBtn->setMinimumHeight(10);
+    correlateBtn->setMaximumHeight(30);
     correlateBtn->setFocusPolicy(Qt::NoFocus);
 
     connect(equilBtn,     &QPushButton::clicked, this, &BaseMCWidget::equilibrateAction);

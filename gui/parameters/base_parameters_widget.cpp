@@ -21,6 +21,7 @@ BaseParametersWidget::BaseParametersWidget(QWidget *parent)
 {
     qDebug() << __PRETTY_FUNCTION__;
     BASE_PARAMETERS_WIDGET_ASSERT_ALL
+    this->setMinimumWidth(100);
 }
 
 BaseParametersWidget::~BaseParametersWidget()

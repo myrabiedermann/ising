@@ -10,7 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-
     isingLOG( " - - - ising program - - - " )
 
     enhance::seed = std::random_device{}();
@@ -20,11 +19,9 @@ int main(int argc, char *argv[])
     enhance::rand_engine.seed(enhance::seed);
     isingLOG("main: " << "seed for random number generator: " << enhance::seed)
 
-
     QApplication app(argc, argv);
     MainWindow w;
     w.show();
-
 
     return app.exec();
 
