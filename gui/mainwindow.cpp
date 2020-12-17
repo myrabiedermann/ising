@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
         hamiltonianChart->setXLabel("MC steps");
         hamiltonianChart->setYLabel("Hamiltonian");
         hamiltonianChart->setMinimumHeight(300);
-        hamiltonianChart->setMinimumWidth(480);
+        hamiltonianChart->setMinimumWidth(500);
         
         connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, hamiltonianChart, &ChartWidget::reset );
         connect( mcWidget, &BaseMCWidget::resetChartSignal, hamiltonianChart, &ChartWidget::reset);
@@ -96,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
             averageMagnetisationChart->setXLabel("MC steps");
             averageMagnetisationChart->setYLabel("Magnetisation per spin");
             averageMagnetisationChart->setMinimumHeight(300);
-            averageMagnetisationChart->setMinimumWidth(480);
+            averageMagnetisationChart->setMinimumWidth(500);
             
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, averageMagnetisationChart, &ChartWidget::reset );
             connect( mcWidget, &BaseMCWidget::resetChartSignal, averageMagnetisationChart, &ChartWidget::reset);
@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
             correlationChart->setXLabel("distance");
             correlationChart->setYLabel("correlation");
             correlationChart->setMinimumHeight(300);
-            correlationChart->setMinimumWidth(480);
+            correlationChart->setMinimumWidth(500);
 
             connect( prmsWidget, &BaseParametersWidget::criticalValueChanged, correlationChart, &ChartWidget::reset );
             connect( mcWidget, &BaseMCWidget::resetChartSignal, correlationChart, &ChartWidget::reset);

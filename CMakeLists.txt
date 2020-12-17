@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(ising)
 
-set(CMAKE_BUILD_TYPE Release )
-
 set(CMAKE_CXX_STANDARD 14)
 
 # Find includes in corresponding build directories
