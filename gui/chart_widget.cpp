@@ -15,7 +15,6 @@ ChartWidget::ChartWidget(QWidget *parent)
     chart->legend()->hide();
     chart->addSeries(series);
     chart->createDefaultAxes();
-    // chart->setTitle("DEFAULT TEXT");
     
     chart->axisX()->setTitleText(xLabel);
     chart->axisY()->setTitleText(yLabel);
@@ -24,6 +23,8 @@ ChartWidget::ChartWidget(QWidget *parent)
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setRenderHint(QPainter::Antialiasing);
+
+    chart->setMargins(QMargins(5,5,5,5));
     
 }
 
