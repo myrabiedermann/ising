@@ -236,7 +236,9 @@ void DefaultMCWidget::advancedRunAction()
     MC.clearRecords();
 
     double value = prmsWidget->getStartValue();
-    while( value <= prmsWidget->getStopValue() )
+    int factor = (prmsWidget->getStepValue() < 0 ? -1 : 1);
+    double finalValue = prmsWidget->getStopValue() + 0.5*factor*prmsWidget->getStepValue();
+    while( factor*(value - finalValue) <= 0)
     {
         prmsWidget->setAdvancedValue(value);
         if( prmsWidget->getAdvancedRandomise() )
